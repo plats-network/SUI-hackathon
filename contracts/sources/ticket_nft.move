@@ -1,4 +1,4 @@
-module sui_nft::sui_nft {
+module sui_nft::ticket_nft {
     // use sui::url::{Self, Url};
     use std::string::{utf8};
     use std::string;
@@ -12,7 +12,7 @@ module sui_nft::sui_nft {
 
 
 
-    struct NFT has key, store {
+    struct NFTTicket has key, store {
         id: UID,
         /// Name for the token
         name: string::String,
@@ -20,7 +20,8 @@ module sui_nft::sui_nft {
         description: string::String,
         /// URL for the token
         image_url: string::String,
-        // TODO: allow custom attributes
+        /// Collection ID
+        collection_id: ID 
     }
 
     // ===== Events =====
@@ -35,44 +36,20 @@ module sui_nft::sui_nft {
     }
 
 
-    struct SUI_NFT has drop {}
-
-
-
-    fun init(otw: SUI_NFT,ctx: &mut TxContext) {
-        let keys = vector[utf8(b"name"), utf8(b"description"), utf8(b"image_url")];
-        let values = vector[utf8(b"{name}"), utf8(b"{description}"), utf8(b"{image_url}")];
-        // Claim the `Publisher` for the package!
-        let publisher = package::claim(otw, ctx);
-
-        // Get a new `Display` object for the `Hero` type.
-        let display = display::new_with_fields<NFT>(
-            &publisher, keys, values, ctx
-        );
-
-        // Commit first version of `Display` to apply changes.
-        display::update_version(&mut display);
-
-        transfer::public_transfer(publisher, tx_context::sender(ctx));
-        transfer::public_transfer(display, tx_context::sender(ctx));
-    }
-
-
-
     // ===== Public view functions =====
 
     /// Get the NFT's `name`
-    public fun name(nft: &NFT): &string::String {
+    public fun name(nft: &NFTTicket): &string::String {
         &nft.name
     }
 
     /// Get the NFT's `description`
-    public fun description(nft: &NFT): &string::String {
+    public fun description(nft: &NFTTicket): &string::String {
         &nft.description
     }
 
     /// Get the NFT's `image_url`
-    public fun image_url(nft: &NFT): &string::String{
+    public fun image_url(nft: &NFTTicket): &string::String{
         &nft.image_url
     }
 
@@ -84,14 +61,16 @@ module sui_nft::sui_nft {
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
+        collection_id: ID,
         ctx: &mut TxContext
     ) {
         let sender = tx_context::sender(ctx);
-        let nft = NFT {
+        let nft = NFTTicket {
             id: object::new(ctx),
             name: string::utf8(name),
             description: string::utf8(description),
-            image_url: string::utf8(image_url)
+            image_url: string::utf8(image_url),
+            collection_id,
         };
 
         event::emit(NFTMinted {
@@ -105,13 +84,13 @@ module sui_nft::sui_nft {
 
     /// Transfer `nft` to `recipient`
     public entry fun transfer(
-        nft: NFT, recipient: address, _: &mut TxContext
+        nft: NFTTicket, recipient: address, _: &mut TxContext
     ) {
         transfer::public_transfer(nft, recipient)
     }
 
     public entry fun update_description(
-        nft: &mut NFT,
+        nft: &mut NFTTicket,
         new_description: vector<u8>,
         _: &mut TxContext
     ) {
