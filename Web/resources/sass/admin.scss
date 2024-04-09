@@ -1,0 +1,30 @@
+@import './admin/base';
+@import './admin/bootstrap.css';
+@import './admin/icons.css';
+@import './admin/app.css';
+
+
+div:where(.swal2-icon) {
+    width: 30px!important;
+    height: 30px!important;
+}
+
+div:where(.swal2-icon) .swal2-icon-content {
+    font-size: 1.75em!important;
+}
+
+.swal2-container .swal2-title {
+    font-size: 19px!important;
+}
+
+div:where(.swal2-container) div:where(.swal2-popup) {
+    width: 24em!important;
+}
+
+div:where(.swal2-container) .swal2-html-container {
+    display: none;
+}
+
+#swal2-html-container {
+    display: none!important;
+}

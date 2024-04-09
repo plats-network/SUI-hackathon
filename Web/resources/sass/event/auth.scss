@@ -1,0 +1,222 @@
+@import "variables";
+
+.loginBtn {
+  box-sizing: border-box;
+  position: relative;
+  margin: 0.2em;
+  padding: 5px 15px;
+  border: none;
+  text-align: left;
+  line-height: 34px;
+  white-space: nowrap;
+  border-radius: 0.2em;
+  font-size: 16px;
+  color: #FFF;
+}
+.loginBtn:before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 100%;
+}
+.loginBtn:focus {
+  outline: none;
+}
+.loginBtn:active {
+  box-shadow: inset 0 0 0 32px rgba(0,0,0,0.1);
+}
+
+.social-sign {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+
+  a {
+    color: #fff;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+.loginBtn--facebook {
+  background-color: #4C69BA;
+  background-image: linear-gradient(#4C69BA, #3B55A0);
+  text-shadow: 0 -1px 0 #354C8C;
+}
+.loginBtn--facebook:hover,
+.loginBtn--facebook:focus {
+  background-color: #5B7BD5;
+  background-image: linear-gradient(#5B7BD5, #4864B1);
+}
+/* Google */
+.loginBtn--google {
+  background: #DD4B39;
+}
+.loginBtn--google:hover,
+.loginBtn--google:focus {
+  background: #E74B37;
+}
+// Endshare
+
+.social-login img {
+  width: 24px;
+}
+a {
+  text-decoration: none;
+}
+
+.card {
+  font-family: sans-serif;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5%;
+  margin-bottom:3em;
+  border-radius: 10px;
+  background-color: #ffff;
+  padding: 1.8rem;
+  box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.1);
+
+  p {
+    &.note-login {
+      background-color: #FFC0CB;
+      border: 1px solid #3EA2FF;
+      padding: 10px;
+      border-radius: 10px;
+    }
+  }
+
+  &.sign-up {
+    width: 550px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    width: 95%;
+
+    &.sign-up {
+      width: 95%;
+    }
+  }
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+  margin: 0;
+}
+.subtitle {
+  text-align: center;
+}
+.btn-text {
+  margin: 0;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.google-btn {
+  background: #fff;
+  border: solid 2px rgb(245 239 239);
+  border-radius: 8px;
+  font-weight: bold;
+  display: flex;
+  padding: 10px 10px;
+  flex: auto;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+}
+.fb-btn {
+  background: #fff;
+  border: solid 2px rgb(69, 69, 185);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.or {
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 2px solid rgb(245 239 239);
+  line-height: 0.1em;
+  margin: 25px 0;
+
+  span {
+    background: #fff;
+    padding: 0 10px;
+  }
+}
+
+.home-back {
+  top: 50px;
+  display: block;
+  position: relative;
+}
+
+.email-login {
+  display: flex;
+  flex-direction: column;
+
+  &:focus {
+    border: 1px solid $primary-color;
+  }
+
+  label {
+    color: #888;
+    font-weight: normal;
+  }
+
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 10px 15px;
+  margin-top: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+
+  &:focus,
+  &:focus-visible {
+    border: 1px solid $primary-color;
+  }
+}
+
+input[type=text]:focus,
+input[type=text]:focus-visible,
+input[type=email]:focus,
+input[type=email]:focus-visible,
+input[type=password]:focus,
+input[type=password]:focus-visible {
+  border: 1px solid $primary-color!important;
+}
+
+.cta-btn {
+  background-color: $primary-color;
+  color: $white;
+  padding: 10px 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width: 40%;
+  border-radius: 5px;
+  border: none;
+  margin: 0 auto;
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.forget-pass {
+  text-align: center;
+  display: block;
+}

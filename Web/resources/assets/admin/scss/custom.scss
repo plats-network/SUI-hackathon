@@ -1,0 +1,24 @@
+main {
+}
+
+.el-drawer__header,
+.el-dialog__header {
+  margin-bottom: 0!important;
+  padding: 20px!important;
+  background-color: #409EFF;
+  color: #fff!important;
+
+  button {
+    i {
+      color: #fff!important;
+    }
+  }
+}
+.el-upload--picture-card {
+  height: 80px!important;
+  line-height: 90px!important;
+}
+
+.div-body {
+  padding: 20px;
+}
