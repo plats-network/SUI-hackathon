@@ -44,7 +44,7 @@ export default defineConfig({
                 'resources/js/game.js',
                 'resources/js/profile-nft.js',
                 //'resources/css/mail.css',
-
+                'resources/js/connect_suit.jsx',
                 'resources/js/connect-wallet.jsx',
                 'resources/js/deposit.jsx',
                 'resources/js/deposit-wallet.jsx',
