@@ -16,7 +16,8 @@
 @section('name_page')
     @viteReactRefresh
     @vite([
-    'resources/js/mint.js',
+        'resources/js/mint.js',
+        'resources/js/connect_suit.jsx',
     ])
     <div class="page-title-box align-self-center d-none d-md-block">
         <h4 class="page-title mb-0">
@@ -44,19 +45,23 @@
         .se-donw, .bo-donw {
             cursor: pointer;
         }
-        .user-event{
+
+        .user-event {
             padding: 35px;
             border: 1px solid #b4cae5;
             border-radius: 10px;
         }
+
         .user-event p {
             font-size: 15px;
             color: black;
             font-weight: bold;
         }
+
         .tab-disabled {
-            pointer-events:none; //This makes it not clickable
-            opacity:0.6;         //This grays it out to look disabled
+            pointer-events: none;
+        / / This makes it not clickable opacity: 0.6;
+        / / This grays it out to look disabled
         }
 
         .img-preview {
@@ -71,7 +76,7 @@
             transition: all 1s;
         }
 
-        .img-preview:hover{
+        .img-preview:hover {
             color: #18ac1c;
         }
 
@@ -82,7 +87,17 @@
         .mt-25 {
             margin-top: 35px;
         }
+        #button_connect_suit section{
+            margin-top: 10px;
+            text-align: center;
+        }
+        #button_connect_suit{
+            margin-bottom: 20px;
+        }
     </style>
+    <div class="text-end">
+        <div id="button_connect_suit" style="display: inline-block"></div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             @if($event->id)
@@ -309,7 +324,8 @@
                                         <div class="col-lg-12 mt-4">
                                             <div class="row align-items-center">
                                                 <div class="mb-3 col-1">
-                                                    <input class="mint_number form-control" type="number" name="quantity" min="1" max="1000" style="display: none">
+                                                    <input class="mint_number form-control" type="number"
+                                                           name="quantity" min="1" max="1000" style="display: none">
                                                 </div>
                                                 {{--                                                <div class="mb-3 col-5">--}}
                                                 {{--                                                    <input type="file" id="w0" class="mint-image"--}}
@@ -350,7 +366,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="tabwizard1" class="wizard-tab"  style="display: none;">
+                            <div id="tabwizard1" class="wizard-tab" style="display: none;">
                                 <div class="text-center mb-4">
                                     <h5>NFT Ticket</h5>
                                 </div>
@@ -363,7 +379,8 @@
                                     </div>
                                 </div>
                                 <div class="row" style="height: auto; min-height: 400px">
-                                    <div class="col-6 append-nft-ticket" style="border-left: 1px;border-right: 1px solid;">
+                                    <div class="col-6 append-nft-ticket"
+                                         style="border-left: 1px;border-right: 1px solid;">
                                         <div class="row mb-3 nft-ticket-div">
                                             <div class="col-4">
                                                 <input type="file"
@@ -374,7 +391,8 @@
                                                        name="file-image-nft"
                                                 />
                                                 <label for="image-file">
-                                                    <img class="image-label img-preview" src="https://static.vecteezy.com/system/resources/previews/007/567/154/original/select-image-icon-vector.jpg">
+                                                    <img class="image-label img-preview"
+                                                         src="https://static.vecteezy.com/system/resources/previews/007/567/154/original/select-image-icon-vector.jpg">
                                                 </label>
                                             </div>
                                             <div class="col-4">
@@ -397,7 +415,9 @@
                                                        name="nft_amount">
                                             </div>
                                             <div class="col-2" style="margin-top: 50px">
-                                                <button type="button" class="btn-delete-nft-ticket btn btn-danger">Delete</button>
+                                                <button type="button" class="btn-delete-nft-ticket btn btn-danger">
+                                                    Delete
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -426,16 +446,24 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6 d-flex flex-row-reverse" style="border-left: 1px;border-right: 1px solid;">
+                                    <div class="col-6 d-flex flex-row-reverse"
+                                         style="border-left: 1px;border-right: 1px solid;">
                                         <div class="p-2">
-                                            <button id="btnAddItemNft" type="button" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"><i class="mdi mdi-plus me-1"></i> Add More</button>
+                                            <button id="btnAddItemNft" type="button"
+                                                    class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2">
+                                                <i class="mdi mdi-plus me-1"></i> Add More
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6 d-flex flex-row-reverse" style="border-left: 1px;border-right: 1px solid;">
+                                    <div class="col-6 d-flex flex-row-reverse"
+                                         style="border-left: 1px;border-right: 1px solid;">
                                         <div class="p-2">
-                                            <button id="btnGenItemNft" type="button" class="btn btn-primary btn-rounded waves-effect waves-light mb-2 me-2">Generate NFT Ticket</button>
+                                            <button id="btnGenItemNft" type="button"
+                                                    class="btn btn-primary btn-rounded waves-effect waves-light mb-2 me-2">
+                                                Generate NFT Ticket
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -476,7 +504,8 @@
                                                             </div>
                                                         </div>
 
-                                                        <p class="card-title-desc text-success">Scan QR code (Scan Tiket of Users participating in the event)</p>
+                                                        <p class="card-title-desc text-success">Scan QR code (Scan Tiket
+                                                            of Users participating in the event)</p>
                                                         <p class="card-title-desc text-success">URL Checkin Event: <a
                                                                 target="_blank"
                                                                 href="{{$urlAnswers}}">{{$urlAnswers}}</a></p>
@@ -726,7 +755,8 @@
                                             <div class="col-12 mt-4">
                                                 <h2>User Reward</h2>
                                                 <div class="row">
-                                                    <div class="table-responsive small col-lg-12 col-md-12 ms-sm-auto col-lg-12">
+                                                    <div
+                                                        class="table-responsive small col-lg-12 col-md-12 ms-sm-auto col-lg-12">
                                                         <table class="table table-bordered mb-0">
                                                             <thead class="table-light">
                                                             <tr>
@@ -836,9 +866,12 @@
                                     <div id="subForm" class="w-sm ms-auto" style="display: none">
                                         <a class="btn btn-secondary w-sm ms-auto" href="{{route('cws.eventList')}}">Cancel</a>
                                         @if($event->id)
-                                            <button type="button" class="min-edit-btn btn btn-primary w-sm ms-auto">Save</button>
+                                            <button type="button" class="min-edit-btn btn btn-primary w-sm ms-auto">
+                                                Save
+                                            </button>
                                         @else
-                                            <button type="button" class="submit-btn btn btn-primary w-sm ms-auto">Mint</button>
+                                            <button type="button" class="submit-btn btn btn-primary w-sm ms-auto">Mint
+                                            </button>
                                         @endif
                                     </div>
                                 @endif
@@ -1857,7 +1890,7 @@
         const totalBoothUserJobs = [];
 
         // Lặp qua mỗi phần tử trong mảng JSON và đẩy tên của booth vào mảng boothNames và giá trị của totalUserJob vào mảng totalUserJobs
-        dataBooth.forEach(function(booth) {
+        dataBooth.forEach(function (booth) {
             let words = booth.name.split(' ');
             let truncatedName = words.length > 2 ? words.slice(0, 2).join(' ') + ' ...' : booth.name;
             boothNames.push(truncatedName);
@@ -1899,7 +1932,7 @@
         const totalSessionUserJobs = [];
 
         // Lặp qua mỗi phần tử trong mảng JSON và đẩy tên của session vào mảng sessionNames và giá trị của totalUserJob vào mảng totalUserJobs
-        dataSession.forEach(function(session) {
+        dataSession.forEach(function (session) {
             let words = session.name.split(' ');
             let truncatedName = words.length > 2 ? words.slice(0, 2).join(' ') + ' ...' : session.name;
             sessionNames.push(truncatedName);
@@ -1928,9 +1961,7 @@
                         boxPadding: 3
                     }
                 },
-                scales: {
-
-                }
+                scales: {}
             }
         });
     </script>
