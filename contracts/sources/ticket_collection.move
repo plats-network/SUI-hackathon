@@ -17,24 +17,18 @@ module sui_nft::ticket_collection {
     use std::type_name;
 
     friend sui_nft::client;
-    friend sui_nft::admin;
 
     struct TicketCollection<phantom T> has key {
         id: UID,
         name: String,
         description: String,
-        version: u64,
         url: Option<Url>,
-        clients: vector<ID>
     }
 
     // Error code
     const ENotOwner: u64 = 0;
-    const EInClients: u64 = 0;
 
 
-    // Constant
-    const VERSION: u64 = 2;
 
     // OTW
     struct TICKET_COLLECTION has drop {}
@@ -104,43 +98,8 @@ module sui_nft::ticket_collection {
             id: object::new(ctx),
             name: name,
             description: utf8(b"This is description"),
-            version: VERSION,
             url: option::none(),
-            clients: vector::empty<ID>(),
         }
-    }
-    // publisher only function to add client's address 
-    public(friend) fun add_client<T>(self: &mut TicketCollection<T>, addr: address, pub: &Publisher) {
-        assert_authority<T>(pub);
-        let wl = &self.clients;
-        let id = object::id_from_address(addr);
-        if (!utils::is_in_list(wl, &id)) {
-            vector::push_back<ID>(
-                &mut self.clients, 
-                id
-            );
-        } else {
-            abort EInClients
-        };
-    }
-
-    fun drop_client<T>(self: &mut TicketCollection<T>, addr: &ID) {
-        let wl = &self.clients;
-        let (in_wl, i) = vector::index_of(wl, addr);
-        if (in_wl) {
-            vector::remove<ID>(
-                &mut self.clients,
-                i
-            );
-        } else {
-            abort EInClients
-        };
-    }
-
-    public(friend) fun remove_client<T>(self: &mut TicketCollection<T>, addr: address, pub: &Publisher) {
-        assert_authority<T>(pub);
-        let id = &object::id_from_address(addr);
-        drop_client(self, id);
     }
 
     public(friend) fun assert_authority<T>(pub: &Publisher) {
