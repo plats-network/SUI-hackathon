@@ -1,15 +1,9 @@
 module sui_nft::ticket_nft {
-    // use sui::url::{Self, Url};
-    use std::string::{utf8};
     use std::string;
     use sui::object::{Self, ID, UID};
     use sui::event;
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
-    // The creator bundle: these two packages often go together.
-    use sui::package;
-    use sui::display;
-
 
 
     struct NFTTicket has key, store {
@@ -31,40 +25,18 @@ module sui_nft::ticket_nft {
         object_id: ID,
         // The creator of the NFT
         creator: address,
-        // The name of the NFT
-        name: string::String,
+        creator_id: ID 
     }
-
-
-    // ===== Public view functions =====
-
-    /// Get the NFT's `name`
-    public fun name(nft: &NFTTicket): &string::String {
-        &nft.name
-    }
-
-    /// Get the NFT's `description`
-    public fun description(nft: &NFTTicket): &string::String {
-        &nft.description
-    }
-
-    /// Get the NFT's `image_url`
-    public fun image_url(nft: &NFTTicket): &string::String{
-        &nft.image_url
-    }
-
 
     // ===== Entrypoints =====
 
-    /// Create a new devnet_nft
-    public entry fun mint_to_sender(
+    public fun mint_to_sender(
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
         collection_id: ID,
         ctx: &mut TxContext
-    ) {
-        let sender = tx_context::sender(ctx);
+    ): NFTTicket {
         let nft = NFTTicket {
             id: object::new(ctx),
             name: string::utf8(name),
@@ -73,30 +45,27 @@ module sui_nft::ticket_nft {
             collection_id,
         };
 
-        event::emit(NFTMinted {
-            object_id: object::id(&nft),
-            creator: sender,
-            name: nft.name,
-        });
 
-        transfer::public_transfer(nft, sender);
+        let nft_id = object::uid_to_bytes(&nft.id);
+        let recipient = tx_context::sender(ctx);
+        let recipient_id = object::id_from_address(*&recipient);
+        event::emit(NFTMinted {
+            object_id: object::id_from_bytes(*&nft_id), 
+            creator: recipient,
+            creator_id: recipient_id
+        });
+        //transfer::public_transfer(nft, recipient)
+        //nft_id
+        nft
     }
 
     /// Transfer `nft` to `recipient`
-    public entry fun transfer(
+    public entry fun transfer_nft_ticket(
         nft: NFTTicket, recipient: address, _: &mut TxContext
     ) {
         transfer::public_transfer(nft, recipient)
     }
 
-    public entry fun update_description(
-        nft: &mut NFTTicket,
-        new_description: vector<u8>,
-        _: &mut TxContext
-    ) {
-        nft.description = string::utf8(new_description)
-    }
-    #[test_only] public fun init_for_testing(ctx: &mut TxContext) { init(SUI_NFT{}, ctx) }
 
 
 }

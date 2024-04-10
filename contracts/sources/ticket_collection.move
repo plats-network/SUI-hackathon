@@ -1,27 +1,28 @@
 module sui_nft::ticket_collection {
     use std::string::{Self, utf8, String};
-    use sui::object::{Self, ID, UID};
+    use sui::object::{Self, UID};
     use std::option::{Self, Option};
-    use sui::event;
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
     use sui::url::{Self, Url};
     use sui::package::{Self, Publisher};
-    use std::vector::{Self};
-    use sui_nft::utils::{Self, is_in_list};
-    use sui_nft::ticket_nft::NFTTicket;
     use sui::display;
-    use sui::table::{Self, Table};
+    use sui::balance::{Self, Balance};
+    use sui::sui::SUI;
 
     use std::ascii;
     use std::type_name;
+    use sui_nft::ticket_nft::{Self, NFTTicket};
 
     friend sui_nft::client;
+
 
     struct TicketCollection<phantom T> has key {
         id: UID,
         name: String,
         description: String,
+        price: u64,
+        balance: Balance<SUI>,
         url: Option<Url>,
     }
 
@@ -41,9 +42,9 @@ module sui_nft::ticket_collection {
 
         // 2. Create collection object (shared object)
         // Create genesis collection
-        create_and_share<NFTTicket>(
+        create<NFTTicket>(
             &publisher,
-            b"https://npiece.xyz/nfts/",
+            b"https://plats.event/",
             ctx
         );
 
@@ -52,14 +53,14 @@ module sui_nft::ticket_collection {
     }
 
     // Provide accessibility to client for creating new collection 
-    public(friend) fun create_and_share<T: key>(
+    public(friend) fun create<T: key>(
         pub: &Publisher,
-        image_url: vector<u8>,
+        url: vector<u8>,
         ctx: &mut TxContext
     ) {
         let sender = tx_context::sender(ctx);
-        let collection = create<T>(pub, ctx);
-        set_image_url(&mut collection, image_url, pub);
+        let collection = create_<T>(pub, ctx);
+        set_url(&mut collection, url, pub);
 
         let name_field = collection.name;
         string::append_utf8(&mut name_field, b": {name}");
@@ -67,22 +68,22 @@ module sui_nft::ticket_collection {
         let dp = display::new<T>(pub, ctx);
         display::add(&mut dp, utf8(b"name"), name_field);
         display::add(&mut dp, utf8(b"description"), utf8(b"{description}"));
-        display::add(&mut dp, utf8(b"image_url"), utf8(b"{url}"));
+        display::add(&mut dp, utf8(b"url"), utf8(b"{url}"));
         display::update_version(&mut dp);
 
-        transfer::share_object(collection);
+        transfer::transfer(collection, sender);
         transfer::public_transfer(dp, sender);
 
     }
 
-    public(friend) fun set_image_url<T>(self: &mut TicketCollection<T>, image_url: vector<u8>, pub: &Publisher) {
+    public(friend) fun set_url<T>(self: &mut TicketCollection<T>, url: vector<u8>, pub: &Publisher) {
         assert_authority<T>(pub);
-        self.url = option::some(url::new_unsafe_from_bytes(image_url));
+        self.url = option::some(url::new_unsafe_from_bytes(url));
     }
 
     // HELPER FUNCTION
     // ANYONE CAN CALL
-    fun create<T>(pub: &Publisher, ctx: &mut TxContext): TicketCollection<T> {
+    fun create_<T>(pub: &Publisher,  ctx: &mut TxContext): TicketCollection<T> {
         assert_authority<T>(pub);
         let nft_typename = type_name::get<T>();
         let module_len = ascii::length(&type_name::get_module(&nft_typename));
@@ -99,12 +100,39 @@ module sui_nft::ticket_collection {
             name: name,
             description: utf8(b"This is description"),
             url: option::none(),
+            price: 0,
+            balance: balance::zero()
         }
+    }
+
+    public(friend) fun mint<T>(
+        pub: &Publisher,
+        self: &TicketCollection<T>, 
+        name: vector<u8>,
+        description: vector<u8>,
+        image_url: vector<u8>,
+        ctx: &mut TxContext): NFTTicket {
+
+        assert_authority<T>(pub);
+        // let sender = tx_context::sender(ctx);
+        let collection_id = *object::uid_as_inner(&self.id);
+        let nft = ticket_nft::mint_to_sender(name,  description, image_url, collection_id, ctx);
+        //transfer::public_transfer(nft, sender);
+        nft
+        
+
+    }
+
+    public(friend) fun set_price_ticket<T>(self: &mut TicketCollection<T>, price: u64, pub: &Publisher) {
+        assert_authority<T>(pub);
+        self.price = price;
+
     }
 
     public(friend) fun assert_authority<T>(pub: &Publisher) {
         assert!(package::from_package<T>(pub), ENotOwner);
     }
 
+    #[test_only] public fun init_for_testing(ctx: &mut TxContext) { init(TICKET_COLLECTION{}, ctx) }
 
 }
