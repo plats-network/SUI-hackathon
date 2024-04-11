@@ -40,15 +40,7 @@ module sui_nft::ticket_collection {
         let sender = tx_context::sender(ctx);
         let publisher: Publisher = package::claim(otw, ctx);
 
-        // 2. Create collection object (shared object)
-        // Create genesis collection
-        create<NFTTicket>(
-            &publisher,
-            b"https://plats.event/",
-            ctx
-        );
-
-        // 3. Send publisher to sender
+        // 2. Send publisher to sender
         transfer::public_transfer(publisher, sender);
     }
 
@@ -56,11 +48,17 @@ module sui_nft::ticket_collection {
     public(friend) fun create<T: key>(
         pub: &Publisher,
         url: vector<u8>,
+        name: vector<u8>,
+        description: vector<u8>,
+        price: u64,
         ctx: &mut TxContext
     ) {
         let sender = tx_context::sender(ctx);
         let collection = create_<T>(pub, ctx);
         set_url(&mut collection, url, pub);
+        set_name(&mut collection, name, pub);
+        set_description(&mut collection, description, pub);
+        set_price(&mut collection, price, pub);
 
         let name_field = collection.name;
         string::append_utf8(&mut name_field, b": {name}");
@@ -79,6 +77,21 @@ module sui_nft::ticket_collection {
     public(friend) fun set_url<T>(self: &mut TicketCollection<T>, url: vector<u8>, pub: &Publisher) {
         assert_authority<T>(pub);
         self.url = option::some(url::new_unsafe_from_bytes(url));
+    }
+
+    public(friend) fun set_name<T>(self: &mut TicketCollection<T>, name: vector<u8>, pub: &Publisher) {
+        assert_authority<T>(pub);
+        self.name = string::utf8(name);
+    }
+
+    public(friend) fun set_description<T>(self: &mut TicketCollection<T>, description: vector<u8>, pub: &Publisher) {
+        assert_authority<T>(pub);
+        self.description = string::utf8(description);
+    }
+
+    public(friend) fun set_price<T>(self: &mut TicketCollection<T>, price: u64, pub: &Publisher) {
+        assert_authority<T>(pub);
+        self.price = price;
     }
 
     // HELPER FUNCTION
@@ -111,14 +124,15 @@ module sui_nft::ticket_collection {
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
-        ctx: &mut TxContext): NFTTicket {
+        catogory: vector<u8>,
+        ctx: &mut TxContext) {
 
         assert_authority<T>(pub);
-        // let sender = tx_context::sender(ctx);
+        let sender = tx_context::sender(ctx);
         let collection_id = *object::uid_as_inner(&self.id);
-        let nft = ticket_nft::mint_to_sender(name,  description, image_url, collection_id, ctx);
-        //transfer::public_transfer(nft, sender);
-        nft
+        let nft = ticket_nft::mint_to_sender(name,  description, image_url, collection_id, catogory, ctx);
+        transfer::public_transfer(nft, sender);
+        //nft
         
 
     }
@@ -133,6 +147,89 @@ module sui_nft::ticket_collection {
         assert!(package::from_package<T>(pub), ENotOwner);
     }
 
+
     #[test_only] public fun init_for_testing(ctx: &mut TxContext) { init(TICKET_COLLECTION{}, ctx) }
+
+
+    #[test]
+    fun test_clients() {
+        use sui::test_scenario::{Self, ctx};
+        use sui::display::{Display};
+        use std::type_name;
+        use std::ascii;
+        use std::debug;
+        use sui_nft::ticket_nft::NFTTicket;
+        use sui::package::{Self, Publisher};
+        let client = @0xABCD;
+
+
+        let scenario_val = test_scenario::begin(client);
+        let scenario = &mut scenario_val;
+        {
+            init_for_testing(ctx(scenario));
+        };
+
+        test_scenario::next_tx(scenario, client);
+        {
+            // check Publisher
+            let pub = test_scenario::take_from_sender<Publisher>(scenario);
+            let pub_tn = type_name::get<Publisher>();
+            
+            let pub_module = package::published_module(&pub);
+            debug::print(&pub_tn);
+            assert!(pub_module == &ascii::string(b"ticket_collection"), 0);
+            test_scenario::return_to_sender(scenario, pub);
+        };
+
+
+        test_scenario::next_tx(scenario, client); 
+        {
+            let pub = test_scenario::take_from_sender<Publisher>(scenario);
+            create<NFTTicket>(&pub, b"abc.xyz", b"Sui Hackathon",b"This is sui global hackathon", 0,  ctx(scenario) );
+            test_scenario::return_to_sender(scenario, pub);
+        };
+
+        test_scenario::next_tx(scenario, client); 
+        {
+
+            let collection = test_scenario::take_from_sender<TicketCollection<NFTTicket>>(scenario);
+            debug::print(&utf8(b"tx_2: client create collection of event"));
+            debug::print(&collection);
+            test_scenario::return_to_sender(scenario, collection);
+        };
+
+        test_scenario::next_tx(scenario, client);
+        {   
+            // check Publisher
+            let pub = test_scenario::take_from_sender<Publisher>(scenario);
+
+            let collection = test_scenario::take_from_sender<TicketCollection<NFTTicket>>(scenario);
+
+            mint(&pub, &collection,  b"tester #1", b"I am tester!", b"abc.xyz" ,b"Standard", ctx(scenario));
+
+
+            test_scenario::return_to_sender(scenario, pub);
+            test_scenario::return_to_sender(scenario, collection);
+
+            debug::print(&utf8(b"tx_3: nft minted to minter address."));
+        };
+
+
+        test_scenario::next_tx(scenario, client);
+        {   
+
+
+            let nft = test_scenario::take_from_sender<NFTTicket>(scenario);
+            debug::print(&nft);
+            test_scenario::return_to_sender(scenario, nft);
+
+            debug::print(&utf8(b"tx_4: check nft is created"));
+        };
+
+
+        // end test
+        test_scenario::end(scenario_val);
+    }
+
 
 }

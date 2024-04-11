@@ -4,7 +4,7 @@ module sui_nft::ticket_nft {
     use sui::event;
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
-
+    friend sui_nft::user;
 
     struct NFTTicket has key, store {
         id: UID,
@@ -15,8 +15,12 @@ module sui_nft::ticket_nft {
         /// URL for the token
         image_url: string::String,
         /// Collection ID
-        collection_id: ID 
+        collection_id: ID,
+        //claimed: bool,
+        catogory: string::String,
+
     }
+
 
     // ===== Events =====
 
@@ -35,6 +39,7 @@ module sui_nft::ticket_nft {
         description: vector<u8>,
         image_url: vector<u8>,
         collection_id: ID,
+        catogory: vector<u8>,
         ctx: &mut TxContext
     ): NFTTicket {
         let nft = NFTTicket {
@@ -43,6 +48,8 @@ module sui_nft::ticket_nft {
             description: string::utf8(description),
             image_url: string::utf8(image_url),
             collection_id,
+            catogory: string::utf8(catogory),
+            //claimed: false,
         };
 
 
@@ -60,7 +67,7 @@ module sui_nft::ticket_nft {
     }
 
     /// Transfer `nft` to `recipient`
-    public entry fun transfer_nft_ticket(
+    public(friend) fun transfer_nft_ticket(
         nft: NFTTicket, recipient: address, _: &mut TxContext
     ) {
         transfer::public_transfer(nft, recipient)
