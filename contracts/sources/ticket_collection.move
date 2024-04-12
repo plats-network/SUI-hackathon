@@ -1,6 +1,6 @@
 module sui_nft::ticket_collection {
     use std::string::{Self, utf8, String};
-    use sui::object::{Self, UID};
+    use sui::object::{Self, UID, ID};
     use std::option::{Self, Option};
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
@@ -9,13 +9,13 @@ module sui_nft::ticket_collection {
     use sui::display;
     use sui::balance::{Self, Balance};
     use sui::sui::SUI;
-
+    use std::vector;
     use std::ascii;
     use std::type_name;
     use sui_nft::ticket_nft::{Self, NFTTicket};
-
+    use sui_nft::utils::{Self};
     friend sui_nft::client;
-
+    friend sui_nft::admin;
 
     struct TicketCollection<phantom T> has key {
         id: UID,
@@ -26,10 +26,14 @@ module sui_nft::ticket_collection {
         url: Option<Url>,
     }
 
+    struct Clients has key {
+        id: UID,
+        clients: vector<ID>
+    } 
     // Error code
     const ENotOwner: u64 = 0;
-
-
+    const ENotInClients: u64 = 1;
+    const ENotClient: u64 = 2;
 
     // OTW
     struct TICKET_COLLECTION has drop {}
@@ -40,6 +44,11 @@ module sui_nft::ticket_collection {
         let sender = tx_context::sender(ctx);
         let publisher: Publisher = package::claim(otw, ctx);
 
+        let clients = Clients {
+            id: object::new(ctx),
+            clients: vector::empty()
+        };
+        transfer::transfer(clients, sender);
         // 2. Send publisher to sender
         transfer::public_transfer(publisher, sender);
     }
@@ -125,17 +134,50 @@ module sui_nft::ticket_collection {
         description: vector<u8>,
         image_url: vector<u8>,
         catogory: vector<u8>,
+        token_id: u64,
         ctx: &mut TxContext) {
 
         assert_authority<T>(pub);
         let sender = tx_context::sender(ctx);
         let collection_id = *object::uid_as_inner(&self.id);
-        let nft = ticket_nft::mint_to_sender(name,  description, image_url, collection_id, catogory, ctx);
+        let nft = ticket_nft::mint_to_sender(name,  description, image_url, collection_id, catogory, token_id,  ctx);
         transfer::public_transfer(nft, sender);
         //nft
-        
-
+    
     }
+
+    public(friend) fun mint_booth<T>(
+        pub: &Publisher,
+        self: &TicketCollection<T>, 
+        name: vector<u8>,
+        description: vector<u8>,
+        image_url: vector<u8>,
+        ctx: &mut TxContext) {
+
+        assert_authority<T>(pub);
+        let sender = tx_context::sender(ctx);
+        let collection_id = *object::uid_as_inner(&self.id);
+        let nft = ticket_nft::mint_booth(name,  description, image_url, collection_id, ctx);
+        transfer::public_transfer(nft, sender);
+    
+    }
+
+    public(friend) fun mint_session<T>(
+        pub: &Publisher,
+        self: &TicketCollection<T>, 
+        name: vector<u8>,
+        description: vector<u8>,
+        image_url: vector<u8>,
+        ctx: &mut TxContext) {
+
+        assert_authority<T>(pub);
+        let sender = tx_context::sender(ctx);
+        let collection_id = *object::uid_as_inner(&self.id);
+        let nft = ticket_nft::mint_session(name,  description, image_url, collection_id, ctx);
+        transfer::public_transfer(nft, sender);
+    
+    }
+
 
     public(friend) fun set_price_ticket<T>(self: &mut TicketCollection<T>, price: u64, pub: &Publisher) {
         assert_authority<T>(pub);
@@ -147,6 +189,45 @@ module sui_nft::ticket_collection {
         assert!(package::from_package<T>(pub), ENotOwner);
     }
 
+    public(friend) fun assert_client<T>(self: &Clients, client: address) {
+        let wl = &self.clients;
+        let id = object::id_from_address(client); 
+        assert!(utils::is_in_list(wl, &id), ENotClient);
+    }
+
+    fun drop_client<T>(self: &mut Clients, addr: &ID) {
+        let wl = &self.clients;
+        let (in_wl, i) = vector::index_of(wl, addr);
+        if (in_wl) {
+            vector::remove<ID>(
+                &mut self.clients,
+                i
+            );
+        } else {
+            abort ENotInClients
+        };
+    }
+
+    // publisher only function to add address to whitelist
+    public(friend) fun add_client<T>(self: &mut Clients, addr: address, pub: &Publisher) {
+        assert_authority<T>(pub);
+        let wl = &self.clients;
+        let id = object::id_from_address(addr);
+        if (!utils::is_in_list(wl, &id)) {
+            vector::push_back<ID>(
+                &mut self.clients, 
+                id
+            );
+        } else {
+            abort ENotInClients
+        };
+    }
+
+    public(friend) fun remove_client<T>(self: &mut Clients, addr: address, pub: &Publisher) {
+        assert_authority<T>(pub);
+        let id = &object::id_from_address(addr);
+        drop_client<T>(self, id);
+    }
 
     #[test_only] public fun init_for_testing(ctx: &mut TxContext) { init(TICKET_COLLECTION{}, ctx) }
 
@@ -160,6 +241,8 @@ module sui_nft::ticket_collection {
         use std::debug;
         use sui_nft::ticket_nft::NFTTicket;
         use sui::package::{Self, Publisher};
+        use sui::object::{Self, ID};
+        use std::vector;
         let client = @0xABCD;
 
 
@@ -205,7 +288,7 @@ module sui_nft::ticket_collection {
 
             let collection = test_scenario::take_from_sender<TicketCollection<NFTTicket>>(scenario);
 
-            mint(&pub, &collection,  b"tester #1", b"I am tester!", b"abc.xyz" ,b"Standard", ctx(scenario));
+            mint(&pub, &collection,  b"tester #1", b"I am tester!", b"abc.xyz" ,b"Standard", 0, ctx(scenario));
 
 
             test_scenario::return_to_sender(scenario, pub);
@@ -214,16 +297,40 @@ module sui_nft::ticket_collection {
             debug::print(&utf8(b"tx_3: nft minted to minter address."));
         };
 
+        test_scenario::next_tx(scenario, client);
+        {   
+            // check Publisher
+            let pub = test_scenario::take_from_sender<Publisher>(scenario);
+
+            let collection = test_scenario::take_from_sender<TicketCollection<NFTTicket>>(scenario);
+
+            mint(&pub, &collection,  b"tester #2", b"I am tester!", b"abc.xyz" ,b"VIP", 1, ctx(scenario));
+
+
+            test_scenario::return_to_sender(scenario, pub);
+            test_scenario::return_to_sender(scenario, collection);
+
+            debug::print(&utf8(b"tx_4: nft minted to minter address."));
+        };
 
         test_scenario::next_tx(scenario, client);
         {   
 
+            let ids = test_scenario::ids_for_sender<NFTTicket>(scenario);
+            debug::print(&utf8(b"Length of ids"));
+            debug::print(&ids);
+            let nft1: NFTTicket = test_scenario::take_from_sender_by_id(scenario, *vector::borrow(&ids, 0));
+            debug::print(&nft1);
 
-            let nft = test_scenario::take_from_sender<NFTTicket>(scenario);
-            debug::print(&nft);
-            test_scenario::return_to_sender(scenario, nft);
+            test_scenario::return_to_sender(scenario, nft1);
 
-            debug::print(&utf8(b"tx_4: check nft is created"));
+            let nft2: NFTTicket = test_scenario::take_from_sender_by_id(scenario, *vector::borrow(&ids, 1));
+            debug::print(&nft2);
+
+            test_scenario::return_to_sender(scenario, nft2);
+            
+
+            debug::print(&utf8(b"check nft is created"));
         };
 
 
