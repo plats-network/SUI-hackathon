@@ -24,7 +24,10 @@ module sui_nft::ticket_collection {
         price: u64,
         balance: Balance<SUI>,
         url: Option<Url>,
+        tickets:vector<NFTTicket>
     }
+
+
 
     struct Clients has key {
         id: UID,
@@ -34,6 +37,7 @@ module sui_nft::ticket_collection {
     const ENotOwner: u64 = 0;
     const ENotInClients: u64 = 1;
     const ENotClient: u64 = 2;
+    const ENFTNotExist: u64 = 3;
 
     // OTW
     struct TICKET_COLLECTION has drop {}
@@ -55,7 +59,7 @@ module sui_nft::ticket_collection {
 
     // Provide accessibility to client for creating new collection 
     public(friend) fun create<T: key>(
-        pub: &Publisher,
+        //pub: &Clients,
         url: vector<u8>,
         name: vector<u8>,
         description: vector<u8>,
@@ -63,50 +67,46 @@ module sui_nft::ticket_collection {
         ctx: &mut TxContext
     ) {
         let sender = tx_context::sender(ctx);
-        let collection = create_<T>(pub, ctx);
-        set_url(&mut collection, url, pub);
-        set_name(&mut collection, name, pub);
-        set_description(&mut collection, description, pub);
-        set_price(&mut collection, price, pub);
+        //assert_client(pub, sender);
+        let collection = create_<T>(ctx);
+        set_url(&mut collection, url);
+        set_name(&mut collection, name);
+        set_description(&mut collection, description);
+        set_price(&mut collection, price);
 
         let name_field = collection.name;
         string::append_utf8(&mut name_field, b": {name}");
 
-        let dp = display::new<T>(pub, ctx);
-        display::add(&mut dp, utf8(b"name"), name_field);
-        display::add(&mut dp, utf8(b"description"), utf8(b"{description}"));
-        display::add(&mut dp, utf8(b"url"), utf8(b"{url}"));
-        display::update_version(&mut dp);
+        // let dp = display::new<T>(pub, ctx);
+        // display::add(&mut dp, utf8(b"name"), name_field);
+        // display::add(&mut dp, utf8(b"description"), utf8(b"{description}"));
+        // display::add(&mut dp, utf8(b"url"), utf8(b"{url}"));
+        // display::update_version(&mut dp);
 
         transfer::transfer(collection, sender);
-        transfer::public_transfer(dp, sender);
+        //transfer::public_transfer(dp, sender);
 
     }
 
-    public(friend) fun set_url<T>(self: &mut TicketCollection<T>, url: vector<u8>, pub: &Publisher) {
-        assert_authority<T>(pub);
+    public(friend) fun set_url<T>(self: &mut TicketCollection<T>, url: vector<u8>) {
         self.url = option::some(url::new_unsafe_from_bytes(url));
     }
 
-    public(friend) fun set_name<T>(self: &mut TicketCollection<T>, name: vector<u8>, pub: &Publisher) {
-        assert_authority<T>(pub);
+    public(friend) fun set_name<T>(self: &mut TicketCollection<T>, name: vector<u8>) {
         self.name = string::utf8(name);
     }
 
-    public(friend) fun set_description<T>(self: &mut TicketCollection<T>, description: vector<u8>, pub: &Publisher) {
-        assert_authority<T>(pub);
+    public(friend) fun set_description<T>(self: &mut TicketCollection<T>, description: vector<u8>) {
         self.description = string::utf8(description);
     }
 
-    public(friend) fun set_price<T>(self: &mut TicketCollection<T>, price: u64, pub: &Publisher) {
-        assert_authority<T>(pub);
+    public(friend) fun set_price<T>(self: &mut TicketCollection<T>, price: u64) {
         self.price = price;
     }
 
     // HELPER FUNCTION
     // ANYONE CAN CALL
-    fun create_<T>(pub: &Publisher,  ctx: &mut TxContext): TicketCollection<T> {
-        assert_authority<T>(pub);
+    fun create_<T>(ctx: &mut TxContext): TicketCollection<T> {
         let nft_typename = type_name::get<T>();
         let module_len = ascii::length(&type_name::get_module(&nft_typename));
         
@@ -123,13 +123,13 @@ module sui_nft::ticket_collection {
             description: utf8(b"This is description"),
             url: option::none(),
             price: 0,
-            balance: balance::zero()
+            balance: balance::zero(),
+            tickets:vector::empty(),
         }
     }
 
     public(friend) fun mint<T>(
-        pub: &Publisher,
-        self: &TicketCollection<T>, 
+        self: &mut TicketCollection<T>, 
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
@@ -137,24 +137,42 @@ module sui_nft::ticket_collection {
         token_id: u64,
         ctx: &mut TxContext) {
 
-        assert_authority<T>(pub);
         let sender = tx_context::sender(ctx);
         let collection_id = *object::uid_as_inner(&self.id);
         let nft = ticket_nft::mint_to_sender(name,  description, image_url, collection_id, catogory, token_id,  ctx);
-        transfer::public_transfer(nft, sender);
+        //vector::pus(&mut self.tickets, nft);
+        vector::push_back(&mut self.tickets, nft);
         //nft
     
     }
 
+    public(friend) fun mint_batch<T>(
+        collection:&mut TicketCollection<T>,
+        name: vector<u8>,
+        description: vector<u8>,
+        url: vector<u8>,
+        catogory: vector<u8>,
+        max_supply: u64,
+        ctx: &mut TxContext
+    ) {
+
+        let i = 0; 
+        let collection_id = *object::uid_as_inner(&collection.id);
+        while (i < max_supply){
+            let nft = ticket_nft::mint_to_sender(name,  description, url, collection_id, catogory, i,  ctx);
+            vector::push_back(&mut collection.tickets,nft);
+            i = i +1;
+        };
+    }
+
+
     public(friend) fun mint_booth<T>(
-        pub: &Publisher,
         self: &TicketCollection<T>, 
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
         ctx: &mut TxContext) {
 
-        assert_authority<T>(pub);
         let sender = tx_context::sender(ctx);
         let collection_id = *object::uid_as_inner(&self.id);
         let nft = ticket_nft::mint_booth(name,  description, image_url, collection_id, ctx);
@@ -163,14 +181,12 @@ module sui_nft::ticket_collection {
     }
 
     public(friend) fun mint_session<T>(
-        pub: &Publisher,
         self: &TicketCollection<T>, 
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
         ctx: &mut TxContext) {
 
-        assert_authority<T>(pub);
         let sender = tx_context::sender(ctx);
         let collection_id = *object::uid_as_inner(&self.id);
         let nft = ticket_nft::mint_session(name,  description, image_url, collection_id, ctx);
@@ -178,9 +194,29 @@ module sui_nft::ticket_collection {
     
     }
 
+    /// Transfer `nft` to `recipient`
+    public fun transfer_nft_ticket<T>(collection: &mut TicketCollection<T>,
+        nft: &NFTTicket, recipient: address, _: &mut TxContext
+    ) {
+        let tickets = &collection.tickets;
+        let (found, id) = vector::index_of(tickets, nft);
+        if (found) {
+            let nft = vector::remove<NFTTicket>(
+                &mut collection.tickets, 
+                id
+            );
+            transfer::public_transfer(nft, recipient);
+        }
 
-    public(friend) fun set_price_ticket<T>(self: &mut TicketCollection<T>, price: u64, pub: &Publisher) {
-        assert_authority<T>(pub);
+        else {
+            abort ENFTNotExist
+        }
+
+    }
+
+
+
+    public(friend) fun set_price_ticket<T>(self: &mut TicketCollection<T>, price: u64) {
         self.price = price;
 
     }
@@ -189,7 +225,7 @@ module sui_nft::ticket_collection {
         assert!(package::from_package<T>(pub), ENotOwner);
     }
 
-    public(friend) fun assert_client<T>(self: &Clients, client: address) {
+    public(friend) fun assert_client(self: &Clients, client: address) {
         let wl = &self.clients;
         let id = object::id_from_address(client); 
         assert!(utils::is_in_list(wl, &id), ENotClient);
@@ -244,15 +280,15 @@ module sui_nft::ticket_collection {
         use sui::object::{Self, ID};
         use std::vector;
         let client = @0xABCD;
+        let admin = @0xABCDEF;
 
-
-        let scenario_val = test_scenario::begin(client);
+        let scenario_val = test_scenario::begin(admin);
         let scenario = &mut scenario_val;
         {
             init_for_testing(ctx(scenario));
         };
 
-        test_scenario::next_tx(scenario, client);
+        test_scenario::next_tx(scenario, admin);
         {
             // check Publisher
             let pub = test_scenario::take_from_sender<Publisher>(scenario);
@@ -264,12 +300,23 @@ module sui_nft::ticket_collection {
             test_scenario::return_to_sender(scenario, pub);
         };
 
+        // test_scenario::next_tx(scenario, admin);
+        // {
+        //     // check Publisher
+        //     let pub = test_scenario::take_from_sender<Publisher>(scenario);
+        //     debug::print(&pub);
+        //     let clients = test_scenario::take_from_sender<Clients>(scenario);
+        //     debug::print(&clients);
+        //     add_client<ID>(&mut clients,  client, &pub );
+        //     test_scenario::return_to_sender(scenario, pub);
+        //     test_scenario::return_to_sender(scenario, clients);
+        // };
 
         test_scenario::next_tx(scenario, client); 
         {
-            let pub = test_scenario::take_from_sender<Publisher>(scenario);
-            create<NFTTicket>(&pub, b"abc.xyz", b"Sui Hackathon",b"This is sui global hackathon", 0,  ctx(scenario) );
-            test_scenario::return_to_sender(scenario, pub);
+            //let pub = test_scenario::take_from_sender<Publisher>(scenario);
+            create<NFTTicket>(b"abc.xyz", b"Sui Hackathon",b"This is sui global hackathon", 0,  ctx(scenario) );
+            //test_scenario::return_to_sender(scenario, pub);
         };
 
         test_scenario::next_tx(scenario, client); 
@@ -284,55 +331,60 @@ module sui_nft::ticket_collection {
         test_scenario::next_tx(scenario, client);
         {   
             // check Publisher
-            let pub = test_scenario::take_from_sender<Publisher>(scenario);
+            //let pub = test_scenario::take_from_sender<Publisher>(scenario);
 
             let collection = test_scenario::take_from_sender<TicketCollection<NFTTicket>>(scenario);
 
-            mint(&pub, &collection,  b"tester #1", b"I am tester!", b"abc.xyz" ,b"Standard", 0, ctx(scenario));
+            mint(&mut collection,  b"tester #1", b"I am tester!", b"abc.xyz" ,b"Standard", 0, ctx(scenario));
 
 
-            test_scenario::return_to_sender(scenario, pub);
+            //test_scenario::return_to_sender(scenario, pub);
             test_scenario::return_to_sender(scenario, collection);
 
             debug::print(&utf8(b"tx_3: nft minted to minter address."));
         };
 
-        test_scenario::next_tx(scenario, client);
-        {   
-            // check Publisher
-            let pub = test_scenario::take_from_sender<Publisher>(scenario);
 
+        test_scenario::next_tx(scenario, client);
+
+        {
             let collection = test_scenario::take_from_sender<TicketCollection<NFTTicket>>(scenario);
 
-            mint(&pub, &collection,  b"tester #2", b"I am tester!", b"abc.xyz" ,b"VIP", 1, ctx(scenario));
 
+            mint_batch<NFTTicket>(&mut collection, b"This is sui", b"This is description", b"abc.xyz", b"Standard",3, ctx(scenario));
 
-            test_scenario::return_to_sender(scenario, pub);
             test_scenario::return_to_sender(scenario, collection);
-
-            debug::print(&utf8(b"tx_4: nft minted to minter address."));
         };
 
         test_scenario::next_tx(scenario, client);
         {   
+            let collection = test_scenario::take_from_sender<TicketCollection<NFTTicket>>(scenario);
+            debug::print(&utf8(b"Collection created"));
+            debug::print(&collection);
+            // let ids = test_scenario::ids_for_sender<NFTTicket>(scenario);
+            // debug::print(&utf8(b"Length of ids"));
+            // debug::print(&ids);
+            // let nft1: NFTTicket = test_scenario::take_from_sender_by_id(scenario, *vector::borrow(&ids, 0));
+            // debug::print(&nft1);
 
-            let ids = test_scenario::ids_for_sender<NFTTicket>(scenario);
-            debug::print(&utf8(b"Length of ids"));
-            debug::print(&ids);
-            let nft1: NFTTicket = test_scenario::take_from_sender_by_id(scenario, *vector::borrow(&ids, 0));
-            debug::print(&nft1);
+            test_scenario::return_to_sender(scenario, collection);
 
-            test_scenario::return_to_sender(scenario, nft1);
+            // let nft2: NFTTicket = test_scenario::take_from_sender_by_id(scenario, *vector::borrow(&ids, 1));
+            // debug::print(&nft2);
 
-            let nft2: NFTTicket = test_scenario::take_from_sender_by_id(scenario, *vector::borrow(&ids, 1));
-            debug::print(&nft2);
-
-            test_scenario::return_to_sender(scenario, nft2);
+            // test_scenario::return_to_sender(scenario, nft2);
             
+            // let nft3: NFTTicket = test_scenario::take_from_sender_by_id(scenario, *vector::borrow(&ids, 2));
+            // debug::print(&nft3);
 
+            // test_scenario::return_to_sender(scenario, nft3);
+
+            // let nft4: NFTTicket = test_scenario::take_from_sender_by_id(scenario, *vector::borrow(&ids, 3));
+            // debug::print(&nft4);
+
+            // test_scenario::return_to_sender(scenario, nft4);
             debug::print(&utf8(b"check nft is created"));
         };
-
 
         // end test
         test_scenario::end(scenario_val);

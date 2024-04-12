@@ -4,6 +4,8 @@ module sui_nft::ticket_nft {
     use sui::event;
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
+    use sui_nft::ticket_collection::{TicketCollection};
+    use std::vector;
     friend sui_nft::user;
 
     struct NFTTicket has key, store {
@@ -21,6 +23,7 @@ module sui_nft::ticket_nft {
         token_id: u64
 
     }
+
 
     struct NFTBooth has key, store {
         id: UID,
@@ -92,6 +95,7 @@ module sui_nft::ticket_nft {
         nft
     }
 
+    
 
     public fun mint_booth(
         name: vector<u8>,
@@ -107,7 +111,6 @@ module sui_nft::ticket_nft {
             image_url: string::utf8(image_url),
             collection_id,
         };
-
 
         // let nft_id = object::uid_to_bytes(&nft.id);
         // let recipient = tx_context::sender(ctx);
@@ -136,13 +139,6 @@ module sui_nft::ticket_nft {
         nft
     }
 
-
-    /// Transfer `nft` to `recipient`
-    public(friend) fun transfer_nft_ticket(
-        nft: NFTTicket, recipient: address, _: &mut TxContext
-    ) {
-        transfer::public_transfer(nft, recipient)
-    }
 
 
 
