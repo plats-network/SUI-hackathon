@@ -8,15 +8,15 @@ function createMintNftTxnBlock() {
 
     // note that this is a devnet contract address
     const contractAddress =
-        "0xe146dbd6d33d7227700328a9421c58ed34546f998acdc42a1d05b4818b49faa2";
-    const contractModule = "nft";
-    const contractMethod = "mint";
+        "0xd0b1403e3d2348ff55ae76b6926a8fbe20c807c0cd59df4b1d6815468f45162d";
+    const contractModule = "sui_nft";
+    const contractMethod = "mint_to_sender";
 
     const nftName = "Suiet NFT";
     const nftDescription = "Hello, Suiet NFT";
     const nftImgUrl =
         "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
-
+   
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,
         arguments: [
@@ -28,7 +28,23 @@ function createMintNftTxnBlock() {
 
     return txb;
 }
-
+[
+    {
+        nftName:"Suiet NFT",
+        nftDescription:"Hello, Suiet NFT",
+        nftImgUrl:"https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4"
+    },
+    {
+        nftName:"Suiet NFT",
+        nftDescription:"Hello, Suiet NFT",
+        nftImgUrl:"https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4"
+    },
+    {
+        nftName:"Suiet NFT",
+        nftDescription:"Hello, Suiet NFT",
+        nftImgUrl:"https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4"
+    }
+]
 export default function App() {
     const wallet = useWallet();
 

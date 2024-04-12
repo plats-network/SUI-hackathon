@@ -307,6 +307,7 @@ $('.page-content').on("click", "#btnGenItemNft", async function () {
 });
 
 $('.page-content').on("click", "#btnGenItemSession", async function () {
+    return;
     $('.loading').show();
     if ($('.itemSessionDetailMint').length > 0) {
         const {blockhash, lastValidBlockHeight} =
