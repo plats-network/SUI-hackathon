@@ -1,10 +1,12 @@
 @extends('web.layouts.event_app')
-
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
 @section('content')
     @include('web.layouts.event')
     @vite(['resources/js/profile-nft.js'])
     @vite('resources/js/zklogin.js')
-
+   
     <section class="home-top section-padding-100-0">
         <div class="container">
             <div class="row align-items-center">

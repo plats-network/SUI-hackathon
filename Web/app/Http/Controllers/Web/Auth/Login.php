@@ -62,6 +62,31 @@ class Login extends Controller
     /**
      * @return \Illuminate\Contracts\View\View
      */
+    public function apiLogin(Request $request)
+    {
+        $data = $request->only(['email','name']);
+        
+        if(!isset($data['email']) && !isset($data['name'])) {
+            return ['login'=>false];
+        }
+   
+        $existingUser = User::where('email',  $data['email'])->first();
+
+        if ($existingUser) {
+            Auth::login($existingUser);
+        } else {
+            $newUser = new User();
+            $newUser->name = $data['name'];
+            $newUser->email = $data['email'];
+            $newUser->email_verified_at = now();
+            
+            $newUser->save();
+
+            Auth::login($newUser);
+        }
+
+        return ['login'=>true];
+    }
     public function showFormLogin()
     {
 
@@ -72,7 +97,7 @@ class Login extends Controller
             'title' => 'Đăng nhập',
             'is_show_connect_wallet' => false
         ];
-
+        
         return view('web.auth.login', $data);
     }
 

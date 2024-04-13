@@ -13,7 +13,7 @@ export default function App() {
         $('.itemBoothDetailMint').each(function (index) {
             const nameBooth = $(this).find('.name_booth').val();
             const descriptionBooth = $(this).find('.description_booth').val();
-            const fileBooth = $(this).find('.img-preview').val() ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
+            const fileBooth = $(this).attr('src') ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
 
             const boothObj = {
                 nameBooth: nameBooth,
@@ -28,15 +28,23 @@ export default function App() {
     }
     const mint = async (wallet,data) => {
         console.log(data);
+        let newData = {
+            nameBooth: data.map(item => item.nameBooth),
+            descriptionBooth: data.map(item => item.descriptionBooth),
+            fileBooth: data.map(item => item.fileBooth)
+        };
         const tx = new TransactionBlock();
-        let packageId = "0xe83d5c6059f09a1c98d73603c0ec7ef9c148fdd4983f90837426cc2cbf55cb94";
+        let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
         tx.moveCall({
-            target: `${packageId}::client::mint_booth`,
+            target: `${packageId}::client::mint_batch_booths`,
             arguments: [
-                tx.pure(data.nameBooth),
-                tx.pure(data.descriptionBooth),
-                tx.pure(data.fileBooth),
-                tx.object('0x5682fb257218baf7e9f4d0cac8c41875b8870ca2a2463cad4d0d4cdd37cee989'),
+                tx.pure(newData.nameBooth),
+                // description: vector<vector<u8>>,
+                tx.pure(newData.descriptionBooth),
+                // url: vector<vector<u8>>,
+                tx.pure(newData.fileBooth),
+
+                tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
             ],
             typeArguments: [`${packageId}::ticket_nft::NFTTicket`]
         });
@@ -47,16 +55,17 @@ export default function App() {
         });
 
         console.log(result);
-        if(result.confirmedLocalExecution){
-            alert('nft minted Booth successfully!');
+        if(!result.confirmedLocalExecution){
+            alert('nft minted Booth fail!');
             return;
         }
+        alert('nft minted Booth successfully!');
     }
     useEffect(() => {
 
         if(boothData.length > 0){
 
-            mint(wallet,boothData[0] ?? []);
+            mint(wallet,boothData);
 
             console.log(wallet);
             console.log(boothData);

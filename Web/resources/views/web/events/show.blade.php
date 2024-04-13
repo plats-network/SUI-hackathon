@@ -1,5 +1,7 @@
 @extends('web.layouts.event_app')
-
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
 @section('content')
     <style>
         .disabled {
@@ -8,7 +10,6 @@
         }
     </style>
     @vite('resources/js/claim.js')
-    @vite('resources/js/zklogin.js')
 
     @php
         if (auth()->user() !== null){
@@ -116,8 +117,7 @@ color: blue;
                                             Solana Explorer Link
                                         </a>
                                     @endif
-                                    <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>
-                                    <a class="btn btn-info Google" href="#" >Google</a>
+                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>
 
                                 @endif
                                 <hr>
