@@ -4,8 +4,10 @@ import {WalletProvider} from '@suiet/wallet-kit';
 import axios from 'axios';
 import NftItem from './sui_components/nftItem';
 import MintNft from './mintNft';
+import NftItemMinted from "./sui_components/nftItemMinted";
 
 function NftForm() {
+    // const [nftMinted, setNftMinted] = useState([]);
     const [nftData, setNftData] = useState([
         {
             nft_id: 0,
@@ -121,6 +123,7 @@ function NftForm() {
                     <div className="p-2">
                         <WalletProvider>
                             <MintNft nftData={nftData}/>
+                            {/*<MintNft nftData={nftData} setNftMinted={setNftMinted} nftMinted={nftMinted}/>*/}
                         </WalletProvider>
                     </div>
                 </div>

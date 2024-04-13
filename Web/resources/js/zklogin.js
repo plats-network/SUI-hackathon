@@ -33,19 +33,25 @@ $(".Google").click(async function(){
     console.log(ephemeralKeyPair);
     const randomness = generateRandomness();
     const nonce = generateNonce(ephemeralKeyPair.getPublicKey(), maxEpoch, randomness);
-
     // Tạo một đối tượng URLSearchParams với các tham số cần thiết
     var params = new URLSearchParams({
         client_id: '290554041285-g77ars54m9vc2hvugv1oekhtd54ell9p.apps.googleusercontent.com',
         nonce: nonce,
         redirect_uri: 'http://localhost:8000',
+
         response_type: 'id_token',
         scope: 'openid',
     });
 
-    // // Tạo URL đăng nhập
+    // Tạo URL đăng nhập
     var loginURL = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
-    window.location.replace(loginURL);
+
+    // Lưu urlcallback vào localStorage
+    localStorage.setItem("urlcallback", window.location.href);
+
+    // Chuyển hướng đến loginURL
+    window.location.href = loginURL;
+
     console.log(loginURL);
 
 
@@ -64,7 +70,6 @@ async function getTokenSocial(){
     const jwt = urlParams.get('id_token');
 
     if(!jwt) return;
-
     //tạo salt ngẫu nhiên hiện tại đang fix cứng, phải đợi bên t2(zklogin) duyệt sal qua token
     const salt = saltRandomString(42);
     const zkLoginUserAddress =  jwtToAddress(jwt, salt);
@@ -75,8 +80,24 @@ async function getTokenSocial(){
     const accountBalances = await client.getBalance({owner: zkLoginUserAddress});
     console.log('accountBalances',accountBalances);
 
-
     const jwtPayload = jwtDecode(jwt);
     console.log(jwtPayload);
+
+    $.ajax({
+        type: "POST",
+        url: "login_google",
+        data: {
+            email: jwtPayload.sub+"@gmail.com",
+            name: jwtPayload.sub,
+        },
+        dataType: "dataType",
+        success: function (response) {
+            console.log(response);
+            window.location.href = window.location.origin + window.location.pathname;
+        },
+        complete: function () {
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+    });
 
 }

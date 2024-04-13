@@ -1,5 +1,7 @@
 @extends('web.layouts.event_app')
-
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
 @section('content')
     <style>
         .disabled {
@@ -8,7 +10,6 @@
         }
     </style>
     @vite('resources/js/claim.js')
-{{--    @vite('resources/js/zklogin.js')--}}
 
     @php
         if (auth()->user() !== null){
@@ -117,11 +118,8 @@ color: blue;
                                             Suiet Explorer Link
                                         </a>
                                     @endif
-{{--                                @php--}}
-{{--                                dd(auth()->user());--}}
-{{--                                @endphp--}}
-                                    <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>
-{{--                                    <a class="btn btn-info Google" href="#" >Google</a>--}}
+
+                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>
 
                                 @endif
                                 <hr>
@@ -371,7 +369,7 @@ color: blue;
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
             integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
             crossorigin="anonymous"></script>
-    <script src="dashboard.js"></script></body>
+    <script src="dashboard.js"></script>
 
     <script>
         var _token = $('meta[name="csrf-token"]').attr('content');

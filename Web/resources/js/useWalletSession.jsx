@@ -5,6 +5,7 @@ import {TransactionBlock} from "@mysten/sui.js/transactions";
 
 export default function App() {
     const wallet = useWallet();
+ 
     const [sessionData, setSessionData] = useState([]);
 
     const handleClick = async () => {
@@ -28,35 +29,48 @@ export default function App() {
 
     const mint = async (wallet,data) => {
         console.log(data);
+        let newData = {
+            nameSession: data.map(item => item.nameSession),
+            descriptionSession: data.map(item => item.descriptionSession),
+            fileSession: data.map(item => item.fileSession)
+        };
         const tx = new TransactionBlock();
-        let packageId = "0xe83d5c6059f09a1c98d73603c0ec7ef9c148fdd4983f90837426cc2cbf55cb94";
+        let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
         tx.moveCall({
-            target: `${packageId}::client::mint_session`,
+            target: `${packageId}::client::mint_batch_sessions`,
             arguments: [
-                tx.pure(data.nameSession),
-                tx.pure(data.descriptionSession),
-                tx.pure(data.fileSession),
-                tx.object('0x5682fb257218baf7e9f4d0cac8c41875b8870ca2a2463cad4d0d4cdd37cee989'),
+                
+                tx.pure(newData.nameSession),
+                // description: vector<vector<u8>>,
+                tx.pure(newData.descriptionSession),
+                // url: vector<vector<u8>>,
+                tx.pure(newData.fileSession),
+
+                //tx.pure(data.nameSession),
+                //tx.pure(data.descriptionSession),
+                //tx.pure(data.fileSession),
+                tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
             ],
             typeArguments: [`${packageId}::ticket_nft::NFTTicket`]
         });
-
-  
-        const result = await wallet.signAndExecuteTransactionBlock({
+         const result = await wallet.signAndExecuteTransactionBlock({
             transactionBlock: tx,
         });
-
+        
         console.log(result);
-        if(result.confirmedLocalExecution){
-            alert('nft minted Session successfully!');
+        if(!result.confirmedLocalExecution){
+            alert('nft minted Session fails!');
             return;
         }
+        alert('nft minted Session successfully!');
+
+        
     }
     useEffect(() => {
         
         if(sessionData.length > 0){
 
-            mint(wallet,sessionData[0] ?? []);
+            mint(wallet,sessionData);
         }
     }, [sessionData]);
 

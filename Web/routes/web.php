@@ -24,6 +24,8 @@ use App\Http\Controllers\Web\Auth\{
     ForgotPassword
 };
 
+Route::post('/login_google', [Login::class, 'apiLogin'])->name('web.login.api');
+
 // Định nghĩa các route cho người dùng chưa đăng nhập (guest)
 Route::middleware(['guest'])->group(function ($auth) {
     // Login social

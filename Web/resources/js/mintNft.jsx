@@ -69,6 +69,8 @@ export default function MintNft({nftData}) {
                     // setNftInputs(prevInputs => [...prevInputs, nftData[i]]);
                     setNftInputs(prevInputs => [...prevInputs, {...nftData[i], res: JSON.stringify(res)}]);
                 }
+                // setNftMinted([...nftMinted, {...nftData[i], res: JSON.stringify(res)}]);
+
 
             } catch (e) {
                 alert("Oops, nft minting failed");
