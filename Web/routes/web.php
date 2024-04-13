@@ -1,5 +1,4 @@
 <?php
-
 use App\Mail\SendNFTMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;

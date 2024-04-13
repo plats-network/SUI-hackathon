@@ -406,6 +406,7 @@
                                                         'type' => 1,
                                                         'nft_symbol' => $name
                                                     ])->get();
+                                                    $digest = json_decode($countNFTData[0]->nft_res, true)['digest'];
                                                 @endphp
                                                 @if ($countNFTData)
                                                     <div class="row mb-3">
@@ -422,11 +423,16 @@
                                                                 <p class="class-ticket">{{ $countNFTData[0]->nft_title }}</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-2" style="margin-top: 50px">
-                                                            <p class="class-ticket">{{ count($countNFTData) }}</p>
+                                                        <div class="col-2">
+                                                            <div class="col-10 mt-25">
+                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_category }}</p>
+                                                            </div>
+                                                            <div class="col-10 mt-20">
+                                                                <p class="class-ticket">{{ count($countNFTData) }}</p>
+                                                            </div>
                                                         </div>
                                                         <div class="col-2" style="margin-top: 50px">
-                                                            <p class="class-ticket"><a href="https://explorer.solana.com/address/SfmKb6KG6MdXeqWz4o6kLj7hmVsvczAftDgGiToxxh1{{$countNFTData[0]->address_organizer}}?cluster=devnet">TxHash</a></p>
+                                                            <p class="class-ticket"><a href="https://suiscan.xyz/testnet/tx/{{$digest}}">TxHash</a></p>
                                                         </div>
                                                     </div>
                                                 @endif

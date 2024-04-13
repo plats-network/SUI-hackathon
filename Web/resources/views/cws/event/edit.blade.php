@@ -16,7 +16,7 @@
 @section('name_page')
     @viteReactRefresh
     @vite([
-//        'resources/js/mint.js',
+        'resources/js/mint.js',
 //        'resources/js/connect_suit.jsx',
         'resources/js/formNft.jsx',
     ])
@@ -60,9 +60,7 @@
         }
 
         .tab-disabled {
-            pointer-events: none;
-        / / This makes it not clickable opacity: 0.6;
-        / / This grays it out to look disabled
+            /*pointer-events: none;*/
         }
 
         .img-preview {

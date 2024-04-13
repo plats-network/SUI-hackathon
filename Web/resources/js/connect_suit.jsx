@@ -6,7 +6,6 @@ import {useWallet} from '@suiet/wallet-kit';
 import '@suiet/wallet-kit/style.css';
 // import App from './useWallet';
 import App from './mintNft';
-import {TransactionBlock} from "@mysten/sui.js";
 function ConnectedAccount() {
     const wallet = useWallet();
     return (

@@ -52,6 +52,7 @@ class RouteServiceProvider extends ServiceProvider
 
             // Prod: https://colosseum.plats.network
             $this->mapColosseumRoute(ENV('APP_URL'));
+            $this->mapWebRoute();
         });
     }
 
@@ -99,6 +100,12 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::domain(ENV('SUB_COLOSSEUM').'.'.$domain)
             ->middleware(['web'])
+            ->group(base_path('routes/web.php'));
+    }
+    protected function mapWebRoute()
+    {
+        Route::middleware(['web'])
+            ->namespace($this->namespace)
             ->group(base_path('routes/web.php'));
     }
 }

@@ -2683,25 +2683,21 @@
   dependencies:
     bs58 "^5.0.0"
 
-"@mysten/bcs@0.7.1":
-  version "0.7.1"
-  resolved "https://registry.npmjs.org/@mysten/bcs/-/bcs-0.7.1.tgz"
-  integrity sha512-wFPb8bkhwrbiStfZMV5rFM7J+umpke59/dNjDp+UYJKykNlW23LCk2ePyEUvGdb62HGJM1jyOJ8g4egE3OmdKA==
+"@mysten/sui.js@0.50.1":
+  version "0.50.1"
+  resolved "https://registry.npmjs.org/@mysten/sui.js/-/sui.js-0.50.1.tgz"
+  integrity sha512-AY0wb4n6PMTRsDGygzrrTHUK/m5KwKZ4aQcN9cayiwsq2iIhfjGo7uuqMA7Y5UiqvLCoF+z7Ig14Q5qejQ/S/w==
   dependencies:
-    bs58 "^5.0.0"
-
-"@mysten/sui.js@0.35.1":
-  version "0.35.1"
-  resolved "https://registry.npmjs.org/@mysten/sui.js/-/sui.js-0.35.1.tgz"
-  integrity sha512-1UQ65oJhO+G5Bt+EWYqMs5y3eqY1ZZxEdB2y4K+XJVeRZBOy32GjSLiYmZufUAR9o53gAlwAvvNRIzMzuiNQzw==
-  dependencies:
-    "@mysten/bcs" "0.7.1"
-    "@noble/curves" "^1.0.0"
-    "@noble/hashes" "^1.3.0"
-    "@open-rpc/client-js" "^1.8.1"
-    "@scure/bip32" "^1.3.0"
-    "@scure/bip39" "^1.2.0"
+    "@graphql-typed-document-node/core" "^3.2.0"
+    "@mysten/bcs" "0.11.1"
+    "@noble/curves" "^1.1.0"
+    "@noble/hashes" "^1.3.1"
+    "@scure/bip32" "^1.3.1"
+    "@scure/bip39" "^1.2.1"
     "@suchipi/femver" "^1.0.0"
+    bech32 "^2.0.0"
+    gql.tada "^1.2.0"
+    graphql "^16.8.1"
     superstruct "^1.0.3"
     tweetnacl "^1.0.3"
 
@@ -2861,7 +2857,7 @@
   dependencies:
     qrcode-generator "^1.4.3"
 
-"@noble/curves@^1.0.0", "@noble/curves@^1.1.0", "@noble/curves@^1.2.0":
+"@noble/curves@^1.1.0", "@noble/curves@^1.2.0":
   version "1.4.0"
   resolved "https://registry.npmjs.org/@noble/curves/-/curves-1.4.0.tgz"
   integrity sha512-p+4cb332SFCrReJkCYe8Xzm0OWi4Jji5jVdIZRL/PmacmDkFNw6MrrV+gGpiPxLHbV+zKFRywUWbaseT+tZRXg==
@@ -2948,16 +2944,6 @@
   dependencies:
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
-
-"@open-rpc/client-js@^1.8.1":
-  version "1.8.1"
-  resolved "https://registry.npmjs.org/@open-rpc/client-js/-/client-js-1.8.1.tgz"
-  integrity sha512-vV+Hetl688nY/oWI9IFY0iKDrWuLdYhf7OIKI6U1DcnJV7r4gAgwRJjEr1QVYszUc0gjkHoQJzqevmXMGLyA0g==
-  dependencies:
-    isomorphic-fetch "^3.0.0"
-    isomorphic-ws "^5.0.0"
-    strict-event-emitter-types "^2.0.0"
-    ws "^7.0.0"
 
 "@parcel/watcher-darwin-arm64@2.4.1":
   version "2.4.1"
@@ -4113,7 +4099,7 @@
   resolved "https://registry.npmjs.org/@scure/base/-/base-1.1.1.tgz"
   integrity sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==
 
-"@scure/bip32@^1.3.0", "@scure/bip32@^1.3.1", "@scure/bip32@1.3.3":
+"@scure/bip32@^1.3.1", "@scure/bip32@1.3.3":
   version "1.3.3"
   resolved "https://registry.npmjs.org/@scure/bip32/-/bip32-1.3.3.tgz"
   integrity sha512-LJaN3HwRbfQK0X1xFSi0Q9amqOgzQnnDngIt+ZlsBC3Bm7/nE7K0kwshZHyaru79yIVRv/e1mQAjZyuZG6jOFQ==
@@ -4122,7 +4108,7 @@
     "@noble/hashes" "~1.3.2"
     "@scure/base" "~1.1.4"
 
-"@scure/bip39@^1.2.0", "@scure/bip39@^1.2.1", "@scure/bip39@1.2.2":
+"@scure/bip39@^1.2.1", "@scure/bip39@1.2.2":
   version "1.2.2"
   resolved "https://registry.npmjs.org/@scure/bip39/-/bip39-1.2.2.tgz"
   integrity sha512-HYf9TUXG80beW+hGAt3TRM8wU6pQoYur9iNypTROm42dorCGmLnFe3eWjz3gOq6G62H2WRh0FCzAR1PI+29zIA==
@@ -10085,6 +10071,15 @@ got@^6.3.0:
     unzip-response "^2.0.1"
     url-parse-lax "^1.0.0"
 
+gql.tada@^1.2.0:
+  version "1.4.3"
+  resolved "https://registry.npmjs.org/gql.tada/-/gql.tada-1.4.3.tgz"
+  integrity sha512-ZnDQxHSU1cqqndtbHa3+wwsnur9PMuU1Ma6KcEdGnu0xLIe1lYchlPkXJIZxU3CDimJzceN6WRytx36Kp8z4Dg==
+  dependencies:
+    "@0no-co/graphql.web" "^1.0.5"
+    "@gql.tada/cli-utils" "0.3.3"
+    "@gql.tada/internal" "0.1.3"
+
 gql.tada@^1.4.1:
   version "1.4.3"
   resolved "https://registry.npmjs.org/gql.tada/-/gql.tada-1.4.3.tgz"
@@ -10954,14 +10949,6 @@ isobject@^3.0.1:
   resolved "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
 
-isomorphic-fetch@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/isomorphic-fetch/-/isomorphic-fetch-3.0.0.tgz"
-  integrity sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==
-  dependencies:
-    node-fetch "^2.6.1"
-    whatwg-fetch "^3.4.1"
-
 isomorphic-localstorage@0.0.8:
   version "0.0.8"
   resolved "https://registry.npmjs.org/isomorphic-localstorage/-/isomorphic-localstorage-0.0.8.tgz"
@@ -10986,11 +10973,6 @@ isomorphic-ws@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npmjs.org/isomorphic-ws/-/isomorphic-ws-4.0.1.tgz"
   integrity sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==
-
-isomorphic-ws@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz"
-  integrity sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==
 
 it-all@^1.0.4:
   version "1.0.6"
@@ -15275,11 +15257,6 @@ streamx@^2.15.0:
     fast-fifo "^1.1.0"
     queue-tick "^1.0.1"
 
-strict-event-emitter-types@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/strict-event-emitter-types/-/strict-event-emitter-types-2.0.0.tgz"
-  integrity sha512-Nk/brWYpD85WlOgzw5h173aci0Teyv8YdIAEtV+N88nDB0dLlazZyJMIsN6eo1/AR61l+p6CJTG1JIyFaoNEEA==
-
 strict-uri-encode@^1.0.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz"
@@ -16077,9 +16054,9 @@ typescript@*, typescript@^4.6.2, typescript@>=4.9.5:
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
 typescript@^5.0.0:
-  version "5.4.4"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-5.4.4.tgz"
-  integrity sha512-dGE2Vv8cpVvw28v8HCPqyb08EzbBURxDpuhJvTrusShUfGnhHBafDsLdS1EhhxyL6BJQE+2cT3dDPAv+MQ6oLw==
+  version "5.4.5"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-5.4.5.tgz"
+  integrity sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==
 
 typescript@^5.0.2:
   version "5.4.3"
@@ -16869,7 +16846,7 @@ websocket@^1.0.32, websocket@^1.0.34:
     utf-8-validate "^5.0.2"
     yaeti "^0.0.6"
 
-whatwg-fetch@^3.0.0, whatwg-fetch@^3.4.1:
+whatwg-fetch@^3.0.0:
   version "3.6.20"
   resolved "https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-3.6.20.tgz"
   integrity sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==
@@ -17001,11 +16978,6 @@ ws@^6.2.2:
     async-limiter "~1.0.0"
 
 ws@^7:
-  version "7.5.9"
-  resolved "https://registry.npmjs.org/ws/-/ws-7.5.9.tgz"
-  integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
-
-ws@^7.0.0:
   version "7.5.9"
   resolved "https://registry.npmjs.org/ws/-/ws-7.5.9.tgz"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
