@@ -5,7 +5,7 @@ module sui_nft::ticket_nft {
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
     use sui_nft::ticket_collection::{TicketCollection};
-    use std::vector;
+    
     friend sui_nft::user;
 
     struct NFTTicket has key, store {

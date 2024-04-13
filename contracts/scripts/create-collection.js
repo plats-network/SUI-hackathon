@@ -9,16 +9,23 @@ if (!process.env.PACKAGE_ID) {
     process.exit(1);
   }
 
+const packageId = "0xe83d5c6059f09a1c98d73603c0ec7ef9c148fdd4983f90837426cc2cbf55cb94";
+const ticketCollectionType = `${packageId}::ticket_collection::TicketCollection`;
+const NFTTicketType = `${packageId}::ticket_nft::NFTTicket`;
+const NFTSessionType = `${packageId}::ticket_nft::NFTSession`;
+const NFTBoothType = `${packageId}::ticket_nft::NFTBooth`;
+const CoinType = "0x2::sui::SUI";
+
 async function mint() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
     const client = new SuiClient({
         url: getFullnodeUrl('testnet'),
     });
     const tx = new TransactionBlock();
-    let packageID = "0xe83d5c6059f09a1c98d73603c0ec7ef9c148fdd4983f90837426cc2cbf55cb94";
+
 
     tx.moveCall({
-        target: `${packageID}::client::create_new_collection`,
+        target: `${packageId}::client::create_new_collection`,
         arguments: [
             tx.pure("https://picsum.photos/id/237/200/300"),
             tx.pure("SUI Hackathon"),
@@ -26,16 +33,33 @@ async function mint() {
             tx.pure("0"),
         ],
 
-        typeArguments: [`${packageID}::ticket_nft::NFTTicket`]
+        typeArguments: [`${packageId}::ticket_nft::NFTTicket`]
     });
 
-    const result = await client.signAndExecuteTransactionBlock({
+    const txs = await client.signAndExecuteTransactionBlock({
         signer: keypair,
         transactionBlock: tx,
+        options: {
+            showInput: true,
+            showEffects: true,
+            showEvents: true,
+            showObjectChanges: true,
+        },
     });
 
 
-    console.log({ result });
+    console.log("create collection tx", JSON.stringify(txs, null, 2));
+
+    const ticketCollectionId = (
+        txs.objectChanges.filter(
+          (o) =>
+            o.type === "created" &&
+            o.objectType.includes("::ticket_collection::TicketCollection")
+        )[0]
+      ).objectId;
+      console.log(`ticket collection id : ${ticketCollectionId}`);
+    // get collection object id 
+
 }
 
 mint();

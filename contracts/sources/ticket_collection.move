@@ -12,7 +12,7 @@ module sui_nft::ticket_collection {
     use std::vector;
     use std::ascii;
     use std::type_name;
-    use sui_nft::ticket_nft::{Self, NFTTicket};
+    use sui_nft::ticket_nft::{Self, NFTTicket, NFTBooth, NFTSession};
     use sui_nft::utils::{Self};
     friend sui_nft::client;
     friend sui_nft::admin;
@@ -24,7 +24,9 @@ module sui_nft::ticket_collection {
         price: u64,
         balance: Balance<SUI>,
         url: Option<Url>,
-        tickets:vector<NFTTicket>
+        tickets:vector<NFTTicket>,
+        sessions: vector<NFTSession>,
+        booths: vector<NFTBooth>,
     }
 
 
@@ -125,6 +127,8 @@ module sui_nft::ticket_collection {
             price: 0,
             balance: balance::zero(),
             tickets:vector::empty(),
+            sessions: vector::empty(),
+            booths: vector::empty()
         }
     }
 
@@ -165,6 +169,23 @@ module sui_nft::ticket_collection {
         };
     }
 
+    public(friend) fun mint_batch_booths<T>(
+        collection:&mut TicketCollection<T>,
+        name: vector<u8>,
+        description: vector<u8>,
+        url: vector<u8>,
+        total: u64,
+        ctx: &mut TxContext
+    ) {
+
+        let i = 0; 
+        let collection_id = *object::uid_as_inner(&collection.id);
+        while (i < total){
+            let booth = ticket_nft::mint_booth(name,  description, url, collection_id,  ctx);
+            vector::push_back(&mut collection.booths, booth);
+            i = i +1;
+        };
+    }
 
     public(friend) fun mint_booth<T>(
         self: &TicketCollection<T>, 
@@ -180,6 +201,25 @@ module sui_nft::ticket_collection {
     
     }
 
+    public(friend) fun mint_batch_sessions<T>(
+        collection:&mut TicketCollection<T>,
+        name: vector<u8>,
+        description: vector<u8>,
+        url: vector<u8>,
+        total: u64,
+        ctx: &mut TxContext
+    ) {
+
+        let i = 0; 
+        let collection_id = *object::uid_as_inner(&collection.id);
+        while (i < total){
+            let session = ticket_nft::mint_session(name,  description, url, collection_id,  ctx);
+            vector::push_back(&mut collection.sessions, session);
+            i = i +1;
+        };
+    }
+
+
     public(friend) fun mint_session<T>(
         self: &TicketCollection<T>, 
         name: vector<u8>,
@@ -193,6 +233,7 @@ module sui_nft::ticket_collection {
         transfer::public_transfer(nft, sender);
     
     }
+
 
     /// Transfer `nft` to `recipient`
     public fun transfer_nft_ticket<T>(collection: &mut TicketCollection<T>,
