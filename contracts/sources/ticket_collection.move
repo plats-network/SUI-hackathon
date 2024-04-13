@@ -171,17 +171,20 @@ module sui_nft::ticket_collection {
 
     public(friend) fun mint_batch_booths<T>(
         collection:&mut TicketCollection<T>,
-        name: vector<u8>,
-        description: vector<u8>,
-        url: vector<u8>,
-        total: u64,
+        names: vector<vector<u8>>,
+        descriptions: vector<vector<u8>>,
+        urls: vector<vector<u8>>,
         ctx: &mut TxContext
     ) {
 
         let i = 0; 
         let collection_id = *object::uid_as_inner(&collection.id);
-        while (i < total){
-            let booth = ticket_nft::mint_booth(name,  description, url, collection_id,  ctx);
+        let len = vector::length(&names);
+        while (i < len){
+            let name = vector::borrow(&names, i );
+            let description = vector::borrow(&descriptions, i);
+            let url = vector::borrow(&urls, i);
+            let booth = ticket_nft::mint_booth(*name,  *description, *url, collection_id,  ctx);
             vector::push_back(&mut collection.booths, booth);
             i = i +1;
         };
@@ -203,17 +206,22 @@ module sui_nft::ticket_collection {
 
     public(friend) fun mint_batch_sessions<T>(
         collection:&mut TicketCollection<T>,
-        name: vector<u8>,
-        description: vector<u8>,
-        url: vector<u8>,
-        total: u64,
+        names: vector<vector<u8>>,
+        descriptions: vector<vector<u8>>,
+        urls: vector<vector<u8>>,
         ctx: &mut TxContext
     ) {
 
         let i = 0; 
         let collection_id = *object::uid_as_inner(&collection.id);
-        while (i < total){
-            let session = ticket_nft::mint_session(name,  description, url, collection_id,  ctx);
+        // todo
+        let len = vector::length(&names);
+
+        while (i < len){
+            let name = vector::borrow(&names, i );
+            let description = vector::borrow(&descriptions, i);
+            let url = vector::borrow(&urls, i);
+            let session = ticket_nft::mint_session(*name,  *description, *url, collection_id,  ctx);
             vector::push_back(&mut collection.sessions, session);
             i = i +1;
         };
@@ -396,6 +404,49 @@ module sui_nft::ticket_collection {
 
             test_scenario::return_to_sender(scenario, collection);
         };
+
+        test_scenario::next_tx(scenario, client);
+
+        {
+            let collection = test_scenario::take_from_sender<TicketCollection<NFTTicket>>(scenario);
+
+            let names = vector::empty();
+            let descriptions = vector::empty();
+            let urls = vector::empty();
+            vector::push_back(&mut names ,b"Session1");
+            vector::push_back(&mut descriptions ,b"This is session 1");
+            vector::push_back(&mut urls ,b"session1.xyz");
+
+            vector::push_back(&mut names ,b"Session2");
+            vector::push_back(&mut descriptions ,b"This is session 2");
+            vector::push_back(&mut urls ,b"session2.xyz");
+
+            mint_batch_sessions<NFTTicket>(&mut collection, names, descriptions, urls, ctx(scenario));
+
+            test_scenario::return_to_sender(scenario, collection);
+        };
+
+        test_scenario::next_tx(scenario, client);
+
+        {
+            let collection = test_scenario::take_from_sender<TicketCollection<NFTTicket>>(scenario);
+
+            let names = vector::empty();
+            let descriptions = vector::empty();
+            let urls = vector::empty();
+            vector::push_back(&mut names ,b"Booth 1");
+            vector::push_back(&mut descriptions ,b"This is booth 1");
+            vector::push_back(&mut urls ,b"booth1.xyz");
+
+            vector::push_back(&mut names ,b"Booth 2");
+            vector::push_back(&mut descriptions ,b"This is booth 2");
+            vector::push_back(&mut urls ,b"booth2.xyz");
+
+            mint_batch_booths<NFTTicket>(&mut collection, names, descriptions, urls, ctx(scenario));
+
+            test_scenario::return_to_sender(scenario, collection);
+        };
+
 
         test_scenario::next_tx(scenario, client);
         {   

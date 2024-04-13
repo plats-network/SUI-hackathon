@@ -72,14 +72,13 @@ module sui_nft::client {
     }
 
     entry fun mint_batch_sessions<T>(
-        params: vector<vector<u8>>,
-        name: vector<u8>,
-        description: vector<u8>,
-        image_url: vector<u8>,
-        collection: &TicketCollection<T>,
+        names: vector<vector<u8>>,
+        descriptions: vector<vector<u8>>,
+        image_urls: vector<vector<u8>>,
+        collection: &mut TicketCollection<T>,
         ctx: &mut TxContext
     ) {
-        collection::mint_batch_sessions(collection, name, description, image_url, ctx);
+        collection::mint_batch_sessions(collection, names, descriptions, image_urls, ctx);
     }
 
 
@@ -87,22 +86,20 @@ module sui_nft::client {
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
-        total: u64,
         collection: &mut TicketCollection<T>,
         ctx: &mut TxContext
     ) {
-        collection::mint_booth(collection, name, description, image_url, total, ctx);
+        collection::mint_booth(collection, name, description, image_url, ctx);
     }
 
     entry fun mint_batch_booths<T>(
-        name: vector<u8>,
-        description: vector<u8>,
-        image_url: vector<u8>,
-        total:u64,
+        names: vector<vector<u8>>,
+        descriptions: vector<vector<u8>>,
+        image_urls: vector<vector<u8>>,
         collection: &mut TicketCollection<T>,
         ctx: &mut TxContext
     ) {
-        collection::mint_batch_booths(collection, name, description, image_url, total, ctx);
+        collection::mint_batch_booths(collection, names, descriptions, image_urls, ctx);
     }
 
 
