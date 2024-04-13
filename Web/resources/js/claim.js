@@ -285,6 +285,7 @@ $('.btn-claim-id').click(async function () {
         $('.btn-claim-id').hide();
         $('.claim-btn').hide();
         $('.showModal').hide();
+        window.location.reload();
     } catch (error) {
         alert(error.message);
     }
