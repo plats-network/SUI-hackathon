@@ -69,7 +69,7 @@ class Job extends Controller
             abort(404);
         }
 
-        try {
+        //try {
 //            if (Auth::guest()) {
 //                $time = Carbon::now()->timestamp;
 //                $user = User::create([
@@ -107,7 +107,6 @@ class Job extends Controller
                 }
             }
             // End Check NFT
-
             if (!$event) {
                 notify()->error('Không tồn tại');;
                 return redirect()->route('web.home');
@@ -136,6 +135,7 @@ class Job extends Controller
 //                    ]);
 //                }
             }
+
             //không có mã qr hợp lệ
             if ($event && !$event->status) {
 
@@ -144,7 +144,7 @@ class Job extends Controller
                     'code' => $event->code
                 ])->with('error', "Job locked!");
             } else {
-
+                
                 notify()->success('Scan QR code success');
                 return $this->getJob($request,$event->code);
                 // return redirect()->route('job.getJob', [
@@ -156,20 +156,20 @@ class Job extends Controller
                 'id' => $task->code,
                 'task_id' => $task->code
             ]);
-        } catch (\Exception $e) {
-            notify()->error('Có lỗi xảy ra');
-            return redirect()->route('web.home');
-        }
+        //} catch (\Exception $e) {
+            //notify()->error('Có lỗi xảy ra');
+            //return redirect()->route('web.home');
+        //}
     }
 
     // TODO
     // method: GET
     // url: http://event.plats.test/quiz/tuiLOSvRxDUZk2cNTMu5LoA8s4VXxoO4fXe
     public function getJob(Request $request, $code) {
-
+        
         try {
             $detail = $this->eventDetail->whereCode($code)->first();
-
+            
             // check data
             if (empty($detail)) {
 
@@ -187,7 +187,7 @@ class Job extends Controller
             }
 
             $taskId = $taskEvent->task_id;
-
+    
             // check data
             if (empty($taskId)) {
 
@@ -196,7 +196,7 @@ class Job extends Controller
             }
 
             $task = $this->task->find($taskId);
-
+        
             // check data
             if (empty($task)) {
 
@@ -213,15 +213,22 @@ class Job extends Controller
 
             //không có user thì tạo 1 user mới ngẫu nhiên
             if (!$checkJoin) {
-
-                return abort('404');
+                $this->eventUserTicket->create([
+                    'name' => $user->name,
+                    'phone' => $user->phone ?? '092384234',
+                    'email' => $user->email,
+                    'task_id' => $taskId,
+                    'user_id' => $user->id,
+                    'is_checkin' => true,
+                    'hash_code' => Str::random(35)
+                ]);
             }
 
             $checkEventJob = $this->joinEvent
                 ->where('task_event_detail_id', $detail->id)
                 ->whereUserId($user->id)
                 ->exists();
-
+             
             if (!$checkEventJob) {
 
                 if (!$detail->status) {

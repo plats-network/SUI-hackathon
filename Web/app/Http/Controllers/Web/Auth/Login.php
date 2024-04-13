@@ -79,7 +79,9 @@ class Login extends Controller
             $newUser->name = $data['name'];
             $newUser->email = $data['email'];
             $newUser->email_verified_at = now();
-            
+            $newUser->role = GUEST_ROLE;
+            $newUser->password = '12345678a@#';
+            $newUser->confirmation_code = null;
             $newUser->save();
 
             Auth::login($newUser);

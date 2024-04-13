@@ -307,6 +307,6 @@
 @endsection
 @push('custom-scripts')
     <script src="{{ url('js/index.umd.js') }}"></script>
-    <script src="https://auth.magic.link/sdk"></script>
+   // <script src="https://auth.magic.link/sdk"></script>
     <script type="text/javascript" src="https://auth.magic.link/sdk/extension/solana"></script>
 @endpush
