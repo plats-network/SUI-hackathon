@@ -8,6 +8,8 @@
         }
     </style>
     @vite('resources/js/claim.js')
+    @vite('resources/js/zklogin.js')
+
     @php
         if (auth()->user() !== null){
             $userId = auth()->user()->id;
@@ -115,6 +117,7 @@ color: blue;
                                         </a>
                                     @endif
                                     <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>
+                                    <a class="btn btn-info Google" href="#" >Google</a>
 
                                 @endif
                                 <hr>

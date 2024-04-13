@@ -27,6 +27,12 @@
     ];
 @endphp
 
+@vite([
+    'resources/js/session.jsx',
+    //{{--  'resources/js/formNft.jsx',
+    //'resources/js/mintNftSession.jsx',  --}}
+    'resources/js/connect_suit_session.jsx'
+])
 <div id="tabwizard2" class="wizard-tab">
     <div class="text-center mb-4">
         <h5>Sessions</h5>
@@ -68,6 +74,10 @@
     <div class="row">
         <div class="col-6 d-flex flex-row-reverse" style="border-left: 1px;border-right: 1px solid;">
             <div class="p-2">
+                <div id="list-nft-data">
+
+                </div>
+                {{--  <button id="btnAddItemSessionReact" type="button" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"><i class="mdi mdi-plus me-1"></i> Add More</button>  --}}
                 <button id="btnAddItemSession" type="button" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"><i class="mdi mdi-plus me-1"></i> Add More</button>
             </div>
         </div>
@@ -75,7 +85,13 @@
     <div class="row">
         <div class="col-6 d-flex flex-row-reverse" style="border-left: 1px;border-right: 1px solid;">
             <div class="p-2">
-                <button id="btnGenItemSession" type="button" class="btn btn-primary btn-rounded waves-effect waves-light mb-2 me-2">Generate Session</button>
+                <div class="text-end">
+                    <div id="nft_get" style="display: inline-block"></div>
+                </div>
+                <div id="GenItemSession">
+                    
+                </div>
+                {{--  <button id="btnGenItemSession" type="button" class="btn btn-primary btn-rounded waves-effect waves-light mb-2 me-2">Generate Session</button>  --}}
             </div>
         </div>
     </div>

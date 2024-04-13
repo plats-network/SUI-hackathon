@@ -52,7 +52,8 @@ class RouteServiceProvider extends ServiceProvider
 
             // Prod: https://colosseum.plats.network
             $this->mapColosseumRoute(ENV('APP_URL'));
-            $this->mapWebRoute();
+
+            $this->mapWebRoutes();
         });
     }
 
@@ -67,7 +68,12 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
     }
-
+    protected function mapWebRoutes()
+    {
+        Route::middleware('web')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/web.php'));
+    }
     protected function mapApiRoute($domain)
     {
         Route::domain(ENV('SUB_API').'.'.$domain)
@@ -100,12 +106,6 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::domain(ENV('SUB_COLOSSEUM').'.'.$domain)
             ->middleware(['web'])
-            ->group(base_path('routes/web.php'));
-    }
-    protected function mapWebRoute()
-    {
-        Route::middleware(['web'])
-            ->namespace($this->namespace)
             ->group(base_path('routes/web.php'));
     }
 }

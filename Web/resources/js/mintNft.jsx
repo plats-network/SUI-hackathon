@@ -14,6 +14,7 @@ function createMintNftTxnBlock(data) {
     const contractModule = "client";
     const contractMethod = "mint_batch";
 
+
     const nftName = data.nft_name;
     const nftAmount = data.nft_amount;
     const nftCategory = data.nft_category;

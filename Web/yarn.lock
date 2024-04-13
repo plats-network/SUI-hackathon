@@ -2727,6 +2727,17 @@
     "@mysten/sui.js" "0.51.2"
     "@wallet-standard/core" "1.0.3"
 
+"@mysten/zklogin@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.npmjs.org/@mysten/zklogin/-/zklogin-0.5.2.tgz"
+  integrity sha512-bMOwBloa4DoYWh80fHPD7wGVUmXfBBQvzwfjBJ+nCsHvUwA9YNEo6rO+U0eULX7OQ003wBmRvdrkDaSnsPHI3Q==
+  dependencies:
+    "@mysten/bcs" "0.11.1"
+    "@mysten/sui.js" "0.51.2"
+    "@noble/hashes" "^1.3.1"
+    jose "^5.2.3"
+    poseidon-lite "^0.2.0"
+
 "@near-wallet-selector/core@^7.0.0", "@near-wallet-selector/core@7.9.0":
   version "7.9.0"
   resolved "https://registry.npmjs.org/@near-wallet-selector/core/-/core-7.9.0.tgz"
@@ -11169,6 +11180,11 @@ join-component@^1.1.0:
   resolved "https://registry.npmjs.org/join-component/-/join-component-1.1.0.tgz"
   integrity sha512-bF7vcQxbODoGK1imE2P9GS9aw4zD0Sd+Hni68IMZLj7zRnquH7dXUmMw9hDI5S/Jzt7q+IyTXN0rSg2GI0IKhQ==
 
+jose@^5.2.3:
+  version "5.2.4"
+  resolved "https://registry.npmjs.org/jose/-/jose-5.2.4.tgz"
+  integrity sha512-6ScbIk2WWCeXkmzF6bRPmEuaqy1m8SbsRFMa/FLrSCkGIhj8OLVG/IH+XHVmNMx/KUo8cVWEE6oKR4dJ+S0Rkg==
+
 jquery-repeater-form@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/jquery-repeater-form/-/jquery-repeater-form-1.0.2.tgz"
@@ -11378,6 +11394,11 @@ just-extend@^5.0.0:
   version "5.1.1"
   resolved "https://registry.npmjs.org/just-extend/-/just-extend-5.1.1.tgz"
   integrity sha512-b+z6yF1d4EOyDgylzQo5IminlUmzSeqR1hs/bzjBNjuGras4FXq/6TrzjxfN0j+TmI0ltJzTNlqXUMCniciwKQ==
+
+jwt-decode@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/jwt-decode/-/jwt-decode-4.0.0.tgz"
+  integrity sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==
 
 keccak@^3.0.0, keccak@^3.0.3:
   version "3.0.4"
@@ -13440,6 +13461,11 @@ popper.js@^1.16.1:
   version "1.16.1"
   resolved "https://registry.npmjs.org/popper.js/-/popper.js-1.16.1.tgz"
   integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
+
+poseidon-lite@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/poseidon-lite/-/poseidon-lite-0.2.0.tgz"
+  integrity sha512-vivDZnGmz8W4G/GzVA72PXkfYStjilu83rjjUfpL4PueKcC8nfX6hCPh2XhoC5FBgC6y0TA3YuUeUo5YCcNoig==
 
 possible-typed-array-names@^1.0.0:
   version "1.0.0"

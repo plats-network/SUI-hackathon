@@ -4,8 +4,9 @@ import {ConnectButton} from '@suiet/wallet-kit';
 import {WalletProvider} from '@suiet/wallet-kit';
 import {useWallet} from '@suiet/wallet-kit';
 import '@suiet/wallet-kit/style.css';
-// import App from './useWallet';
-import App from './mintNft';
+import App from './useWalletBooth';
+// import App from './mintNft';
+import {TransactionBlock} from "@mysten/sui.js/transactions";
 function ConnectedAccount() {
     const wallet = useWallet();
     return (
@@ -14,7 +15,7 @@ function ConnectedAccount() {
         </span>
     );
 }
-ReactDOM.createRoot(document.getElementById('button_connect_suit')).render(
+ReactDOM.createRoot(document.getElementById('btnGenItemBooth')).render(
     <WalletProvider>
         <App/>
     </WalletProvider>

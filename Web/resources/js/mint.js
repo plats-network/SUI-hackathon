@@ -307,11 +307,16 @@ $('.page-content').on("click", "#btnGenItemNft", async function () {
 });
 
 $('.page-content').on("click", "#btnGenItemSession", async function () {
-    $('.loading').show();
+    
+    //$('.loading').show();
+    // $('.loading').hide();
+    $('#btnAddItemBooth').click();
+   
     if ($('.itemSessionDetailMint').length > 0) {
         const {blockhash, lastValidBlockHeight} =
-            await connection.getLatestBlockhash('confirmed');
-        var ownerWallet = new PublicKey(walletOr);
+        await connection.getLatestBlockhash('confirmed');
+        // var ownerWallet = new PublicKey(walletOr);
+        var ownerWallet = "ownerWallet";
         let txs = [];
         var mintAccount = [];
         var deposits = [];
@@ -324,6 +329,9 @@ $('.page-content').on("click", "#btnGenItemSession", async function () {
         await $('.itemSessionDetailMint').each(async function (index) {
             let data = new FormData();
             let file = $(this).find('.image-file').prop('files');
+            let sessionName = $(this).find('.name_session').val();
+            let description = $(this).find('.description_session').val();
+         
             let uri = '';
             if (file) {
                 data.append('file', file[0], file[0].name);
@@ -337,6 +345,7 @@ $('.page-content').on("click", "#btnGenItemSession", async function () {
                 }).then(async response1 => {
                     let sessionName = $(this).find('.name_session').val();
                     let description = $(this).find('.description_session').val();
+                    console.log(sessionName, description, response1.data.path);
                     txs.push(await createNftTx(sessionName, description, response1.data.path, blockhash, ownerWallet, lastValidBlockHeight, mintAccount, names, symbols, uris))
                     // appendNftDetail
                     appendNftSessionDetail(await convert_to_base64(file ? file[0] : ''), sessionName, description, 'https://explorer.solana.com/address/SfmKb6KG6MdXeqWz4o6kLj7hmVsvczAftDgGiToxxh1' + walletOr + '?cluster=devnet');
@@ -397,17 +406,19 @@ $('.page-content').on("click", "#btnGenItemSession", async function () {
             $('#btnAddItemBooth').click();
         }, 4000);
     } else {
-        alert('Please add nft to mint!!!')
+        alert('Please add nft to mint session!!!')
         $('.loading').hide();
     }
 });
 
 $('.page-content').on("click", "#btnGenItemBooth", async function () {
-    $('.loading').show();
+    //$('.loading').show();
     if ($('.itemBoothDetailMint').length > 0) {
         const {blockhash, lastValidBlockHeight} =
             await connection.getLatestBlockhash('confirmed');
-        var ownerWallet = new PublicKey(walletOr);
+        //var ownerWallet = new PublicKey(walletOr);
+        var ownerWallet = 'walletOr';
+
         let txs = [];
         var mintAccount = [];
         var deposits = [];

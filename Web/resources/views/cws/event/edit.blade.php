@@ -16,7 +16,8 @@
 @section('name_page')
     @viteReactRefresh
     @vite([
-        'resources/js/mint.js',
+
+       'resources/js/mint.js',
 //        'resources/js/connect_suit.jsx',
         'resources/js/formNft.jsx',
     ])
@@ -66,7 +67,6 @@
         .img-preview {
             width: 150px;
             min-height: 150px;
-            max-height: auto;
             float: left;
             margin: 3px;
             padding: 3px;
@@ -164,10 +164,10 @@
                                     <li class="nav-item">
                                         <a class="nav-link navItemTab " id="navItemTab1" data-step="1">NFT Ticket</a>
                                     </li>
-                                    <li class="nav-item tab-disabled">
+                                    <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session</a>
                                     </li>
-                                    <li class="nav-item tab-disabled">
+                                    <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab3" data-step="3">Booth</a>
                                     </li>
                                     @if($is_update)
@@ -801,7 +801,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
     {{--End Modal Loading--}}
 @endsection
