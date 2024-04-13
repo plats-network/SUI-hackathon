@@ -6,13 +6,13 @@ module sui_nft::ticket_collection {
     use sui::tx_context::{Self, TxContext};
     use sui::url::{Self, Url};
     use sui::package::{Self, Publisher};
-    use sui::display;
+    //use sui::display;
     use sui::balance::{Self, Balance};
     use sui::sui::SUI;
     use std::vector;
     use std::ascii;
     use std::type_name;
-    use sui_nft::ticket_nft::{Self, NFTTicket, NFTBooth, NFTSession};
+    use sui::event;
     use sui_nft::utils::{Self};
     friend sui_nft::client;
     friend sui_nft::admin;
@@ -24,11 +24,62 @@ module sui_nft::ticket_collection {
         price: u64,
         balance: Balance<SUI>,
         url: Option<Url>,
-        tickets:vector<NFTTicket>,
-        sessions: vector<NFTSession>,
-        booths: vector<NFTBooth>,
+        tickets:vector<ID>,
+        sessions: vector<ID>,
+        booths: vector<ID>,
     }
 
+    struct NFTTicket has key, store {
+        id: UID,
+        /// Name for the token
+        name: string::String,
+        /// Description of the token
+        description: string::String,
+        /// URL for the token
+        image_url: string::String,
+        /// Collection ID
+        collection_id: ID,
+        //claimed: bool,
+        catogory: string::String,
+        token_id: u64
+
+    }
+
+
+    struct NFTBooth has key, store {
+        id: UID,
+        /// Name for the token
+        name: string::String,
+        /// Description of the token
+        description: string::String,
+        /// URL for the token
+        image_url: string::String,
+        /// Collection ID
+        collection_id: ID,
+    }
+
+    struct NFTSession has key, store {
+        id: UID,
+        /// Name for the token
+        name: string::String,
+        /// Description of the token
+        description: string::String,
+        /// URL for the token
+        image_url: string::String,
+        /// Collection ID
+        collection_id: ID,
+    }
+
+
+    // ===== Events =====
+
+    struct NFTMinted has copy, drop {
+        // The Object ID of the NFT
+        object_id: ID,
+        // The creator of the NFT
+        creator: address,
+        creator_id: ID 
+    }
 
 
     struct Clients has key {
@@ -143,9 +194,11 @@ module sui_nft::ticket_collection {
 
         let sender = tx_context::sender(ctx);
         let collection_id = *object::uid_as_inner(&self.id);
-        let nft = ticket_nft::mint_to_sender(name,  description, image_url, collection_id, catogory, token_id,  ctx);
+        let nft = mint_to_sender(name,  description, image_url, collection_id, catogory, token_id,  ctx);
         //vector::pus(&mut self.tickets, nft);
-        vector::push_back(&mut self.tickets, nft);
+        let nft_id = *object::uid_as_inner(&nft.id);
+        vector::push_back(&mut self.tickets, nft_id);
+        transfer::transfer(nft, tx_context::sender(ctx));
         //nft
     
     }
@@ -163,8 +216,10 @@ module sui_nft::ticket_collection {
         let i = 0; 
         let collection_id = *object::uid_as_inner(&collection.id);
         while (i < max_supply){
-            let nft = ticket_nft::mint_to_sender(name,  description, url, collection_id, catogory, i,  ctx);
-            vector::push_back(&mut collection.tickets,nft);
+            let nft = mint_to_sender(name,  description, url, collection_id, catogory, i,  ctx);
+            let nft_id = *object::uid_as_inner(&nft.id);
+            vector::push_back(&mut collection.tickets, nft_id);
+            transfer::transfer(nft, tx_context::sender(ctx));
             i = i +1;
         };
     }
@@ -184,8 +239,10 @@ module sui_nft::ticket_collection {
             let name = vector::borrow(&names, i );
             let description = vector::borrow(&descriptions, i);
             let url = vector::borrow(&urls, i);
-            let booth = ticket_nft::mint_booth(*name,  *description, *url, collection_id,  ctx);
-            vector::push_back(&mut collection.booths, booth);
+            let booth = mint_booth_single(*name,  *description, *url, collection_id,  ctx);
+            let booth_id = *object::uid_as_inner(&booth.id);
+            vector::push_back(&mut collection.booths, booth_id);
+            transfer::transfer(booth, tx_context::sender(ctx));
             i = i +1;
         };
     }
@@ -199,8 +256,8 @@ module sui_nft::ticket_collection {
 
         let sender = tx_context::sender(ctx);
         let collection_id = *object::uid_as_inner(&self.id);
-        let nft = ticket_nft::mint_booth(name,  description, image_url, collection_id, ctx);
-        transfer::public_transfer(nft, sender);
+        let booth = mint_booth_single(name,  description, image_url, collection_id, ctx);
+        transfer::public_transfer(booth, sender);
     
     }
 
@@ -211,7 +268,7 @@ module sui_nft::ticket_collection {
         urls: vector<vector<u8>>,
         ctx: &mut TxContext
     ) {
-
+        let sender = tx_context::sender(ctx);
         let i = 0; 
         let collection_id = *object::uid_as_inner(&collection.id);
         // todo
@@ -221,8 +278,10 @@ module sui_nft::ticket_collection {
             let name = vector::borrow(&names, i );
             let description = vector::borrow(&descriptions, i);
             let url = vector::borrow(&urls, i);
-            let session = ticket_nft::mint_session(*name,  *description, *url, collection_id,  ctx);
-            vector::push_back(&mut collection.sessions, session);
+            let session = mint_session_single(*name,  *description, *url, collection_id,  ctx);
+            let session_id = *object::uid_as_inner(&session.id);
+            vector::push_back(&mut collection.sessions, session_id);
+            transfer::public_transfer(session, sender);
             i = i +1;
         };
     }
@@ -237,30 +296,40 @@ module sui_nft::ticket_collection {
 
         let sender = tx_context::sender(ctx);
         let collection_id = *object::uid_as_inner(&self.id);
-        let nft = ticket_nft::mint_session(name,  description, image_url, collection_id, ctx);
-        transfer::public_transfer(nft, sender);
+        let session = mint_session_single(name,  description, image_url, collection_id, ctx);
+        transfer::public_transfer(session, sender);
     
     }
 
 
     /// Transfer `nft` to `recipient`
-    public fun transfer_nft_ticket<T>(collection: &mut TicketCollection<T>,
-        nft: &NFTTicket, recipient: address, _: &mut TxContext
-    ) {
-        let tickets = &collection.tickets;
-        let (found, id) = vector::index_of(tickets, nft);
-        if (found) {
-            let nft = vector::remove<NFTTicket>(
-                &mut collection.tickets, 
-                id
-            );
-            transfer::public_transfer(nft, recipient);
-        }
+    // public fun transfer_nft_ticket<T>(collection: &mut TicketCollection<T>,
+    //     nft: NFTTicket, recipient: address, _: &mut TxContext
+    // ) {
+    //     let tickets = &collection.tickets;
+    //     let (found, id) = vector::index_of(tickets, &nft);
+    //     if (found) {
+    //         vector::remove<NFTTicket>(
+    //             &mut collection.tickets, 
+    //             id
+    //         );
+    //         transfer::public_transfer(nft, recipient);
+    //     }
 
-        else {
-            abort ENFTNotExist
-        }
+    //     else {
+    //         abort ENFTNotExist
+    //     }
 
+    // }
+
+    public fun get_nft<T>(collection: &mut TicketCollection<T>): ID {
+        // check if still have nft ticket 
+        let len = vector::length(&collection.tickets);
+        assert!(len > 0, ENFTNotExist);
+
+        let nft = vector::pop_back(&mut collection.tickets);
+        nft
+        
     }
 
 
@@ -313,6 +382,82 @@ module sui_nft::ticket_collection {
         let id = &object::id_from_address(addr);
         drop_client<T>(self, id);
     }
+    public fun mint_to_sender(
+        name: vector<u8>,
+        description: vector<u8>,
+        image_url: vector<u8>,
+        collection_id: ID,
+        catogory: vector<u8>,
+        token_id: u64,
+        ctx: &mut TxContext
+    ): NFTTicket {
+        let nft = NFTTicket {
+            id: object::new(ctx),
+            name: string::utf8(name),
+            description: string::utf8(description),
+            image_url: string::utf8(image_url),
+            collection_id,
+            catogory: string::utf8(catogory),
+            token_id
+        };
+
+
+        let nft_id = object::uid_to_bytes(&nft.id);
+        let recipient = tx_context::sender(ctx);
+        let recipient_id = object::id_from_address(*&recipient);
+        event::emit(NFTMinted {
+            object_id: object::id_from_bytes(*&nft_id), 
+            creator: recipient,
+            creator_id: recipient_id
+        });
+        //transfer::public_transfer(nft, recipient)
+        //nft_id
+        nft
+    }
+
+    
+
+    public fun mint_booth_single(
+        name: vector<u8>,
+        description: vector<u8>,
+        image_url: vector<u8>,
+        collection_id: ID,
+        ctx: &mut TxContext
+    ): NFTBooth {
+        let nft = NFTBooth {
+            id: object::new(ctx),
+            name: string::utf8(name),
+            description: string::utf8(description),
+            image_url: string::utf8(image_url),
+            collection_id,
+        };
+
+        // let nft_id = object::uid_to_bytes(&nft.id);
+        // let recipient = tx_context::sender(ctx);
+        // let recipient_id = object::id_from_address(*&recipient);
+        nft
+    }
+
+    public fun mint_session_single(
+        name: vector<u8>,
+        description: vector<u8>,
+        image_url: vector<u8>,
+        collection_id: ID,
+        ctx: &mut TxContext
+    ): NFTSession {
+        let nft = NFTSession {
+            id: object::new(ctx),
+            name: string::utf8(name),
+            description: string::utf8(description),
+            image_url: string::utf8(image_url),
+            collection_id,
+        };
+
+        // let nft_id = object::uid_to_bytes(&nft.id);
+        // let recipient = tx_context::sender(ctx);
+        // let recipient_id = object::id_from_address(*&recipient);
+        nft
+    }
 
     #[test_only] public fun init_for_testing(ctx: &mut TxContext) { init(TICKET_COLLECTION{}, ctx) }
 
@@ -324,12 +469,12 @@ module sui_nft::ticket_collection {
         use std::type_name;
         use std::ascii;
         use std::debug;
-        use sui_nft::ticket_nft::NFTTicket;
         use sui::package::{Self, Publisher};
         use sui::object::{Self, ID};
         use std::vector;
         let client = @0xABCD;
         let admin = @0xABCDEF;
+        let user = @0xAB;
 
         let scenario_val = test_scenario::begin(admin);
         let scenario = &mut scenario_val;
@@ -393,6 +538,52 @@ module sui_nft::ticket_collection {
             debug::print(&utf8(b"tx_3: nft minted to minter address."));
         };
 
+        // check claim 
+        /*
+        test_scenario::next_tx(scenario, user);
+        {   
+            // check Publisher
+            //let pub = test_scenario::take_from_sender<Publisher>(scenario);
+
+            let collection = test_scenario::take_from_address<TicketCollection<NFTTicket>>(scenario, client);
+
+            debug::print(&collection);
+            let tickets = collection.tickets;
+
+            let nft1 = vector::pop_back(&mut collection.tickets);
+
+            debug::print(&utf8(b"After "));
+            debug::print(&collection);
+            // claim nft 
+            transfer_nft_ticket(&mut collection, nft1, user, ctx(scenario));
+
+            //test_scenario::return_to_sender(scenario, pub);
+            test_scenario::return_to_address(client, collection);
+            //test_scenario::return_to_address(client, nft1);
+
+            debug::print(&utf8(b"TX 4 CLAIM NFT BY USER"));
+        };
+        */
+
+        // get nfts 
+        test_scenario::next_tx(scenario, client);
+
+        {
+            let collection = test_scenario::take_from_address<TicketCollection<NFTTicket>>(scenario, client);
+
+            get_nft(&mut collection);
+
+            //transfer::transfer(nft, user);
+
+            let user_nft = test_scenario::take_from_address<NFTTicket>(scenario, client);
+            debug::print(&utf8(b"User want to claim nft from client"));
+            debug::print(&user_nft);
+            
+            //test_scenario::return_to_address(client, nft_id);
+            test_scenario::return_to_sender(scenario, user_nft);
+            test_scenario::return_to_address(client, collection);
+
+        };
 
         test_scenario::next_tx(scenario, client);
 

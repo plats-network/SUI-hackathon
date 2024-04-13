@@ -15,6 +15,7 @@ async function mintSessions() {
         url: getFullnodeUrl('testnet'),
     });
     const tx = new TransactionBlock();
+    const collectionId = process.env.COLLECTION_ID;
     tx.moveCall({
         target: `${process.env.PACKAGE_ID}::client::mint_batch_sessions`,
         arguments: [
@@ -25,9 +26,9 @@ async function mintSessions() {
             // url: vector<vector<u8>>,
             tx.pure(["https://picsum.photos/id/237/200/300","https://picsum.photos/id/237/200/300"]),
             // collection object id 
-            tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
+            tx.object(collectionId),
         ],
-        typeArguments: [`${process.env.PACKAGE_ID}::ticket_nft::NFTTicket`]
+        typeArguments: [`${process.env.PACKAGE_ID}::ticket_collection::NFTTicket`]
     });
 
     const result = await client.signAndExecuteTransactionBlock({

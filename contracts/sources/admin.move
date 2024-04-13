@@ -1,9 +1,7 @@
 module sui_nft::admin {
     use std::vector as vec;
-
-    use sui::tx_context::TxContext;
     use sui::package::Publisher;
-    use sui_nft::ticket_collection::{Self as collection, TicketCollection, Clients};
+    use sui_nft::ticket_collection::{Self as collection, Clients};
 
 
     entry fun add_client<T>(self: &mut Clients, addr: address, pub: &Publisher) {

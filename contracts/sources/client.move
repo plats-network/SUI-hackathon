@@ -1,13 +1,9 @@
 module sui_nft::client {
 
 
-    use sui::tx_context::{TxContext, Self};
-    use sui::transfer;
-    use sui::package::Publisher;
+    use sui::tx_context::{TxContext};
     
-    use sui_nft::ticket_collection::{Self as collection, TicketCollection, Clients};
-    use sui_nft::ticket_nft::{NFTTicket};
-    use std::vector;
+    use sui_nft::ticket_collection::{Self as collection, TicketCollection};
     
     // ===== Collection =====
     entry fun create_new_collection<T: key>(

@@ -15,27 +15,35 @@ const getNfts = async () => {
       }
     });
 
-    allObjects.data.map((item) => console.log(item.data.type));
-    //console.log("objectIDs", allObjects.data[0]);
-    // const objectIDs = (allObjects?.data || [])
-    //   .filter((item) => !Coin.isCoin(item))
-    //   .map((anObj) => anObj.data.objectId);
-    
-    // const allObjRes = await suiProvider.multiGetObjects({
-    //   ids: objectIDs,
-    //   options: {
-    //     showContent: true,
-    //     showDisplay: true,
-    //     showType: true,
-    //   },
-    // });
-    // console.log("allObjRes",allObjRes);
-    // const nftList = allObjRes.filter(obj => obj.data).map(obj => ({
-    //   objectId: obj.data.objectId,
-    //   image: (obj.data?.display?.data as any)?.image_url.replace(/^ipfs:\/\//, 'https://ipfs.io/ipfs/'),
-    //   name: (obj.data?.display?.data as any).name
-    // }))
 
+    //console.log("objectIDs", allObjects.data[0]);
+    const objectIDs = (allObjects?.data || [])
+      .filter((item) => item.data.objectId =="0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d")
+      .map((anObj) => anObj.data.objectId);
+    
+    const allObjRes = await client.multiGetObjects({
+      ids: objectIDs,
+      options: {
+        showContent: true,
+        showDisplay: true,
+        showType: true,
+      },
+    });
+    const nftList = allObjRes.filter(obj => obj.data).map(obj => ({
+      objectId: obj.data.objectId,
+      data: obj.data.content.fields,
+
+    }));
+
+    // get booths 
+    const booths = nftList.map((data) => data.data.booths);
+    console.log(booths);
+    // get sessions 
+    const sessions = nftList.map((data) => data.data.sessions);
+    console.log(sessions);
+
+    const tickets = nftList.map((data) => data.data.tickets);
+    console.log(tickets);
 }
 
 getNfts();

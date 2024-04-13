@@ -15,12 +15,15 @@ async function mint() {
         url: getFullnodeUrl('testnet'),
     });
     const tx = new TransactionBlock();
-    let packageId = "0xe83d5c6059f09a1c98d73603c0ec7ef9c148fdd4983f90837426cc2cbf55cb94";
+    //let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
+    let packageId = process.env.PACKAGE_ID;
+    let collectionId = process.env.COLLECTION_ID;
     tx.moveCall({
         target: `${packageId}::client::mint_batch`,
         arguments: [
             // collection object id 
-            tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
+            //tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
+            tx.object(collectionId),
             // name: vector<u8>,
             tx.pure("SUI Hackathon"),
             // description: vector<u8>,
@@ -32,7 +35,7 @@ async function mint() {
             // max_supply: u64,
             tx.pure(2),
         ],
-        typeArguments: [`${packageId}::ticket_nft::NFTTicket`]
+        typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
 
     const result = await client.signAndExecuteTransactionBlock({

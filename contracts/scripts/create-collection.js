@@ -33,7 +33,7 @@ async function mint() {
             tx.pure("0"),
         ],
 
-        typeArguments: [`${packageId}::ticket_nft::NFTTicket`]
+        typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
 
     const txs = await client.signAndExecuteTransactionBlock({
