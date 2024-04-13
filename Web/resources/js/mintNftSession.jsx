@@ -1,12 +1,15 @@
 import {ConnectButton, useWallet, addressEllipsis} from "@suiet/wallet-kit";
 import {TransactionBlock} from "@mysten/sui.js/transactions";
 import "@suiet/wallet-kit/style.css"; // don't forget to import default stylesheet
+import {WalletProvider} from '@suiet/wallet-kit';
+
 function createMintNftTxnBlock(data) {
     // define a programmable transaction block
     const txb = new TransactionBlock();
 
     // note that this is a devnet contract address
-    const contractAddress = "0xd0b1403e3d2348ff55ae76b6926a8fbe20c807c0cd59df4b1d6815468f45162d";
+    const contractAddress =
+        "0xd0b1403e3d2348ff55ae76b6926a8fbe20c807c0cd59df4b1d6815468f45162d";
     const contractModule = "sui_nft";
     const contractMethod = "mint_to_sender";
 
@@ -28,6 +31,7 @@ function createMintNftTxnBlock(data) {
 }
 
 export default function MintNft({nftData}) {
+
     const wallet = useWallet();
 
     async function mintNft() {
@@ -62,3 +66,8 @@ export default function MintNft({nftData}) {
         </div>
     );
 }
+
+
+ReactDOM.createRoot(document.getElementById('btnGenItemSession')).render(
+    <NftForm/>
+);

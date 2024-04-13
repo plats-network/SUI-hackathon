@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {TransactionBlock} from "@mysten/sui.js";
+import {TransactionBlock} from "@mysten/sui.js/transactions";
 import {ConnectButton, useWallet, addressEllipsis} from "@suiet/wallet-kit";
 
 function createMintNftTxnSesion() {

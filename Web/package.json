@@ -19,7 +19,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
-        "@mysten/sui.js": "0.35.1",
+        "@mysten/sui.js": "0.50.1",
         "@suiet/wallet-kit": "^0.2.24",
         "@alpinejs/collapse": "^3.13.2",
         "@coral-xyz/anchor": "^0.29.0",
