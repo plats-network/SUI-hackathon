@@ -130,7 +130,7 @@ class NFTController extends Controller
                 $newUser = new User();
                 $newUser->name = $request->email;
                 $newUser->email = $request->email;
-                $newUser->wallet_address = $request->address;
+//                $newUser->wallet_address = $request->address;
                 $newUser->email_verified_at = now();
                 $newUser->status = USER_ACTIVE;
                 $newUser->save();
