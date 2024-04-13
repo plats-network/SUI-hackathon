@@ -86,6 +86,7 @@
                         </div>
                     </div>
                 </div>
+                <input type="hidden" id="urlCurrent" value="{{ request()->url() }}">
                 <div id="fixed" class="col-lg-4">
                     <div class="confer-sidebar-area mb-100">
                         <div class="single-widget-area">
@@ -96,11 +97,12 @@
     border: none;
     background: none;
     color: blue;
-" class="link-primary" href="https://suiscan.xyz/testnet/tx/{{ !empty($nft) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
+" class="link-primary" href="https://suiscan.xyz/testnet/tx/{{ !empty($checkMint) ? json_decode($checkMint->nftMint['nft_res'], true)['digest'] : '' }}">
                                         Solana Explorer Link
                                     </a>
                                 @else
                                     @if ($nft)
+
 {{--                                        <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">--}}
                                         <input id="digest_nft" value="{{ json_decode($nft->nft_res, true)['digest'] }}" type="hidden">
 {{--                                        <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">--}}
@@ -108,13 +110,13 @@
 {{--                                        <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">--}}
                                         <input id="nft_id" value="{{ $nft->id }}" type="hidden">
 {{--                                        <input id="email_login" value="{{ auth()->user() ? auth()->user()->email : '' }}" type="hidden">--}}
-                                        <a style="display:none;" class="btn btn-info claim-success" href="#">Claim already</a>
+                                        <a style="display:none; margin-bottom: 20px" class="btn btn-info claim-success" href="#">Claim already</a>
                                         <a style="
 border: none;
 display:none;
 background: none;
 color: blue;
-" class="link-primary sol-link" href="https://suiscan.xyz/testnet/tx/{{ !empty($nft) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
+" class="link-primary sol-link" href="https://suiscan.xyz/testnet/tx/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
                                             Suiet Explorer Link
                                         </a>
                                     @endif
