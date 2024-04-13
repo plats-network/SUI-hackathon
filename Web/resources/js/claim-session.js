@@ -31,24 +31,41 @@ let provider = new AnchorProvider(connection, solConnect.getWallet(), {commitmen
 let program = new Program(idl, PROGRAM_ID, provider);
 
 $('#button-claim').click(async function () {
-    $('.loading').show();
-
-
+    //$('.loading').show();
+    
+   
     const emailLogin = $('#email_login').val();
     console.log(emailLogin);
-    const didToken = await magic?.auth.loginWithEmailOTP({email: emailLogin})
+    //const didToken = await magic?.auth.loginWithEmailOTP({email: emailLogin})
 // const userAddress = '0xef2fB5192536d336c47681CBe861381D44A83DF2';
 // const userPublicKey = new web3.PublicKey(userAddress)
-    const metadata = await magic.user.getMetadata();
-    console.log(metadata);
-    const adapter = new PublicKey(metadata.publicAddress);
-    console.log(adapter)
+    //const metadata = await magic.user.getMetadata();
+    //console.log(metadata);
+   // const adapter = new PublicKey(metadata.publicAddress);
+    //console.log(adapter)
 // const adapter = userPublicKey;
-    walletOr = metadata.publicAddress;
+    //walletOr = metadata.publicAddress;
     const mintKeypairId = $('#address_nft').val();
     const feeW = $('#address_organizer').val();
     const seedP = $('#seed').val();
     const nftId = $('#nft_id').val();
+
+    try {
+        const body = {
+            nft_id: nftId
+        }
+        console.log(body);
+
+        const res = await axios.post("/update_nft_status", body);
+        alert('Claim NFT is success. Please see on https://explorer.solana.com/')
+        $('.loading').hide();
+        $('#button-claim').hide()
+        $('#button-claim-link').show();
+    } catch (error) {
+        alert(error.message);
+    }
+    return;
+
     console.log(mintKeypairId);
     console.log(feeW)
     console.log(seedP)
