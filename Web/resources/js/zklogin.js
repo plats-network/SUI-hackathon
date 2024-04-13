@@ -38,7 +38,7 @@ $(".Google").click(async function(){
     var params = new URLSearchParams({
         client_id: '290554041285-g77ars54m9vc2hvugv1oekhtd54ell9p.apps.googleusercontent.com',
         nonce: nonce,
-        redirect_uri: 'http://localhost/SUI-hackathon/Web/public',
+        redirect_uri: 'http://localhost:8000',
         response_type: 'id_token',
         scope: 'openid',
     });
@@ -53,12 +53,12 @@ $(".Google").click(async function(){
 
 $(document).ready(function() {
     // Đặt các lệnh JavaScript của bạn ở đây
-    getTokenSocial(); 
+    getTokenSocial();
 });
 
 //check token login to social
 async function getTokenSocial(){
-    
+
     const urlFragment = window.location.hash.substring(1);
     const urlParams = new URLSearchParams(urlFragment);
     const jwt = urlParams.get('id_token');
@@ -75,7 +75,7 @@ async function getTokenSocial(){
     const accountBalances = await client.getBalance({owner: zkLoginUserAddress});
     console.log('accountBalances',accountBalances);
 
-    
+
     const jwtPayload = jwtDecode(jwt);
     console.log(jwtPayload);
 

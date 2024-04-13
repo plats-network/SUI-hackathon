@@ -3,6 +3,8 @@ import {TransactionBlock} from "@mysten/sui.js/transactions";
 import "@suiet/wallet-kit/style.css"; // don't forget to import default stylesheet
 import NftInput from "./sui_components/nftInput";
 import React, {useState} from 'react';
+import NftItemMinted from "./sui_components/nftItemMinted";
+import ReactDOM from "react-dom";
 
 function createMintNftTxnBlock(data) {
     // define a programmable transaction block

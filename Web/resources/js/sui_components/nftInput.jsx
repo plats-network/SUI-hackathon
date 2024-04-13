@@ -1,6 +1,7 @@
 import React from 'react';
 
 function NftInput({nftData}) {
+    console.log(nftData);
     return (
         <>
             <input type="hidden" name={`nft-ticket-name-[]`} value={nftData.nft_name}/>

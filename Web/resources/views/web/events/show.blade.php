@@ -8,7 +8,7 @@
         }
     </style>
     @vite('resources/js/claim.js')
-    @vite('resources/js/zklogin.js')
+{{--    @vite('resources/js/zklogin.js')--}}
 
     @php
         if (auth()->user() !== null){
@@ -95,29 +95,33 @@
     border: none;
     background: none;
     color: blue;
-" class="link-primary" href="https://explorer.solana.com/tx/HG9iQtoiKXmgJsNMpbjSbixkZGpnGFzxKgfeoRd9h8PLL7eRQc1cSSW2FGF4651vUA84pbLTbfLWardi71sF4Ff?cluster=devnet">
+" class="link-primary" href="https://suiscan.xyz/testnet/tx/{{ !empty($nft) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
                                         Solana Explorer Link
                                     </a>
                                 @else
                                     @if ($nft)
-                                        <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
-                                        <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">
-                                        <input id="seed" value="{{ $nft->seed }}" type="hidden">
-                                        <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">
+{{--                                        <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">--}}
+                                        <input id="digest_nft" value="{{ json_decode($nft->nft_res, true)['digest'] }}" type="hidden">
+{{--                                        <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">--}}
+{{--                                        <input id="seed" value="{{ $nft->seed }}" type="hidden">--}}
+{{--                                        <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">--}}
                                         <input id="nft_id" value="{{ $nft->id }}" type="hidden">
-                                        <input id="email_login" value="{{ auth()->user() ? auth()->user()->email : '' }}" type="hidden">
+{{--                                        <input id="email_login" value="{{ auth()->user() ? auth()->user()->email : '' }}" type="hidden">--}}
                                         <a style="display:none;" class="btn btn-info claim-success" href="#">Claim already</a>
                                         <a style="
 border: none;
 display:none;
 background: none;
 color: blue;
-" class="link-primary sol-link" href="https://explorer.solana.com/tx/HG9iQtoiKXmgJsNMpbjSbixkZGpnGFzxKgfeoRd9h8PLL7eRQc1cSSW2FGF4651vUA84pbLTbfLWardi71sF4Ff?cluster=devnet">
-                                            Solana Explorer Link
+" class="link-primary sol-link" href="https://suiscan.xyz/testnet/tx/{{ !empty($nft) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
+                                            Suiet Explorer Link
                                         </a>
                                     @endif
+{{--                                @php--}}
+{{--                                dd(auth()->user());--}}
+{{--                                @endphp--}}
                                     <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>
-                                    <a class="btn btn-info Google" href="#" >Google</a>
+{{--                                    <a class="btn btn-info Google" href="#" >Google</a>--}}
 
                                 @endif
                                 <hr>
