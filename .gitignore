@@ -20,3 +20,5 @@
 **/.vscode
 **/.DS_Store
 composer.lock
+/Web/package-lock.json
+/Web/composer.json
