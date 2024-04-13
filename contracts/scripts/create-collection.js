@@ -9,7 +9,7 @@ if (!process.env.PACKAGE_ID) {
     process.exit(1);
   }
 
-const packageId = "0xe83d5c6059f09a1c98d73603c0ec7ef9c148fdd4983f90837426cc2cbf55cb94";
+const packageId = process.env.PACKAGE_ID;
 const ticketCollectionType = `${packageId}::ticket_collection::TicketCollection`;
 const NFTTicketType = `${packageId}::ticket_nft::NFTTicket`;
 const NFTSessionType = `${packageId}::ticket_nft::NFTSession`;

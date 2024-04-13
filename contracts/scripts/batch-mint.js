@@ -20,7 +20,7 @@ async function mint() {
         target: `${packageId}::client::mint_batch`,
         arguments: [
             // collection object id 
-            tx.object('0x5682fb257218baf7e9f4d0cac8c41875b8870ca2a2463cad4d0d4cdd37cee989'),
+            tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
             // name: vector<u8>,
             tx.pure("SUI Hackathon"),
             // description: vector<u8>,

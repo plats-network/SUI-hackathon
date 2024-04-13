@@ -15,22 +15,19 @@ async function mintBooths() {
         url: getFullnodeUrl('testnet'),
     });
     const tx = new TransactionBlock();
-    let packageId = "0xe83d5c6059f09a1c98d73603c0ec7ef9c148fdd4983f90837426cc2cbf55cb94";
     tx.moveCall({
-        target: `${packageId}::client::mint_batch_booths`,
+        target: `${process.env.PACKAGE_ID}::client::mint_batch_booths`,
         arguments: [
-            // name: vector<u8>,
-            tx.pure("SUI Hackathon"),
-            // description: vector<u8>,
-            tx.pure("This is a ticket yo join SUI Hackathon"),
-            // url: vector<u8>,
-            tx.pure("https://picsum.photos/id/237/200/300"),
-            // total: u64
-            tx.pure(2),
+            // name: vector<vector<u8>>,
+            tx.pure(["SUI booth 1","SUI booth 2"]),
+            // description: vector<vector<u8>>,
+            tx.pure(["This is booth 1","This is booth 2"]),
+            // url: vector<vector<u8>>,
+            tx.pure(["https://picsum.photos/id/237/200/300","https://picsum.photos/id/237/200/300"]),
             // collection object id 
-            tx.object('0x5682fb257218baf7e9f4d0cac8c41875b8870ca2a2463cad4d0d4cdd37cee989'),
+            tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
         ],
-        typeArguments: [`${packageId}::ticket_nft::NFTBooth`]
+        typeArguments: [`${process.env.PACKAGE_ID}::ticket_nft::NFTTicket`]
     });
 
     const result = await client.signAndExecuteTransactionBlock({
