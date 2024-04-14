@@ -58,13 +58,14 @@
                     </a>
                 </li>
 
-                <li class="{{$menuUser ? 'mm-active' : ''}}">
+                <!--     <li class="{{$menuUser ? 'mm-active' : ''}}">
                     <a href="{{route('cws.users')}}" class="{{$menuUser ? 'active' : ''}}">
                         <i class="bx bx-calendar-event icon nav-icon"></i>
                         <span class="menu-item" data-key="t-calendar">Users</span>
                     </a>
                 </li>
-
+                -->
+                
                 <li class="{{$menuEvent ? 'mm-active' : ''}}">
                     <a href="{{route('cws.eventList')}}" class="{{$menuEvent ? 'active' : ''}}">
                         <i class="bx bx-check-square icon nav-icon"></i>
@@ -84,12 +85,13 @@
                 </li>
 
 
-                <li class="{{$travelGame ? 'mm-active' : ''}}">
+            <!--    <li class="{{$travelGame ? 'mm-active' : ''}}">
                     <a href="{{route('cws.travelGames')}}" class="{{$travelGame ? 'active' : ''}}">
                         <i class="bx bx-check-square icon nav-icon"></i>
                         <span class="menu-item" data-key="t-todo">Travel Games</span>
                     </a>
                 </li>
+            -->
             </ul>
             
         </div>
