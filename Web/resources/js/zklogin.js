@@ -38,7 +38,7 @@ $(".Google").click(async function(){
         client_id: '290554041285-g77ars54m9vc2hvugv1oekhtd54ell9p.apps.googleusercontent.com',
         nonce: nonce,
         //redirect_uri: 'http://localhost/SUI-hackathon/Web/public',
-        redirect_uri: 'https://cws-suivent.plats.network/',
+        redirect_uri: 'https://cws-suivent.plats.network',
         response_type: 'id_token',
         scope: 'openid',
     });
