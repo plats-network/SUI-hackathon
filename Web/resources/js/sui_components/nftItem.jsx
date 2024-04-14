@@ -39,6 +39,7 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
                            className="form-control nft_category"
                            placeholder="NFT Category"
                            name="nft_category"
+                           defaultValue="Standard"
                            onChange={onInputChange}/>
                 </div>
                 <div className={'row mt-20'}>
