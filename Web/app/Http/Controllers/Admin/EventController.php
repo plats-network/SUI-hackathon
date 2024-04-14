@@ -58,7 +58,12 @@ class EventController extends Controller
     ) {
         // code
     }
+    public function dashboard(Request $request){
+        
+        $data = [];
 
+        return view('cws.dashboard.index', $data);
+    }
     /**
      * Display a listing of the resource.
      *

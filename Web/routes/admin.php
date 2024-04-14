@@ -46,7 +46,11 @@ Route::middleware(['client_admin'])->group(function($cws) {
     $cws->get('users', [User::class, 'index'])->name('cws.users');
 
     //Get event list
+    $cws->get('dashboard', [EventController::class, 'dashboard'])->name('cws.dashboard');
+
+    //Get event list
     $cws->get('event-list', [EventController::class, 'index'])->name('cws.eventList');
+
     //Event Create
     $cws->get('event-create', [EventController::class, 'create'])->name('cws.eventCreate');
     //Event Store
