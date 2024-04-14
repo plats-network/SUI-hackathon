@@ -55,17 +55,19 @@ export default function MintNft({nftData, _setMinted}) {
     const [nftInputs, setNftInputs] = useState([]);
     const mnemonic_client = $('#mnemonic_client').val();
     const collection_id = $('#collection_id').val();
+    const [isLoading, setIsLoading] = useState(false);
     console.log('------', nftInputs);
 
     async function mintNft(event) {
         event.preventDefault();
         if (!wallet.connected) return;
-
+        setIsLoading(true);
         for (let i = 0; i < nftData.length; i++) {
             const txb = createMintNftTxnBlock(nftData[i]);
             try {
                 const res = await wallet.signAndExecuteTransactionBlock({
-                    transactionBlock: txb
+                    transactionBlock: txb,
+                    requestType: 'WaitForLocalExecution',
                 });
                 alert("Congrats! your nft is minted!");
                 console.log("nft minted successfully!", res);
@@ -127,6 +129,7 @@ export default function MintNft({nftData, _setMinted}) {
                 console.error("nft mint failed", e);
             }
         }
+        setIsLoading(false);
         document.getElementById("append-nft-ticket").innerHTML = "";
 
     }
@@ -141,6 +144,7 @@ export default function MintNft({nftData, _setMinted}) {
                     </>
                 )}
             </section>
+            {isLoading && <div className={'loading'}></div>}
             {nftInputs.map((nftData, index) => <NftInput key={index} nftData={nftData}/>)}
         </div>
     );

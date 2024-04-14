@@ -53,6 +53,22 @@ function NftForm() {
     const handleFileChange = async (event, index) => {
         let file = event.target.files[0];
         if (file) {
+            // Tạo một FileReader mới
+            let reader = new FileReader();
+
+            // Định nghĩa hàm onload cho FileReader
+            reader.onloadend = () => {
+                // Khi tệp đã được đọc xong, cập nhật state với URL của ảnh
+                const list = [...nftData];
+                if (list[index]) {
+                    list[index]['image_file'] = reader.result;
+                    setNftData(list);
+                }
+            };
+
+            // Bắt đầu đọc tệp như URL
+            reader.readAsDataURL(file);
+
             let data = new FormData();
             data.append('file', file, 'file-image-nft');
 
@@ -64,9 +80,9 @@ function NftForm() {
                         'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
                     }
                 });
+                // Cập nhật state với URL của ảnh từ máy chủ
                 const list = [...nftData];
                 if (list[index]) {
-                    // list[index]['image_file'] = btoa(unescape(encodeURIComponent(response.data.path)));
                     list[index]['image_file'] = response.data.path;
                     setNftData(list);
                 }
