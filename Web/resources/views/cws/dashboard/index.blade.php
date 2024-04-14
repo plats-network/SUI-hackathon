@@ -121,22 +121,35 @@
                           </tr>
                         </thead>
                         <tbody class="border border-2 border-secondary">
-                            <tr>
-                                <th scope="row"><a href="/event/1" class="event-link">1</a></th>
-                                <td><a href="/event/1" class="event-link">Event 1</a></td>
-                                <td><a href="/event/1" class="event-link">5000</a></td>
-                                <td><a href="/event/1" class="event-link">24/12/04 - 24/12/06</a></td>
-                                <td><a href="/event/1" class="event-link"><span class="badge badge-soft-primary font-size-12">Pending</span></a></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><a href="/event/1" class="event-link">1</a></th>
-                                <td><a href="/event/1" class="event-link">Event 1</a></td>
-                                <td><a href="/event/1" class="event-link">5000</a></td>
-                                <td><a href="/event/1" class="event-link">24/12/04 - 24/12/06</a></td>
-                                <td><a href="/event/1" class="event-link"><span class="badge badge-soft-primary font-size-12">Pending</span></a></td>
-                            </tr>
+                            @if($events->count() > 0)
+                                @foreach($events as $i => $event )
+                                    <tr>
+                                        <th scope="row"><a href="{{route('web.events.show', $event->id)}}" class="event-link">{{ $i+1 }}</a></th>
+                                        <td><a href="{{route('web.events.show', $event->id)}}" class="event-link">{{$event->name}}</a></td>
+                                        <td><a href="{{route('web.events.show', $event->id)}}" class="event-link">{{rand(100,1000)}}</a></td>
+                                        <td><a href="{{route('web.events.show', $event->id)}}" class="event-link">{{ dateFormat($event->start_at) }} - {{ dateFormat($event->end_at) }}</a></td>
+                                        <td>
+                                            <a href="{{route('web.events.show', $event->id)}}" class="event-link">
+                                                
+                                                    @if($event->status) 
+                                                        <span class="badge badge-soft-success font-size-12">
+                                                            on
+                                                        </span>
+
+                                                    @else
+                                                        <span class="badge badge-soft-primary font-size-12">
+                                                            off
+                                                        </span>
+                                                    @endif
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
+                    {{ $events->links() }}
                     <p class="text-center">Uh, There's nothing here</p>
                 </div>
             </div>

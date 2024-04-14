@@ -60,8 +60,15 @@ class EventController extends Controller
     }
     public function dashboard(Request $request){
         
-        $data = [];
+        $limit = $request->get('limit') ?? 10;
+        $events = $this->taskService->search([
+            'limit' => $limit,
+            'type' => EVENT
+        ]);
 
+        $data = [
+            'events' => $events
+        ];
         return view('cws.dashboard.index', $data);
     }
     /**
