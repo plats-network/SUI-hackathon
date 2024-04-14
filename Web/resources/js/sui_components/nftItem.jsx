@@ -10,8 +10,7 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
                        className="image-file-react"
                        id={`image-file-${itemKey}`}
                        name="file-image-nft"
-                       onChange={onFileChange}
-                />
+                       onChange={onFileChange}/>
                 <label htmlFor={`image-file-${itemKey}`}>
                     <img className="image-label img-preview"
                          src={nftData.image_file || "/imgs/no-image.png"}/>
