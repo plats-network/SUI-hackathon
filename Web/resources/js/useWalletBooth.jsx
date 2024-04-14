@@ -72,7 +72,7 @@ export default function App() {
             fileBooth: data.map(item => item.fileBooth)
         };
         const tx = new TransactionBlock();
-        let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
+        let packageId = "0x4adab96560b3199dd3b46f2c906e87f49a0ac8029f5e6eb3bb7d9739ee69235d";
         tx.moveCall({
             target: `${packageId}::client::mint_batch_booths`,
             arguments: [
@@ -82,9 +82,9 @@ export default function App() {
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileBooth),
 
-                tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
+                tx.object('0xde8cb6c56c178eb3c25cd1c979f9b6b251d65ad50f34b8b70ad8c43fad4ad96e'),
             ],
-            typeArguments: [`${packageId}::ticket_nft::NFTTicket`]
+            typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
 
   
