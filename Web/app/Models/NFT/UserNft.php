@@ -19,5 +19,10 @@ class UserNft extends Model
         'session_id',
         'task_id'
     ];
+
+    public function nftMint()
+    {
+        return $this->belongsTo(NftMint::class, 'nft_mint_id', 'id');
+    }
 }
 

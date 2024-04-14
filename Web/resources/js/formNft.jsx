@@ -7,14 +7,14 @@ import MintNft from './mintNft';
 import NftItemMinted from "./sui_components/nftItemMinted";
 
 function NftForm() {
-    // const [nftMinted, setNftMinted] = useState([]);
+    const [nftMinted, setNftMinted] = useState([]);
     const [nftData, setNftData] = useState([
         {
             nft_id: 0,
             nft_name: "",
             nft_symbol: "",
             image_file: "",
-            nft_category: "",
+            nft_category: "Standard",
             nft_amount: 1
         }
     ]);
@@ -27,6 +27,7 @@ function NftForm() {
             list[index][name] = value;
             setNftData(list);
         }
+        console.log('nftData:', nftData);
     };
     const handleAddMore = () => {
         setItems([...items, items.length]);
@@ -37,7 +38,7 @@ function NftForm() {
                 nft_name: "",
                 nft_symbol: "",
                 image_file: "",
-                nft_category: "",
+                nft_category: "Standard",
                 nft_amount: "1"
             }
         ]);
@@ -74,7 +75,9 @@ function NftForm() {
             }
         }
     };
-    console.log(nftData);
+    const _setMinted = (data, key) => {
+        setNftMinted([...nftMinted, {...data}]);
+    }
 
     return (
         <>
@@ -103,6 +106,10 @@ function NftForm() {
                     />)}
                 </div>
                 <div className="col-6 append-nft-detail" id={"append-nft-detail"}>
+                    {nftMinted.map((item, key) => <NftItemMinted
+                        key={item}
+                        nftData={item}
+                    />)}
                 </div>
             </div>
             <div className="row">
@@ -122,8 +129,7 @@ function NftForm() {
                      style={{borderLeft: '1px', borderRight: '1px solid'}}>
                     <div className="p-2">
                         <WalletProvider>
-                            <MintNft nftData={nftData}/>
-                            {/*<MintNft nftData={nftData} setNftMinted={setNftMinted} nftMinted={nftMinted}/>*/}
+                            <MintNft nftData={nftData} _setMinted={_setMinted} />
                         </WalletProvider>
                     </div>
                 </div>
