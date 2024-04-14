@@ -38,7 +38,7 @@ $(".Google").click(async function(){
         client_id: '290554041285-g77ars54m9vc2hvugv1oekhtd54ell9p.apps.googleusercontent.com',
         nonce: nonce,
         //redirect_uri: 'http://localhost/SUI-hackathon/Web/public',
-        redirect_uri: 'https://cws-suivent.plats.network',
+        redirect_uri: 'https://suivent.plats.network',
         response_type: 'id_token',
         scope: 'openid',
     });
@@ -71,7 +71,8 @@ async function getTokenSocial(){
     if(!jwt) return;
     //tạo salt ngẫu nhiên hiện tại đang fix cứng, phải đợi bên t2(zklogin) duyệt sal qua token
     const salt = saltRandomString(42);
-    const zkLoginUserAddress =  jwtToAddress(jwt, salt);
+    const zkLoginUserAddress =  jwtToAddress(jwt, '778508701119817782538534025112866953167371');
+    localStorage.setItem('zkLoginUserAddress', zkLoginUserAddress)
 
     const client = new SuiClient({
         url: getFullnodeUrl('testnet'),
@@ -81,7 +82,7 @@ async function getTokenSocial(){
 
     const jwtPayload = jwtDecode(jwt);
     console.log(jwtPayload);
-    
+
     $.ajax({
         type: "POST",
         url: "login_google",

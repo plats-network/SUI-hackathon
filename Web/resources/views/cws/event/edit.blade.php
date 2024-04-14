@@ -761,7 +761,7 @@
                                     </button>
                                     <button
                                         type="submit"
-                                        class="min-save-btn btn btn-primary w-sm ms-auto" style="display:none;">Save
+                                        class="min-save-btn btn btn-primary w-sm ms-auto">Save
                                     </button>
                                 </div>
 
@@ -787,6 +787,8 @@
         </div>
     </div>
     <input type="hidden" id="currentTab" value="{{$activeTab}}">
+    <input type="hidden" id="mnemonic_client" value="{{ env('MNEMONIC_CLIENT')}}">
+    <input type="hidden" id="collection_id" value="{{ env('COLLECTION_ID')}}">
 
     {{--Modal Loading--}}
     <div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-labelledby="modal-default"

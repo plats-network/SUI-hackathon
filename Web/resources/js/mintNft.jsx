@@ -3,6 +3,9 @@ import {TransactionBlock} from "@mysten/sui.js/transactions";
 import "@suiet/wallet-kit/style.css"; // don't forget to import default stylesheet
 import NftInput from "./sui_components/nftInput";
 import React, {useState} from 'react';
+
+import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
+import {getFullnodeUrl, SuiClient} from '@mysten/sui.js/client';
 import NftItemMinted from "./sui_components/nftItemMinted";
 import ReactDOM from "react-dom";
 
@@ -12,7 +15,7 @@ function createMintNftTxnBlock(data) {
 
     // note that this is a devnet contract address
     const contractAddress =
-        "0xe83d5c6059f09a1c98d73603c0ec7ef9c148fdd4983f90837426cc2cbf55cb94";
+        "0x4adab96560b3199dd3b46f2c906e87f49a0ac8029f5e6eb3bb7d9739ee69235d";
     const contractModule = "client";
     const contractMethod = "mint_batch";
 
@@ -22,7 +25,7 @@ function createMintNftTxnBlock(data) {
     const nftCategory = data.nft_category;
     const nftDescription = data.nft_symbol;
     const nftImgUrl = data.image_file ?? "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
-    const nftCollectionId = "0x5682fb257218baf7e9f4d0cac8c41875b8870ca2a2463cad4d0d4cdd37cee989"
+    const nftCollectionId = "0xde8cb6c56c178eb3c25cd1c979f9b6b251d65ad50f34b8b70ad8c43fad4ad96e"
 
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,
@@ -40,7 +43,7 @@ function createMintNftTxnBlock(data) {
             // max_supply: u64,
             txb.pure(nftAmount),
         ],
-        typeArguments: [`${contractAddress}::ticket_nft::NFTTicket`]
+        typeArguments: [`${contractAddress}::ticket_collection::NFTTicket`]
 
     });
 
@@ -50,6 +53,9 @@ function createMintNftTxnBlock(data) {
 export default function MintNft({nftData, _setMinted}) {
     const wallet = useWallet();
     const [nftInputs, setNftInputs] = useState([]);
+    const mnemonic_client = $('#mnemonic_client').val();
+    const collection_id = $('#collection_id').val();
+    console.log('------', nftInputs);
 
     async function mintNft(event) {
         event.preventDefault();
@@ -64,11 +70,55 @@ export default function MintNft({nftData, _setMinted}) {
                 alert("Congrats! your nft is minted!");
                 console.log("nft minted successfully!", res);
 
+                const keypair = Ed25519Keypair.deriveKeypair(mnemonic_client);
+                const client = new SuiClient({
+                    url: getFullnodeUrl('testnet'),
+                });
+                let addressClient = keypair.getPublicKey().toSuiAddress();
+
+                const allObjects = await client.getOwnedObjects({
+                    owner: addressClient,
+                    options: {
+                        showType: true,
+                        showDisplay: true,
+                        showContent: true,
+                    }
+                });
+
+
+                //console.log("objectIDs", allObjects.data[0]);
+                const objectIDs = (allObjects?.data || [])
+                    .filter((item) => item.data.objectId == collection_id)
+                    .map((anObj) => anObj.data.objectId);
+
+                const allObjRes = await client.multiGetObjects({
+                    ids: objectIDs,
+                    options: {
+                        showContent: true,
+                        showDisplay: true,
+                        showType: true,
+                    },
+                });
+                const nftList = allObjRes.filter(obj => obj.data).map(obj => ({
+                    objectId: obj.data.objectId,
+                    data: obj.data.content.fields,
+
+                }));
+                //get ticket
+
+                const tickets = nftList.map((data) => data.data.tickets);
+                console.log(tickets);
+
                 // Add a new NftInput for each successful mint
                 for (let j = 0; j < Number(nftData[i].nft_amount); j++) {
                     // setNftInputs(prevInputs => [...prevInputs, nftData[i]]);
-                    setNftInputs(prevInputs => [...prevInputs, {...nftData[i], res: JSON.stringify(res)}]);
+                    setNftInputs(prevInputs => [...prevInputs, {
+                        ...nftData[i],
+                        res: JSON.stringify(res),
+                        tickets: JSON.stringify(tickets)
+                    }]);
                 }
+                console.log(nftInputs);
                 _setMinted({...nftData[i], res: JSON.stringify(res)});
 
 

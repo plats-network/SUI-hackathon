@@ -415,7 +415,7 @@
                                                                 <img class="img-preview img-preview-nft" src="{{ $countNFTData[0]->nft_uri ?? 'https://static.vecteezy.com/system/resources/previews/007/567/154/original/select-image-icon-vector.jpg' }}">
                                                             </label>
                                                         </div>
-                                                        <div class="col-4">
+                                                        <div class="col-3">
                                                             <div class="col-10 mt-25">
                                                                 <p class="class-ticket">{{ $countNFTData[0]->nft_symbol }}</p>
                                                             </div>
@@ -423,7 +423,7 @@
                                                                 <p class="class-ticket">{{ $countNFTData[0]->nft_title }}</p>
                                                             </div>
                                                         </div>
-                                                        <div class="col-2">
+                                                        <div class="col-3">
                                                             <div class="col-10 mt-25">
                                                                 <p class="class-ticket">{{ $countNFTData[0]->nft_category }}</p>
                                                             </div>
