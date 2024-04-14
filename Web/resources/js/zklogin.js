@@ -71,7 +71,8 @@ async function getTokenSocial(){
     if(!jwt) return;
     //tạo salt ngẫu nhiên hiện tại đang fix cứng, phải đợi bên t2(zklogin) duyệt sal qua token
     const salt = saltRandomString(42);
-    const zkLoginUserAddress =  jwtToAddress(jwt, salt);
+    const zkLoginUserAddress =  jwtToAddress(jwt, '778508701119817782538534025112866953167371');
+    localStorage.setItem('zkLoginUserAddress', zkLoginUserAddress)
 
     const client = new SuiClient({
         url: getFullnodeUrl('testnet'),

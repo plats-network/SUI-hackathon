@@ -23,7 +23,7 @@ class EventService extends BaseService
 
     public function __construct(
         EventRepository $eventRepository,
-        TaskRepository $taskRepository
+        TaskRepository  $taskRepository
     )
     {
         $this->repository = $eventRepository;
@@ -60,7 +60,7 @@ class EventService extends BaseService
             if (isset($data['nft']) && $data['nft']) {
                 //Model NFT
                 $nftItem = NFT::query()->where('task_id', $dataBaseTask->id)->first();
-                $image_url='';
+                $image_url = '';
 
                 if (isset($data['thumbnail_nft']) && $data['thumbnail_nft']) {
                     $image_url = $data['thumbnail_nft']['path'];
@@ -82,7 +82,7 @@ class EventService extends BaseService
                         'name' => $data['nft']['name'],
                         'description' => $data['nft']['description'],
                         'size' => $data['nft']['size'],
-                        'blockchain' => $data['nft']['blockchain']?? 'aleph',
+                        'blockchain' => $data['nft']['blockchain'] ?? 'aleph',
                         'image_url' => $image_url
                     ]);
                 }
@@ -114,12 +114,12 @@ class EventService extends BaseService
             }
 
             // Booth
-            if ($booths && !empty($booths['name'])){
+            if ($booths && !empty($booths['name'])) {
                 $this->saveBooth($dataBaseTask, $booths, $request);
             }
 
             // Update Quiz
-            if ($quiz){
+            if ($quiz) {
                 $this->saveQuiz($dataBaseTask, $quiz);
             }
 
@@ -129,22 +129,22 @@ class EventService extends BaseService
             }
 
             // Update Social
-            if ($social){
-                if (empty($social['id'])){
+            if ($social) {
+                if (empty($social['id'])) {
                     $dataBaseTask->taskEventSocials()->create($social);
                 } else {
                     $socialUn = Arr::get($data, 'task_event_socials');
                     unset($socialUn['id']);
-                    $dataBaseTask->taskEventSocials()->update($socialUn,$social['id']);
+                    $dataBaseTask->taskEventSocials()->update($socialUn, $social['id']);
                 }
             }
 
             // Update discords
-            if ($discords){
-                if (empty($discords['id'])){
+            if ($discords) {
+                if (empty($discords['id'])) {
                     $dataBaseTask->taskEventDiscords()->create($discords);
 
-                }else{
+                } else {
                     $discordsUn = Arr::get($data, 'task_event_discords');
                     unset($discordsUn['id']);
                     $dataBaseTask->taskEventDiscords()->update($discordsUn, $discords['id']);
@@ -172,7 +172,7 @@ class EventService extends BaseService
             $discords = Arr::get($data, 'task_event_discords');
             $sponsors = Arr::get($data, 'sponsor');
 
-            $data['banner_url'] =  isset($data['thumbnail']) ? $data['thumbnail']['path'] : '';
+            $data['banner_url'] = isset($data['thumbnail']) ? $data['thumbnail']['path'] : '';
             $data['creator_id'] = Auth::user()->id;
             $data['status'] = 0;
             $data['slug'] = $request->input('name');
@@ -187,7 +187,7 @@ class EventService extends BaseService
             //Save NFT Info 06.12.2023
             if (isset($data['nft']) && $data['nft']) {
                 //Model NFT
-                $image_url='';
+                $image_url = '';
 
                 if (isset($data['thumbnail_nft']) && $data['thumbnail_nft']) {
                     $image_url = $data['thumbnail_nft']['path'];
@@ -213,24 +213,34 @@ class EventService extends BaseService
                     $nft->nft_uri = $data['nft-ticket-uri-'][$key] ?? '';
                     $nft->nft_res = $data['nft-ticket-res-'][$key] ?? '';
                     $nft->nft_category = $data['nft-ticket-category-'][$key] ?? '';
+                    $nft->address_nft = $data['nft-ticket-category-'][$key] ?? '';
+                    $list_nft = $data['nft-ticket-list-'][$key] ? json_decode($data['nft-ticket-list-'][$key], true)[0] : [];
+                    foreach ($list_nft as $item) {
+                        $exitsting = NFTMint::where('address_nft', $item)->first();
+                        if (!$exitsting) {
+                            $nft->address_nft = $item;
+                            break;
+                        }
+                    }
 //                    $nft->seed = $data['nft-ticket-seed-'][$key] ?? '';
 //                    $nft->address_nft = $data['nft-ticket-address-nft-'][$key] ?? '';
 //                    $nft->address_organizer = $data['nft-ticket-address-organizer-'][$key] ?? '';
 //                    $nft->secret_key = $data['nft-ticket-secret-key-'][$key] ?? '';
                     $nft->type = 1;
                     $nft->task_id = $dataBaseTask->id;
+//                    dd(json_decode($data['nft-ticket-list-'][$key], true)[0], $nft);
                     $nft->save();
                 }
             }
 
             // Save session
-            if ($sessions && !empty($sessions['name'])){
+            if ($sessions && !empty($sessions['name'])) {
                 unset($sessions['id']);
                 $this->saveSession($dataBaseTask, $sessions, $data);
             }
 
             // Save booth
-            if ($booths && !empty($booths['name'])){
+            if ($booths && !empty($booths['name'])) {
                 unset($booths['id']);
                 $this->saveBooth($dataBaseTask, $booths, $data);
             }
@@ -242,7 +252,7 @@ class EventService extends BaseService
             }
 
             // Save discord
-            if ($discords){
+            if ($discords) {
                 unset($discords['id']);
                 $dataBaseTask->taskEventDiscords()->create($discords);
             }
@@ -271,8 +281,12 @@ class EventService extends BaseService
         if (isset($sponsors['id']) && $sponsors['id']) {
             $sponsor = Sponsor::find($sponsors['id']);
 
-            if (!$sponsor) { return true; }
-            if ($sponsors && empty($sponsors['name'])) { return true; }
+            if (!$sponsor) {
+                return true;
+            }
+            if ($sponsors && empty($sponsors['name'])) {
+                return true;
+            }
 
             $sponsor->update([
                 'name' => $sponsors['name'],
@@ -323,8 +337,8 @@ class EventService extends BaseService
                     'end_at' => isset($sponsors['end_at']) ? $sponsors['end_at'] : null,
                 ]);
 
-                if (isset($sponsors['detail']) && $sponsors['detail']){
-                    foreach($sponsors['detail'] as $item) {
+                if (isset($sponsors['detail']) && $sponsors['detail']) {
+                    foreach ($sponsors['detail'] as $item) {
                         if (empty($item['name'])) {
                             continue;
                         } else {
@@ -344,7 +358,8 @@ class EventService extends BaseService
         }
     }
 
-    private function saveSession($task, $sessions, $dataParam) {
+    private function saveSession($task, $sessions, $dataParam)
+    {
         $index = 0;
         if (isset($sessions['id']) && $sessions['id']) {
             $event = TaskEvent::where('id', $sessions['id'])->first();
@@ -385,7 +400,7 @@ class EventService extends BaseService
                             $sessionTask = TaskEventDetail::where('id', $item['id'])->update([
                                 'name' => $item['name'],
                                 'description' => $item['description'],
-                                'travel_game_id' => isset($item['travel_game_id'])? $item['travel_game_id'] : null,
+                                'travel_game_id' => isset($item['travel_game_id']) ? $item['travel_game_id'] : null,
                                 'is_required' => false,
                                 'is_question' => $is_question,
                                 'question' => $question,
@@ -447,9 +462,9 @@ class EventService extends BaseService
                 'code' => Str::random(35)
             ]);
 
-            if (isset($sessions['detail']) && $sessions['detail']){
+            if (isset($sessions['detail']) && $sessions['detail']) {
 
-                foreach($sessions['detail'] as $key => $item) {
+                foreach ($sessions['detail'] as $key => $item) {
                     if (isset($item['is_delete']) && $item['is_delete'] == 1) {
                         continue;
                     } else {
@@ -508,7 +523,9 @@ class EventService extends BaseService
         if (isset($booths['id']) && $booths['id']) {
             $event = TaskEvent::where('id', $booths['id'])->first();
 
-            if (!$event) { return; }
+            if (!$event) {
+                return;
+            }
 
             $event->update([
                 'name' => $booths['name'],
@@ -619,9 +636,9 @@ class EventService extends BaseService
 
     private function saveQuiz($task, $quiz)
     {
-        foreach($quiz as $item) {
+        foreach ($quiz as $item) {
             if (!empty($item['name'])) {
-                if(isset($item['id']) && $item['id']) {
+                if (isset($item['id']) && $item['id']) {
                     $quiz = Quiz::where('id', $item['id'])->first();
 
                     if (!$quiz) {
@@ -639,7 +656,7 @@ class EventService extends BaseService
                             'status' => $item['status'] == 'on' ? true : false,
                         ]);
 
-                        foreach($item['detail'] as $aws) {
+                        foreach ($item['detail'] as $aws) {
                             $status = isset($aws['status']) && $aws['status'] == 1 ? true : false;
                             QuizAnswer::where('id', $aws['id'])->update([
                                 'name' => $aws['name'],
@@ -659,7 +676,7 @@ class EventService extends BaseService
                             'status' => empty($item['status']) ? 0 : 1
                         ]);
 
-                        foreach($item['detail'] as $aws) {
+                        foreach ($item['detail'] as $aws) {
                             $status = isset($aws['status']) && $aws['status'] == 1 ? true : false;
                             QuizAnswer::create([
                                 'quiz_id' => $quiz->id,
@@ -673,7 +690,8 @@ class EventService extends BaseService
         }
     }
 
-    public function generateBarcodeNumber() {
+    public function generateBarcodeNumber()
+    {
         $number = mt_rand(10000000, 99999999);
         return $number;
     }
@@ -690,9 +708,9 @@ class EventService extends BaseService
         $dataLinkGenerate = [];
         foreach ($type as $key => $item) {
             $dataLinkGenerate[] = [
-                'name' => 'Link share '.$item,
+                'name' => 'Link share ' . $item,
                 'type' => $key,
-                'url' => config('app.link_event').'/events/' . $slug . '?' . $item . '=' . Str::random(32),
+                'url' => config('app.link_event') . '/events/' . $slug . '?' . $item . '=' . Str::random(32),
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ];
