@@ -41,6 +41,9 @@
         font-size: 35px;
         font-weight: bold;
     }
+    .create-event{
+        height: 35px;
+    }
 </style>
 @section('content')
     <div class="row">
@@ -48,7 +51,6 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h2 class="mb-0">Dashboard</h2>
-                    <a href="{{ route('cws.eventCreate') }}" class="btn btn-primary float-end">Create Event</a>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -108,7 +110,10 @@
                             </div>
                         </div>
                     </div>
-                    <h3 class="mb-4 mt-4">Statistics</h3>
+                    <div class="d-flex justify-content-between">
+                        <h3 class="mb-4 mt-4">Statistics</h3>
+                        <a href="{{ route('cws.eventCreate') }}" class="btn btn-primary float-end create-event">Create Event</a>
+                    </div>
 
                     <table class="table table-sm">
                         <thead>
