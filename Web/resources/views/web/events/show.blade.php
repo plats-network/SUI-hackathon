@@ -104,7 +104,8 @@
                                     @if ($nft)
 
 {{--                                        <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">--}}
-                                        <input id="digest_nft" value="{{ json_decode($nft->nft_res, true)['digest'] }}" type="hidden">
+                                        <input id="digest_nft" value="{{ isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : ''}}" type="hidden">
+
 {{--                                        <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">--}}
 {{--                                        <input id="seed" value="{{ $nft->seed }}" type="hidden">--}}
 {{--                                        <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">--}}
