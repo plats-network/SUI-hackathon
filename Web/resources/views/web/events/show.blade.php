@@ -95,13 +95,13 @@
                         <div class="single-widget-area">
                             <div class="post-author-widget">
                                 @if ($checkMint)
-                                    <a  class="btn btn-info" href="#">Claim already</a>
+                                    <a  class="btn btn-info" style="display: block" href="#">Claim already</a>
                                     <a style="
     border: none;
     background: none;
     color: blue;
 " class="link-primary" href="https://suiscan.xyz/testnet/tx/{{ !empty($checkMint) ? json_decode($checkMint->nftMint['nft_res'], true)['digest'] : '' }}">
-                                        Solana Explorer Link
+                                        SUI Explorer Link
                                     </a>
                                 @else
                                     @if ($nft)

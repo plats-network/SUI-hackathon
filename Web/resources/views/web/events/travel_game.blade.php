@@ -141,6 +141,7 @@
                                 $userNft->save();
                         }
                     @endphp
+                
                     @if ($nft && $nft->status < 3)
                         <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
                         <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">
@@ -151,9 +152,8 @@
                         <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>
 
                     @endif
-                    <a class="link-primary" style="display: none; color:blue" id="button-claim-link" href="https://explorer.solana.com/tx/HG9iQtoiKXmgJsNMpbjSbixkZGpnGFzxKgfeoRd9h8PLL7eRQc1cSSW2FGF4651vUA84pbLTbfLWardi71sF4Ff?cluster=devnet">Sol Explorer</a>
+                    <a class="link-primary" style="display: none; color:blue" id="button-claim-link" href="https://suiscan.xyz/testnet/tx/G7xVJjyBZzAKLv9xa2WZR9tuVF3ksdneRfntd89o4u9E">SUI Explorer</a>
                 </div>
-
                 <ul class="nav nav-tabs">
                     <li><a data-toggle="tab" href="#sesion">Sessions Game</a></li>
                 </ul>

@@ -37,8 +37,8 @@ $(".Google").click(async function(){
     var params = new URLSearchParams({
         client_id: '290554041285-g77ars54m9vc2hvugv1oekhtd54ell9p.apps.googleusercontent.com',
         nonce: nonce,
-        redirect_uri: 'http://localhost:8000',
-
+        //redirect_uri: 'http://localhost/SUI-hackathon/Web/public',
+        redirect_uri: 'https://cws-suivent.plats.network/',
         response_type: 'id_token',
         scope: 'openid',
     });
@@ -53,7 +53,6 @@ $(".Google").click(async function(){
     window.location.href = loginURL;
 
     console.log(loginURL);
-
 
 });
 
@@ -83,7 +82,7 @@ async function getTokenSocial(){
 
     const jwtPayload = jwtDecode(jwt);
     console.log(jwtPayload);
-
+    
     $.ajax({
         type: "POST",
         url: "login_google",

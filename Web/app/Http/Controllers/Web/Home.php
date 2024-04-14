@@ -52,7 +52,6 @@ class Home extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth::user();
 
         try {
 

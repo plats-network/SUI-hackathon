@@ -11,9 +11,13 @@ export default function App() {
         const newBoothData = [];
         
         $('.itemBoothDetailMint').each(function (index) {
+
+            const imgElement = $(this).find('img'); // Tìm thẻ img trong phần tử hiện tại
+            const src = imgElement.attr('src'); // Lấy src từ thẻ img
+
             const nameBooth = $(this).find('.name_booth').val();
             const descriptionBooth = $(this).find('.description_booth').val();
-            const fileBooth = $(this).attr('src') ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
+            const fileBooth = src ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
 
             const boothObj = {
                 nameBooth: nameBooth,
@@ -26,6 +30,40 @@ export default function App() {
 
         setBoothData(newBoothData);
     }
+
+    const appendNftBoothDetail = (details) => {
+        console.log('details',details);
+        // Khai báo một biến để chứa chuỗi HTML
+        let html = '';
+
+        // Lặp qua mỗi chi tiết trong mảng details
+        details.forEach(detail => {
+            // Tạo HTML cho mỗi chi tiết và thêm vào chuỗi html
+            html += '<div class="row mb-3">\n';
+            html += '    <div class="col-4">\n';
+            html += '        <label for="image-file">\n';
+            html += '            <img class="img-preview img-preview-nft" src="' + detail.fileBooth + '">\n';
+            html += '        </label>\n';
+            html += '    </div>\n';
+            html += '    <div class="col-6">\n';
+            html += '        <div class="col-10 mt-25">\n';
+            html += '            <p class="class-ticket">' + detail.nameBooth + '</p>\n';
+            html += '        </div>\n';
+            html += '        <div class="col-10 mt-20">\n';
+            html += '            <p class="class-ticket">' + detail.descriptionBooth + '</p>\n';
+            html += '        </div>\n';
+            html += '    </div>\n';
+            html += '    <div class="col-2" style="margin-top: 50px">\n';
+            html += '        <p class="class-ticket"><a href="https://suiscan.xyz/testnet/tx/' + detail.txhash + '">txhash</a></p>\n';
+            html += '    </div>\n';
+            html += '</div>';
+        });
+
+        // Sau khi lặp qua mảng details, thêm chuỗi HTML vào '.append-nft-session-detail'
+        $('.append-nft-booth-detail').empty().append(html);
+
+    };
+    
     const mint = async (wallet,data) => {
         console.log(data);
         let newData = {
@@ -34,7 +72,7 @@ export default function App() {
             fileBooth: data.map(item => item.fileBooth)
         };
         const tx = new TransactionBlock();
-        let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
+        let packageId = "0x4adab96560b3199dd3b46f2c906e87f49a0ac8029f5e6eb3bb7d9739ee69235d";
         tx.moveCall({
             target: `${packageId}::client::mint_batch_booths`,
             arguments: [
@@ -44,9 +82,9 @@ export default function App() {
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileBooth),
 
-                tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
+                tx.object('0xde8cb6c56c178eb3c25cd1c979f9b6b251d65ad50f34b8b70ad8c43fad4ad96e'),
             ],
-            typeArguments: [`${packageId}::ticket_nft::NFTTicket`]
+            typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
 
   
@@ -59,6 +97,13 @@ export default function App() {
             alert('nft minted Booth fail!');
             return;
         }
+        // Lặp qua mỗi đối tượng trong mảng data
+        data.forEach(obj => {
+            // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
+            obj.txhash = result.digest;
+        });
+
+        appendNftBoothDetail(data);
         alert('nft minted Booth successfully!');
     }
     useEffect(() => {

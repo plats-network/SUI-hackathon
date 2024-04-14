@@ -10,6 +10,8 @@ import {
     getAssociatedTokenAddress, getAssociatedTokenAddressSync,
     MINT_SIZE
 } from "@solana/spl-token";
+import { generateNonce, generateRandomness,jwtToAddress } from '@mysten/zklogin';
+
 import axios from "axios";
 
 const rpcUrl = 'https://api.devnet.solana.com';
@@ -29,6 +31,21 @@ const connection = new Connection(web3.clusterApiUrl("devnet"));
 const PROGRAM_ID = new PublicKey("D5GK8Kye78gjuDMMjRnkWH5a6KfNEXzex5mekXL3HLR2");
 let provider = new AnchorProvider(connection, solConnect.getWallet(), {commitment: "confirmed"})
 let program = new Program(idl, PROGRAM_ID, provider);
+
+$('#button-claim-test').click(async function(){
+    
+    let jwt = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjkzYjQ5NTE2MmFmMGM4N2NjN2E1MTY4NjI5NDA5NzA0MGRhZjNiNDMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIyOTA1NTQwNDEyODUtZzc3YXJzNTRtOXZjMmh2dWd2MW9la2h0ZDU0ZWxsOXAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIyOTA1NTQwNDEyODUtZzc3YXJzNTRtOXZjMmh2dWd2MW9la2h0ZDU0ZWxsOXAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDQ0NTE5MDAwOTA3NDQ0ODU2ODkiLCJub25jZSI6IjFTRmxYd05Kd09CenFqcExDN1p3RXZ6clkxNCIsIm5iZiI6MTcxMzA3ODAyOCwiaWF0IjoxNzEzMDc4MzI4LCJleHAiOjE3MTMwODE5MjgsImp0aSI6IjdhNThkOWJlZDZmYzZlN2RiYzAxNjUzY2MwZjVmYWMyYmQzMjQ5MGEifQ.RPI0hfE70IN6f87y98CKW7ZGic0spRBcKlmB1K-5IrnkORK4hOzXiAbQTPfwWirreChOPvY6ogSgR8txsahDvT0AJovJjJIs9ZGyaryqKCzrwV6b9x8HgWhz0uwFaykN8O29dwG8kmeIdQ4SOjwNtBuvRi4ECQL_xK6VXsUAqtqxW44bzX5N3M_2xZCmxsgcvCv4dQ9Xh88w1H4JDYHci50ZuHCFH1ZlsGvpCFWZPEBIebiOZjGUyJ-D1eHhN04SOiTH3HVnpT38f36s7CeGX91DFTD6QAVT8r-QiKMY0y1dLCARIxyBPow26vGU-O0D62M7-g8HHLi3AbJ_8QelGA';
+    
+    let salt = '625269969902316412932473140542886827510878';
+   
+    const zkLoginUserAddress =  jwtToAddress(jwt, salt);
+
+    const client = new SuiClient({
+        url: getFullnodeUrl('testnet'),
+    });
+
+    const accountBalances = await client.getBalance({owner: zkLoginUserAddress});
+});
 
 $('#button-claim').click(async function () {
     //$('.loading').show();
