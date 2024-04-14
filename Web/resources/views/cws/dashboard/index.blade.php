@@ -41,6 +41,9 @@
         font-size: 35px;
         font-weight: bold;
     }
+    .create-event{
+        height: 35px;
+    }
 </style>
 @section('content')
     <div class="row">
@@ -48,7 +51,6 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h2 class="mb-0">Dashboard</h2>
-                    <a href="{{ route('cws.eventCreate') }}" class="btn btn-primary float-end">Create Event</a>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -108,7 +110,10 @@
                             </div>
                         </div>
                     </div>
-                    <h3 class="mb-4 mt-4">Statistics</h3>
+                    <div class="d-flex justify-content-between">
+                        <h3 class="mb-4 mt-4">Statistics</h3>
+                        <a href="{{ route('cws.eventCreate') }}" class="btn btn-primary float-end create-event">Create Event</a>
+                    </div>
 
                     <table class="table table-sm">
                         <thead>
@@ -121,22 +126,60 @@
                           </tr>
                         </thead>
                         <tbody class="border border-2 border-secondary">
-                            <tr>
-                                <th scope="row"><a href="/event/1" class="event-link">1</a></th>
-                                <td><a href="/event/1" class="event-link">Event 1</a></td>
-                                <td><a href="/event/1" class="event-link">5000</a></td>
-                                <td><a href="/event/1" class="event-link">24/12/04 - 24/12/06</a></td>
-                                <td><a href="/event/1" class="event-link"><span class="badge badge-soft-primary font-size-12">Pending</span></a></td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><a href="/event/1" class="event-link">1</a></th>
-                                <td><a href="/event/1" class="event-link">Event 1</a></td>
-                                <td><a href="/event/1" class="event-link">5000</a></td>
-                                <td><a href="/event/1" class="event-link">24/12/04 - 24/12/06</a></td>
-                                <td><a href="/event/1" class="event-link"><span class="badge badge-soft-primary font-size-12">Pending</span></a></td>
-                            </tr>
+                            @if($events->count() > 0)
+                                @foreach($events as $i => $event )
+                                    <tr>
+                                        <th scope="row"><a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">{{ $i+1 }}</a></th>
+                                        <td>
+                                            <a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">{{$event->name}}</a>
+
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">{{rand(100,1000)}}</a></td>
+                                        <td>
+                                            <a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">{{ dateFormat($event->start_at) }} - {{ dateFormat($event->end_at) }}</a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">
+                                                
+                                                    @if($event->status) 
+                                                        <span class="badge badge-soft-success font-size-12">
+                                                            public
+                                                        </span>
+                                                    @else
+                                                        <span class="badge badge-soft-primary font-size-12">
+                                                            draft
+                                                        </span>
+                                                    @endif
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
+                    {{ $events->links() }}
                     <p class="text-center">Uh, There's nothing here</p>
                 </div>
             </div>

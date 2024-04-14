@@ -53,7 +53,7 @@ export default function App() {
             html += '        </div>\n';
             html += '    </div>\n';
             html += '    <div class="col-2" style="margin-top: 50px">\n';
-            html += '        <p class="class-ticket"><a href="https://suiscan.xyz/testnet/tx/' + detail.txhash + '">txhash</a></p>\n';
+            html += '        <p class="class-ticket"><a target="_blank" href="https://suiscan.xyz/testnet/tx/' + detail.txhash + '">txhash</a></p>\n';
             html += '    </div>\n';
             html += '</div>';
         });
