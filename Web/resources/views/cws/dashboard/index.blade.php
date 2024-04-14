@@ -124,21 +124,46 @@
                             @if($events->count() > 0)
                                 @foreach($events as $i => $event )
                                     <tr>
-                                        <th scope="row"><a href="{{route('web.events.show', $event->id)}}" class="event-link">{{ $i+1 }}</a></th>
-                                        <td><a href="{{route('web.events.show', $event->id)}}" class="event-link">{{$event->name}}</a></td>
-                                        <td><a href="{{route('web.events.show', $event->id)}}" class="event-link">{{rand(100,1000)}}</a></td>
-                                        <td><a href="{{route('web.events.show', $event->id)}}" class="event-link">{{ dateFormat($event->start_at) }} - {{ dateFormat($event->end_at) }}</a></td>
+                                        <th scope="row"><a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">{{ $i+1 }}</a></th>
                                         <td>
-                                            <a href="{{route('web.events.show', $event->id)}}" class="event-link">
+                                            <a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">{{$event->name}}</a>
+
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">{{rand(100,1000)}}</a></td>
+                                        <td>
+                                            <a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">{{ dateFormat($event->start_at) }} - {{ dateFormat($event->end_at) }}</a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => 0,
+                                                'preview' => 1
+                                            ]) }}" class="event-link">
                                                 
                                                     @if($event->status) 
                                                         <span class="badge badge-soft-success font-size-12">
-                                                            on
+                                                            public
                                                         </span>
-
                                                     @else
                                                         <span class="badge badge-soft-primary font-size-12">
-                                                            off
+                                                            draft
                                                         </span>
                                                     @endif
                                                 </span>
