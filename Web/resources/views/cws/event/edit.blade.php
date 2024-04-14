@@ -1676,7 +1676,12 @@
             } else {
                 var x = document.getElementsByClassName("wizard-tab");
                 let currentTab = Number($('#currentTab').val());
-                console.log(currentTab);
+                console.log('tab',currentTab);
+                if (currentTab == 2) {
+                    $('.min-save-btn').html('Public');
+                }else {
+                    $('.min-save-btn').html('Save');
+                }
                 x[currentTab].style.display = "none";
                 currentTab = currentTab + n;
                 $('#currentTab').val(currentTab);
@@ -1765,6 +1770,12 @@
             //This add class active
             $('.navItemTab').removeClass('active');
             $(this).addClass('active');
+            let step = $(this).attr('data-step');
+            if (step == 3) {
+                $('.min-save-btn').html('Public');
+            }else {
+                $('.min-save-btn').html('Save');
+            }
             var id = $(this).attr('data-step');
             $('#currentTab').val(id);
             //alert(id)

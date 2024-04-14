@@ -174,7 +174,7 @@ class EventService extends BaseService
 
             $data['banner_url'] = isset($data['thumbnail']) ? $data['thumbnail']['path'] : '';
             $data['creator_id'] = Auth::user()->id;
-            $data['status'] = 0;
+            $data['status'] = 1;
             $data['slug'] = $request->input('name');
             $data['max_job'] = 0;
             $data['type'] = EVENT;
