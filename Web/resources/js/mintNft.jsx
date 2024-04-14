@@ -47,7 +47,7 @@ function createMintNftTxnBlock(data) {
     return txb;
 }
 
-export default function MintNft({nftData}) {
+export default function MintNft({nftData, _setMinted}) {
     const wallet = useWallet();
     const [nftInputs, setNftInputs] = useState([]);
 
@@ -69,7 +69,7 @@ export default function MintNft({nftData}) {
                     // setNftInputs(prevInputs => [...prevInputs, nftData[i]]);
                     setNftInputs(prevInputs => [...prevInputs, {...nftData[i], res: JSON.stringify(res)}]);
                 }
-                // setNftMinted([...nftMinted, {...nftData[i], res: JSON.stringify(res)}]);
+                _setMinted({...nftData[i], res: JSON.stringify(res)});
 
 
             } catch (e) {
@@ -77,6 +77,7 @@ export default function MintNft({nftData}) {
                 console.error("nft mint failed", e);
             }
         }
+        document.getElementById("append-nft-ticket").innerHTML = "";
 
     }
 
