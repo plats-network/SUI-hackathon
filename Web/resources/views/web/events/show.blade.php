@@ -98,7 +98,7 @@
     background: none;
     color: blue;
 " class="link-primary" href="https://suiscan.xyz/testnet/tx/{{ !empty($checkMint) ? json_decode($checkMint->nftMint['nft_res'], true)['digest'] : '' }}">
-                                        Solana Explorer Link
+                                        SUI Explorer Link
                                     </a>
                                 @else
                                     @if ($nft)
