@@ -86,13 +86,16 @@
                         </div>
                     </div>
                 </div>
-                <input type="hidden" id="urlCurrent" value="{{ request()->url() }}">
+                <input type="hidden" id="mnemonic_client" value="{{ env('MNEMONIC_CLIENT')}}">
+                <input type="hidden" id="package_id" value="{{ env('PACKAGE_ID')}}">
+                <input type="hidden" id="collection_id" value="{{ env('COLLECTION_ID')}}">
+                <input type="hidden" id="ticket_id" value="{{ !empty($nft) ? $nft->address_nft : ''}}">
                 <div id="fixed" class="col-lg-4">
                     <div class="confer-sidebar-area mb-100">
                         <div class="single-widget-area">
                             <div class="post-author-widget">
                                 @if ($checkMint)
-                                    <a id="showModal" class="btn btn-info" href="#">Claim already</a>
+                                    <a  class="btn btn-info" href="#">Claim already</a>
                                     <a style="
     border: none;
     background: none;
@@ -104,7 +107,7 @@
                                     @if ($nft)
 
 {{--                                        <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">--}}
-                                        <input id="digest_nft" value="{{ json_decode($nft->nft_res, true)['digest'] }}" type="hidden">
+                                        <input id="digest_nft" value="{{ isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : ''}}" type="hidden">
 {{--                                        <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">--}}
 {{--                                        <input id="seed" value="{{ $nft->seed }}" type="hidden">--}}
 {{--                                        <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">--}}
