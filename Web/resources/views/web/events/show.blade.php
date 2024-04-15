@@ -100,7 +100,7 @@
     border: none;
     background: none;
     color: blue;
-" class="link-primary" href="https://suiscan.xyz/testnet/tx/{{ !empty($checkMint) ? json_decode($checkMint->nftMint['nft_res'], true)['digest'] : '' }}">
+" class="link-primary" target="_blank" href="https://suiscan.xyz/testnet/tx/{{ !empty($checkMint) ? json_decode($checkMint->nftMint['nft_res'], true)['digest'] : '' }}">
                                         SUI Explorer Link
                                     </a>
                                 @else

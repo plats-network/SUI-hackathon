@@ -10,11 +10,10 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
                        className="image-file-react"
                        id={`image-file-${itemKey}`}
                        name="file-image-nft"
-                       onChange={onFileChange}
-                />
+                       onChange={onFileChange}/>
                 <label htmlFor={`image-file-${itemKey}`}>
                     <img className="image-label img-preview"
-                         src={nftData.image_file || "https://static.vecteezy.com/system/resources/previews/007/567/154/original/select-image-icon-vector.jpg"}/>
+                         src={nftData.image_file || "/imgs/no-image.png"}/>
                 </label>
             </div>
             <div className="col-4">
@@ -23,6 +22,7 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
                            className="form-control nft_name"
                            placeholder="NFT Title"
                            name="nft_name"
+                           required={true}
                            onChange={onInputChange}/>
                 </div>
                 <div className="mt-20">

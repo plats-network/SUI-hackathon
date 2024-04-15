@@ -5,7 +5,7 @@ const NftItemMinted = ({nftData}) => {
         <div className="row mb-3">
             <div className="col-4">
                 <label htmlFor="image-file">
-                    <img className="img-preview img-preview-nft" src={nftData.image_file}/>
+                    <img className="img-preview img-preview-nft" src={nftData.image_file || "/imgs/no-image.png"}/>
                 </label>
             </div>
             <div className="col-3">
