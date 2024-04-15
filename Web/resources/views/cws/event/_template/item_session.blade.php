@@ -8,7 +8,7 @@
                name="file-image-nft"
         />
         <label for="image-file{{$indexImageItem}}">
-            <img class="image-label img-preview" src="https://static.vecteezy.com/system/resources/previews/007/567/154/original/select-image-icon-vector.jpg">
+            <img class="image-label img-preview" src="{{ asset('/imgs/no-image.png') }}">
         </label>
     </div>
     <div class="col-6">
