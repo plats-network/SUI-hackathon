@@ -12,21 +12,18 @@ export default function App() {
         const newSessionData = [];
         
         $('.itemSessionDetailMint').each(function (index) {
-            const imgElement = $(this).find('img'); // Tìm thẻ img trong phần tử hiện tại
-            const src = imgElement.attr('src'); // Lấy src từ thẻ img
 
             const nameSession = $(this).find('.name_session').val();
             const descriptionSession = $(this).find('.description_session').val();
-            const fileSession = src ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
+            const fileSession = $(this).find('.image-file').attr('link-img') ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
             const sessionObj = {
                 nameSession: nameSession,
                 descriptionSession: descriptionSession,
                 fileSession: fileSession
             };  
-            console.log('fileSession',fileSession);
             newSessionData.push(sessionObj);
         });
-
+        console.log('newSessionData',newSessionData);
         setSessionData(newSessionData);
     }
 
@@ -69,8 +66,8 @@ export default function App() {
             descriptionSession: data.map(item => item.descriptionSession),
             fileSession: data.map(item => item.fileSession)
         };
-    
-
+        console.log('newData',newData);
+        console.log('wallet',wallet);
         const tx = new TransactionBlock();
         let packageId = "0x4adab96560b3199dd3b46f2c906e87f49a0ac8029f5e6eb3bb7d9739ee69235d";
         tx.moveCall({
@@ -90,25 +87,37 @@ export default function App() {
             ],
             typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
-         const result = await wallet.signAndExecuteTransactionBlock({
-            transactionBlock: tx,
-        });
-        
-        console.log(result);
-        if(!result.confirmedLocalExecution){
+        $('.loading').show();
+        try {
+            const result = await wallet.signAndExecuteTransactionBlock({
+                transactionBlock: tx,
+            });
+            
+            console.log(result);
+            if(!result.confirmedLocalExecution){
+                alert('nft minted Session fails!');
+                return;
+            }
+
+            // Lặp qua mỗi đối tượng trong mảng data
+            data.forEach(obj => {
+                // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
+                obj.txhash = result.digest;
+            });
+
+            appendNftSessionDetail(data);
+
+            $('.loading').hide();
+
+            alert('nft minted Session successfully!');
+            
+         } catch (error) {
+            
+            $('.loading').hide();
+
             alert('nft minted Session fails!');
-            return;
+
         }
-
-        // Lặp qua mỗi đối tượng trong mảng data
-        data.forEach(obj => {
-            // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
-            obj.txhash = result.digest;
-        });
-
-        appendNftSessionDetail(data);
-
-        alert('nft minted Session successfully!');
         
     }
     useEffect(() => {

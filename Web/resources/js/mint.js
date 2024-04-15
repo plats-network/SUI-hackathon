@@ -306,12 +306,72 @@ $('.page-content').on("click", "#btnGenItemNft", async function () {
     }
 });
 
-$('.page-content').on("click", "#btnGenItemSession", async function () {
+$('.page-content #listRowSession').on("change", ".image-file", async function () {
     
+    let file = $(this).prop('files')[0]; // Lấy file đã chọn
+    if (file) {
+        let formData = new FormData(); // Tạo đối tượng FormData
+        formData.append('file', file); // Thêm file vào FormData
+
+        // Gửi yêu cầu POST đến API
+        try {
+            const response1 = await axios.post('/upload-image-nft', formData, {
+                headers: {
+                    'accept': 'application/json',
+                    'Accept-Language': 'en-US,en;q=0.8',
+                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                }
+            }).then(async response => {
+                console.log(response.data);
+                if(response.data.path){
+                    $(this).attr('link-img', response.data.path);
+                }
+            });
+            
+        } catch (error) {
+           
+            // Xử lý khi gửi yêu cầu gặp lỗi
+            console.error("Lỗi khi gửi yêu cầu: " + error.message);
+        }
+
+    }
+});
+
+$('.page-content #listRowBooth').on("change", ".image-file", async function () {
+
+    let file = $(this).prop('files')[0]; // Lấy file đã chọn
+    if (file) {
+        let formData = new FormData(); // Tạo đối tượng FormData
+        formData.append('file', file); // Thêm file vào FormData
+        // Gửi yêu cầu POST đến API
+        try {
+            const response1 = await axios.post('/upload-image-nft', formData, {
+                headers: {
+                    'accept': 'application/json',
+                    'Accept-Language': 'en-US,en;q=0.8',
+                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                }
+            }).then(async response => {
+                console.log(response.data);
+                if(response.data.path){
+                    $(this).attr('link-img', response.data.path);
+                }
+            });
+            
+        } catch (error) {
+            // Xử lý khi gửi yêu cầu gặp lỗi
+            console.error("Lỗi khi gửi yêu cầu: " + error.message);
+        }
+
+    }
+});
+
+$('.page-content').on("click", "#btnGenItemSession", async function () {
+
     //$('.loading').show();
     // $('.loading').hide();
     $('#btnAddItemBooth').click();
-   
+    return ;
     if ($('.itemSessionDetailMint').length > 0) {
         const {blockhash, lastValidBlockHeight} =
         await connection.getLatestBlockhash('confirmed');
@@ -345,10 +405,9 @@ $('.page-content').on("click", "#btnGenItemSession", async function () {
                 }).then(async response1 => {
                     let sessionName = $(this).find('.name_session').val();
                     let description = $(this).find('.description_session').val();
-                    console.log(sessionName, description, response1.data.path);
-                    txs.push(await createNftTx(sessionName, description, response1.data.path, blockhash, ownerWallet, lastValidBlockHeight, mintAccount, names, symbols, uris))
+                    //txs.push(await createNftTx(sessionName, description, response1.data.path, blockhash, ownerWallet, lastValidBlockHeight, mintAccount, names, symbols, uris))
                     // appendNftDetail
-                    appendNftSessionDetail(await convert_to_base64(file ? file[0] : ''), sessionName, description, 'https://explorer.solana.com/address/SfmKb6KG6MdXeqWz4o6kLj7hmVsvczAftDgGiToxxh1' + walletOr + '?cluster=devnet');
+                    //appendNftSessionDetail(response1.data.path, sessionName, description, 'https://explorer.solana.com/address/SfmKb6KG6MdXeqWz4o6kLj7hmVsvczAftDgGiToxxh1' + walletOr + '?cluster=devnet');
                     // empty
                     $(this).hide();
                     $(this).removeClass('itemSessionDetailMint');
@@ -413,6 +472,7 @@ $('.page-content').on("click", "#btnGenItemSession", async function () {
 
 $('.page-content').on("click", "#btnGenItemBooth", async function () {
     //$('.loading').show();
+    return ;
     if ($('.itemBoothDetailMint').length > 0) {
         const {blockhash, lastValidBlockHeight} =
             await connection.getLatestBlockhash('confirmed');
@@ -442,11 +502,12 @@ $('.page-content').on("click", "#btnGenItemBooth", async function () {
                         'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
                     }
                 }).then(async response1 => {
+                    console.log(response1);
                     let sessionName = $(this).find('.name_booth').val();
                     let description = $(this).find('.description_booth').val();
-                    txs.push(await createNftTx(sessionName, description, response1.data.path, blockhash, ownerWallet, lastValidBlockHeight, mintAccount, names, symbols, uris))
+                    //txs.push(await createNftTx(sessionName, description, response1.data.path, blockhash, ownerWallet, lastValidBlockHeight, mintAccount, names, symbols, uris))
                     // appendNftDetail
-                    appendNftBoothDetail(await convert_to_base64(file ? file[0] : ''), sessionName, description, 'https://explorer.solana.com/address/SfmKb6KG6MdXeqWz4o6kLj7hmVsvczAftDgGiToxxh1' + walletOr + '?cluster=devnet');
+                    appendNftBoothDetail(response1.data.path, sessionName, description, 'https://explorer.solana.com/address/SfmKb6KG6MdXeqWz4o6kLj7hmVsvczAftDgGiToxxh1' + walletOr + '?cluster=devnet');
                     // empty
                     $(this).hide();
                     $(this).removeClass('itemBoothDetailMint');
