@@ -12,12 +12,9 @@ export default function App() {
         
         $('.itemBoothDetailMint').each(function (index) {
 
-            const imgElement = $(this).find('img'); // Tìm thẻ img trong phần tử hiện tại
-            const src = imgElement.attr('src'); // Lấy src từ thẻ img
-
             const nameBooth = $(this).find('.name_booth').val();
             const descriptionBooth = $(this).find('.description_booth').val();
-            const fileBooth = src ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
+            const fileBooth = $(this).find('.image-file').attr('link-img') ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
 
             const boothObj = {
                 nameBooth: nameBooth,
@@ -86,25 +83,34 @@ export default function App() {
             ],
             typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
+        $('.loading').show();
+        try {
+            const result = await wallet.signAndExecuteTransactionBlock({
+                transactionBlock: tx,
+            });
 
-  
-        const result = await wallet.signAndExecuteTransactionBlock({
-            transactionBlock: tx,
-        });
+            console.log(result);
+            
+            if(!result.confirmedLocalExecution){
+                alert('nft minted Booth fail!');
+                return;
+            }
+            // Lặp qua mỗi đối tượng trong mảng data
+            data.forEach(obj => {
+                // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
+                obj.txhash = result.digest;
+            });
 
-        console.log(result);
-        if(!result.confirmedLocalExecution){
-            alert('nft minted Booth fail!');
-            return;
+            appendNftBoothDetail(data);
+            $('.loading').hide();   
+            alert('nft minted Booth successfully!');
+        } catch (error) {
+                
+            $('.loading').hide();
+
+            alert('nft minted Session fails!');
+
         }
-        // Lặp qua mỗi đối tượng trong mảng data
-        data.forEach(obj => {
-            // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
-            obj.txhash = result.digest;
-        });
-
-        appendNftBoothDetail(data);
-        alert('nft minted Booth successfully!');
     }
     useEffect(() => {
 
