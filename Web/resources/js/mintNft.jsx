@@ -15,7 +15,7 @@ function createMintNftTxnBlock(data) {
 
     // note that this is a devnet contract address
     const contractAddress =
-        "0x4adab96560b3199dd3b46f2c906e87f49a0ac8029f5e6eb3bb7d9739ee69235d";
+        "0x3827b28d5f79b559cf7f9f545cbc99a2653e19d7c99173cec1a9428a478357f5";
     const contractModule = "client";
     const contractMethod = "mint_batch";
 
@@ -25,7 +25,7 @@ function createMintNftTxnBlock(data) {
     const nftCategory = data.nft_category;
     const nftDescription = data.nft_symbol;
     const nftImgUrl = data.image_file ?? "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
-    const nftCollectionId = "0xde8cb6c56c178eb3c25cd1c979f9b6b251d65ad50f34b8b70ad8c43fad4ad96e"
+    const nftCollectionId = "0x3b0b0833c020f964c09991796945efa46b4cd66af696df698ae9a41a75383819"
 
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,
@@ -109,7 +109,7 @@ export default function MintNft({nftData, _setMinted}) {
                 //get ticket
 
                 const tickets = nftList.map((data) => data.data.tickets);
-                console.log(tickets);
+                console.log('tickets:',tickets);
 
                 // Add a new NftInput for each successful mint
                 for (let j = 0; j < Number(nftData[i].nft_amount); j++) {
