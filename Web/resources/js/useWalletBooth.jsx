@@ -12,12 +12,9 @@ export default function App() {
         
         $('.itemBoothDetailMint').each(function (index) {
 
-            const imgElement = $(this).find('img'); // Tìm thẻ img trong phần tử hiện tại
-            const src = imgElement.attr('src'); // Lấy src từ thẻ img
-
             const nameBooth = $(this).find('.name_booth').val();
             const descriptionBooth = $(this).find('.description_booth').val();
-            const fileBooth = src ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
+            const fileBooth = $(this).find('.image-file').attr('link-img') ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
 
             const boothObj = {
                 nameBooth: nameBooth,
@@ -72,7 +69,7 @@ export default function App() {
             fileBooth: data.map(item => item.fileBooth)
         };
         const tx = new TransactionBlock();
-        let packageId = "0x4adab96560b3199dd3b46f2c906e87f49a0ac8029f5e6eb3bb7d9739ee69235d";
+        let packageId = "0x3827b28d5f79b559cf7f9f545cbc99a2653e19d7c99173cec1a9428a478357f5";
         tx.moveCall({
             target: `${packageId}::client::mint_batch_booths`,
             arguments: [
@@ -82,29 +79,38 @@ export default function App() {
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileBooth),
 
-                tx.object('0xde8cb6c56c178eb3c25cd1c979f9b6b251d65ad50f34b8b70ad8c43fad4ad96e'),
+                tx.object('0x3b0b0833c020f964c09991796945efa46b4cd66af696df698ae9a41a75383819'),
             ],
             typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
+        $('.loading').show();
+        try {
+            const result = await wallet.signAndExecuteTransactionBlock({
+                transactionBlock: tx,
+            });
 
-  
-        const result = await wallet.signAndExecuteTransactionBlock({
-            transactionBlock: tx,
-        });
+            console.log(result);
+            
+            if(!result.confirmedLocalExecution){
+                alert('nft minted Booth fail!');
+                return;
+            }
+            // Lặp qua mỗi đối tượng trong mảng data
+            data.forEach(obj => {
+                // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
+                obj.txhash = result.digest;
+            });
 
-        console.log(result);
-        if(!result.confirmedLocalExecution){
-            alert('nft minted Booth fail!');
-            return;
+            appendNftBoothDetail(data);
+            $('.loading').hide();   
+            alert('nft minted Booth successfully!');
+        } catch (error) {
+                
+            $('.loading').hide();
+
+            alert('nft minted Session fails!');
+
         }
-        // Lặp qua mỗi đối tượng trong mảng data
-        data.forEach(obj => {
-            // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
-            obj.txhash = result.digest;
-        });
-
-        appendNftBoothDetail(data);
-        alert('nft minted Booth successfully!');
     }
     useEffect(() => {
 
