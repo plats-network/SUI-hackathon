@@ -108,7 +108,7 @@ export default function App() {
                 
             $('.loading').hide();
 
-            alert('nft minted Session fails!');
+            alert('nft minted Booth fails!');
 
         }
     }
