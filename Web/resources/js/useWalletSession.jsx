@@ -69,7 +69,7 @@ export default function App() {
         console.log('newData',newData);
         console.log('wallet',wallet);
         const tx = new TransactionBlock();
-        let packageId = "0x4adab96560b3199dd3b46f2c906e87f49a0ac8029f5e6eb3bb7d9739ee69235d";
+        let packageId = "0x3827b28d5f79b559cf7f9f545cbc99a2653e19d7c99173cec1a9428a478357f5";
         tx.moveCall({
             target: `${packageId}::client::mint_batch_sessions`,
             arguments: [
@@ -83,7 +83,7 @@ export default function App() {
                 //tx.pure(data.nameSession),
                 //tx.pure(data.descriptionSession),
                 //tx.pure(data.fileSession),
-                tx.object('0xde8cb6c56c178eb3c25cd1c979f9b6b251d65ad50f34b8b70ad8c43fad4ad96e'),
+                tx.object('0x3b0b0833c020f964c09991796945efa46b4cd66af696df698ae9a41a75383819'),
             ],
             typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
@@ -112,7 +112,7 @@ export default function App() {
             alert('nft minted Session successfully!');
             
          } catch (error) {
-            
+
             $('.loading').hide();
 
             alert('nft minted Session fails!');
