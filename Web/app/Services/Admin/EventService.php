@@ -215,7 +215,8 @@ class EventService extends BaseService
                     $nft->nft_category = $data['nft-ticket-category-'][$key] ?? '';
                     $nft->address_nft = $data['nft-ticket-category-'][$key] ?? '';
                     $list_nft = $data['nft-ticket-list-'][$key] ? json_decode($data['nft-ticket-list-'][$key], true)[0] : [];
-                    foreach ($list_nft as $item) {
+                    $list_nft_reversed = array_reverse($list_nft);
+                    foreach ($list_nft_reversed as $item) {
                         $exitsting = NFTMint::where('address_nft', $item)->first();
                         if (!$exitsting) {
                             $nft->address_nft = $item;

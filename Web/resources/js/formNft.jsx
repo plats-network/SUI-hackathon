@@ -94,6 +94,8 @@ function NftForm() {
     const _setMinted = (data, key) => {
         setNftMinted([...nftMinted, {...data}]);
     }
+    console.log('nftData:', nftData);
+    console.log('nftMinted:', nftMinted);
 
     return (
         <>
