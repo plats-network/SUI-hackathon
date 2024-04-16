@@ -27,6 +27,7 @@ function NftForm() {
             list[index][name] = value;
             setNftData(list);
         }
+        console.log('nftData:', nftData);
     };
     const handleAddMore = () => {
         setItems([...items, items.length]);
@@ -91,14 +92,10 @@ function NftForm() {
         }
     };
     const _setMinted = (data, key) => {
-        setNftMinted(data);
+        setNftMinted([...nftMinted, {...data}]);
     }
     console.log('nftData:', nftData);
     console.log('nftMinted:', nftMinted);
-    // React.useEffect(() => {
-    //     setNftData(nftData.filter(item => !nftMinted.some(mintedItem => item.nft_id === mintedItem.nft_id)));
-    // }, [nftMinted]);
-    // console.log('nftMinted1:', nftData);
 
     return (
         <>
@@ -150,7 +147,7 @@ function NftForm() {
                      style={{borderLeft: '1px', borderRight: '1px solid'}}>
                     <div className="p-2">
                         <WalletProvider>
-                            <MintNft nftData={nftData} _setMinted={_setMinted} setNftData={setNftData} setItems={setItems} items={items}/>
+                            <MintNft nftData={nftData} _setMinted={_setMinted} />
                         </WalletProvider>
                     </div>
                 </div>
