@@ -44,6 +44,14 @@ async function mint() {
     });
 
     console.log({ result });
+
+    const ticketIds = 
+    result.objectChanges.filter(
+        (o) =>
+            o.type === "created" &&
+            o.objectType.includes("::ticket_collection::NFTTicket")
+    ).map(item => item.objectId);
+    console.log(`ticket id : ${ticketIds}`);
 }
 
 mint();

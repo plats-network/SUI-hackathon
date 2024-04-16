@@ -14,11 +14,11 @@ const getNfts = async () => {
         showContent: true,
       }
     });
-
+    console.log(allObjects);
 
     //console.log("objectIDs", allObjects.data[0]);
     const objectIDs = (allObjects?.data || [])
-      .filter((item) => item.data.objectId =="0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d")
+      .filter((item) => item.data.objectId =="0x2587305d59dbcc09406e1ef0147053fff3019a64aca312108adac2913785a6d0")
       .map((anObj) => anObj.data.objectId);
     
     const allObjRes = await client.multiGetObjects({

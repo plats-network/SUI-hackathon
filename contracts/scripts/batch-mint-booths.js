@@ -31,12 +31,21 @@ async function mintBooths() {
         typeArguments: [`${process.env.PACKAGE_ID}::ticket_collection::NFTTicket`]
     });
 
-    const result = await client.signAndExecuteTransactionBlock({
+    const txs = await client.signAndExecuteTransactionBlock({
         signer: keypair,
         transactionBlock: tx,
+        options: {
+            showObjectChanges: true,
+        },
     });
 
-    console.log({ result });
+    const boothIds = 
+        txs.objectChanges.filter(
+            (o) =>
+                o.type === "created" &&
+                o.objectType.includes("::ticket_collection::NFTBooth")
+        ).map(item => item.objectId);
+    console.log(`Booths id : ${boothIds}`);
 }
 
 mintBooths();
