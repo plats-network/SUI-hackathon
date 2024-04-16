@@ -213,16 +213,19 @@ class EventService extends BaseService
                     $nft->nft_uri = $data['nft-ticket-uri-'][$key] ?? '';
                     $nft->nft_res = $data['nft-ticket-res-'][$key] ?? '';
                     $nft->nft_category = $data['nft-ticket-category-'][$key] ?? '';
-                    $nft->address_nft = $data['nft-ticket-category-'][$key] ?? '';
-                    $list_nft = $data['nft-ticket-list-'][$key] ? json_decode($data['nft-ticket-list-'][$key], true)[0] : [];
-                    $list_nft_reversed = array_reverse($list_nft);
-                    foreach ($list_nft_reversed as $item) {
-                        $exitsting = NFTMint::where('address_nft', $item)->first();
-                        if (!$exitsting) {
-                            $nft->address_nft = $item;
-                            break;
+                    $decoded = json_decode($data['nft-ticket-list-'][$key], true);
+                    $list_nft = (is_array($decoded) && count($decoded) > 0) ? $decoded[0] : [];
+                    if (!empty($list_nft)) {
+                        $list_nft_reversed = array_reverse($list_nft);
+                        foreach ($list_nft_reversed as $item) {
+                            $exitsting = NFTMint::where('address_nft', $item)->first();
+                            if (!$exitsting) {
+                                $nft->address_nft = $item;
+                                break;
+                            }
                         }
                     }
+
 //                    $nft->seed = $data['nft-ticket-seed-'][$key] ?? '';
 //                    $nft->address_nft = $data['nft-ticket-address-nft-'][$key] ?? '';
 //                    $nft->address_organizer = $data['nft-ticket-address-organizer-'][$key] ?? '';

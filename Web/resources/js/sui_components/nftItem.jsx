@@ -13,7 +13,7 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
                        onChange={onFileChange}/>
                 <label htmlFor={`image-file-${itemKey}`}>
                     <img className="image-label img-preview"
-                         src={nftData.image_file || "/imgs/no-image.png"}/>
+                         src={nftData?.image_file || "/imgs/no-image.png"}/>
                 </label>
             </div>
             <div className="col-4">
