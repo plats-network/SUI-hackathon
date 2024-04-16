@@ -27,9 +27,9 @@ async function mint() {
     tx.moveCall({
         target: `${packageId}::client::create_new_collection`,
         arguments: [
-            tx.pure("https://picsum.photos/id/237/200/300"),
-            tx.pure("SUI Hackathon"),
-            tx.pure("This is a ticket to join SUI Hackathon"),
+            tx.pure("https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"),
+            tx.pure("SUI Hackathon 2024"),
+            tx.pure("This is a ticket to join SUI Hackathon 2024"),
             tx.pure("0"),
         ],
 
