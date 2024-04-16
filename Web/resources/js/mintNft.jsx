@@ -15,7 +15,7 @@ function createMintNftTxnBlock(data) {
 
     // note that this is a devnet contract address
     const contractAddress =
-        "0x3827b28d5f79b559cf7f9f545cbc99a2653e19d7c99173cec1a9428a478357f5";
+        "0x5ff08c4a46f0e68e9677f6be420b6adf9f0fc90355f978ea235173fffc061a5c";
     const contractModule = "client";
     const contractMethod = "mint_batch";
 
@@ -25,7 +25,7 @@ function createMintNftTxnBlock(data) {
     const nftCategory = data.nft_category;
     const nftDescription = data.nft_symbol;
     const nftImgUrl = data.image_file ?? "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
-    const nftCollectionId = "0x3b0b0833c020f964c09991796945efa46b4cd66af696df698ae9a41a75383819"
+    const nftCollectionId = "0x2587305d59dbcc09406e1ef0147053fff3019a64aca312108adac2913785a6d0"
 
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,
@@ -136,7 +136,7 @@ export default function MintNft({nftData, _setMinted}) {
 
     return (
         <div className="App">
-            <ConnectButton/>
+            <ConnectButton label={'Connect Wallet'}/>
             <section style={{marginTop: '15px', textAlign: 'right'}}>
                 {wallet.status === "connected" && (
                     <>
