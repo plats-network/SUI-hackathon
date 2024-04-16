@@ -44,7 +44,6 @@ function NftForm() {
     };
 
     const handleDelete = (index) => {
-        console.log('index:' + typeof index);
         setItems(items.filter((item, i) => item !== index));
         setNftData(nftData.filter((item, i) => item.nft_id !== index));
     };
@@ -93,8 +92,8 @@ function NftForm() {
     const _setMinted = (data, key) => {
         setNftMinted(data);
     }
-    console.log('nftData:', nftData);
-    console.log('nftMinted:', nftMinted);
+    // console.log('nftData:', nftData);
+    // console.log('nftMinted:', nftMinted);
     // React.useEffect(() => {
     //     setNftData(nftData.filter(item => !nftMinted.some(mintedItem => item.nft_id === mintedItem.nft_id)));
     // }, [nftMinted]);
@@ -150,7 +149,14 @@ function NftForm() {
                      style={{borderLeft: '1px', borderRight: '1px solid'}}>
                     <div className="p-2">
                         <WalletProvider>
-                            <MintNft nftData={nftData} _setMinted={_setMinted} setNftData={setNftData} setItems={setItems} items={items}/>
+                            <MintNft
+                                nftData={nftData}
+                                _setMinted={_setMinted}
+                                nftMinted={nftMinted}
+                                setNftData={setNftData}
+                                setItems={setItems}
+                                items={items}
+                            />
                         </WalletProvider>
                     </div>
                 </div>

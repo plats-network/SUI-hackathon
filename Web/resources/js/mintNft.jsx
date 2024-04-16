@@ -3,7 +3,6 @@ import {TransactionBlock} from "@mysten/sui.js/transactions";
 import "@suiet/wallet-kit/style.css"; // don't forget to import default stylesheet
 import NftInput from "./sui_components/nftInput";
 import React, {useState} from 'react';
-
 import ReactDOM from "react-dom";
 
 function createMintNftTxnBlock(data) {
@@ -47,7 +46,7 @@ function createMintNftTxnBlock(data) {
     return txb;
 }
 
-export default function MintNft({nftData, _setMinted, setNftData, setItems, items}) {
+export default function MintNft({nftData, _setMinted, nftMinted, setNftData, setItems, items}) {
     const wallet = useWallet();
     const [nftInputs, setNftInputs] = useState([]);
     const mnemonic_client = $('#mnemonic_client').val();
@@ -55,16 +54,16 @@ export default function MintNft({nftData, _setMinted, setNftData, setItems, item
     const [isLoading, setIsLoading] = useState(false);
     const datas = JSON.parse(JSON.stringify(nftData));
     const itemCopy = JSON.parse(JSON.stringify(items));
-    console.log('datas:', datas);
 
-    console.log('nftInputs', nftInputs);
 
     async function mintNft(event) {
         event.preventDefault();
         if (!wallet.connected) return;
         setIsLoading(true);
         const nftMints = [];
-        for (let i = 0; i < datas.length; i++) {
+        const newItems = [];
+        const newDatas = [];
+        for (let i = 0; i < nftData.length; i++) {
             const txb = createMintNftTxnBlock(nftData[i]);
             try {
                 const res = await wallet.signAndExecuteTransactionBlock({
@@ -83,37 +82,35 @@ export default function MintNft({nftData, _setMinted, setNftData, setItems, item
                             o.objectType.includes("::ticket_collection::NFTTicket")
                     ).map(item => item.objectId);
                 console.log('ticketIds :', ticketIds);
-                // let res = [];
-                // let tickets = [];
+
+
+
                 // Add a new NftInput for each successful mint
+                // let res = [];
+                // let ticketIds = ['0x5432c747a8b536adbc2152958833e50d4aa8727fdfbd531be21960be1b06d565'];
                 for (let j = 0; j < Number(nftData[i].nft_amount); j++) {
-                    // setNftInputs(prevInputs => [...prevInputs, nftData[i]]);
                     setNftInputs(prevInputs => [...prevInputs, {
                         ...nftData[i],
                         res: JSON.stringify(res),
-                        tickets: ticketIds[i]
+                        tickets: ticketIds[j]
                     }]);
                 }
                 nftMints.push({...nftData[i], res: JSON.stringify(res)});
-                // setItems(items.filter((item, j) => item !== nftData[i].nft_id));
-                // setNftData(nftData.filter(item => item.nft_id !== nftData[i].nft_id));
-                // console.log('nftData after', nftData);
-                // _setMinted({...nftData[i], res: JSON.stringify(res)});
-                // datas.splice(i, 1);
-                // itemCopy.splice(i, 1);
-                // if (datas.length === 0) {
-                //     break;
-                // }
-                // i --;
-                // alert('success');
+                newItems.push(nftData[i].nft_id);
+                newDatas.push({...nftData[i]});
             } catch (e) {
                 alert("Oops, nft minting failed");
                 console.error("nft mint failed", e);
             }
         }
-        _setMinted([...nftMints]);
-        // setItems([...itemCopy]);
-        // setNftData([...datas]);
+        _setMinted([...nftMinted, ...nftMints]);
+        let difference = itemCopy.filter(x => !newItems.includes(x));
+        const differenceData = datas.filter(nftItem =>
+            !newDatas.some(dataItem => dataItem.nft_id === nftItem.nft_id)
+        );
+        setNftData([...differenceData]);
+        setItems([...difference]);
+        setNftData([...differenceData]);
 
         setIsLoading(false);
 

@@ -229,39 +229,6 @@ $('.btn-claim-id').click(async function () {
     let collectionId = collection_id;
     let zkLoginUserAddress = localStorage.getItem('zkLoginUserAddress');
 
-    const allObjects = await client.getOwnedObjects({
-        owner: addressClient,
-        options: {
-            showType: true,
-            showDisplay: true,
-            showContent: true,
-        }
-    });
-
-
-    //console.log("objectIDs", allObjects.data[0]);
-    const objectIDs = (allObjects?.data || [])
-        .filter((item) => item.data.objectId == collectionId)
-        .map((anObj) => anObj.data.objectId);
-
-    const allObjRes = await client.multiGetObjects({
-        ids: objectIDs,
-        options: {
-            showContent: true,
-            showDisplay: true,
-            showType: true,
-        },
-    });
-    const nftList = allObjRes.filter(obj => obj.data).map(obj => ({
-        objectId: obj.data.objectId,
-        data: obj.data.content.fields,
-
-    }));
-    //get ticket
-
-    const tickets = nftList.map((data) => data.data.tickets);
-    console.log(tickets);
-
     // let ticket_id = tickets[0][indexNft];
     let ticket_id = $('#ticket_id').val();
 
