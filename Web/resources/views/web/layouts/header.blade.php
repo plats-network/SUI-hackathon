@@ -67,7 +67,7 @@
                                         ></button>
                                         <div id="e-menu" class="dropdown-content">
                                             <a href="{{route('web.profile')}}">Profile</a>
-                                            <a href="#" class="wallet-user">Wallet</a>
+                                            <a href="#" class="wallet-user d-none">Wallet</a>
                                             {{-- <a href="#">Link 2</a> --}}
                                             <a href="{{route('web.logout')}}">Logout</a>
                                         </div>
