@@ -30,6 +30,34 @@
                 placeholder="Describe {{$getInc}}"
                 value="">
         </div>
+        <div class="col-10 mt-20" hidden>
+            <input
+                type="hidden"
+                class="form-control nft_address_booth"
+                id="booths[detail][{{$indexImageItem}}][nft-address]"
+                name="booths[detail][{{$indexImageItem}}][nft-address]"
+                placeholder="nft-address"
+                value="">
+        </div>
+        <div class="col-10 mt-20" hidden>
+            <input
+                type="hidden"
+                class="form-control nft_uri_booth"
+                id="booths[detail][{{$indexImageItem}}][nft-uri]"
+                name="booths[detail][{{$indexImageItem}}][nft-uri]"
+                placeholder="nft-uri"
+                value="">
+        </div>
+        <div class="col-10 mt-20" hidden>
+            <input
+                type="hidden"
+                class="form-control nft_res_booth"
+                id="booths[detail][{{$indexImageItem}}][nft-res]"
+                name="booths[detail][{{$indexImageItem}}][nft-res]"
+                placeholder="nft-res"
+                value="">
+        </div>
+
     </div>
     <div class="col-2" style="margin-top: 50px">
         <button type="button" class="btn-delete-nft-ticket-booth btn btn-danger">Delete</button>

@@ -37,8 +37,7 @@ $(".Google").click(async function(){
     var params = new URLSearchParams({
         client_id: '290554041285-g77ars54m9vc2hvugv1oekhtd54ell9p.apps.googleusercontent.com',
         nonce: nonce,
-        //redirect_uri: 'http://localhost/SUI-hackathon/Web/public',
-        redirect_uri: 'https://suivent.plats.network',
+        redirect_uri: $('meta[name="redirect_uri"]').attr('content'),
         response_type: 'id_token',
         scope: 'openid',
     });

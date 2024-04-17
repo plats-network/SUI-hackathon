@@ -6,6 +6,7 @@
                class="image-file"
                id="image-file{{$indexImageItem}}"
                name="file-image-nft"
+               value=""
         />
         <label for="image-file{{$indexImageItem}}">
             <img class="image-label img-preview" src="{{ asset('/imgs/no-image.png') }}">
@@ -28,6 +29,33 @@
                 id="sessions[detail][{{$indexImageItem}}][description]"
                 name="sessions[detail][{{$indexImageItem}}][description]"
                 placeholder="Description"
+                value="">
+        </div>
+        <div class="col-10 mt-20" hidden>
+            <input
+                type="hidden"
+                class="form-control nft_address_session"
+                id="sessions[detail][{{$indexImageItem}}][nft-address]"
+                name="sessions[detail][{{$indexImageItem}}][nft-address]"
+                placeholder="nft-address"
+                value="">
+        </div>
+        <div class="col-10 mt-20" hidden>
+            <input
+                type="hidden"
+                class="form-control nft_uri_session"
+                id="sessions[detail][{{$indexImageItem}}][nft-uri]"
+                name="sessions[detail][{{$indexImageItem}}][nft-uri]"
+                placeholder="nft-uri"
+                value="">
+        </div>
+        <div class="col-10 mt-20" hidden>
+            <input
+                type="hidden"
+                class="form-control nft_res_session"
+                id="sessions[detail][{{$indexImageItem}}][nft-res]"
+                name="sessions[detail][{{$indexImageItem}}][nft-res]"
+                placeholder="nft-res"
                 value="">
         </div>
     </div>

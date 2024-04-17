@@ -324,7 +324,7 @@ class Job extends Controller
      */
     public function getTravelGame(Request $request, $taskId)
     {
-
+        
         try {
             $event = $this->task->find($taskId);
             //$checkUserGetCode = $this->checkUserGetCode($request, $taskId);
@@ -535,7 +535,7 @@ class Job extends Controller
             array_splice($groupSessions[$item['travel_game_id']], 6, 0, [$tempArray[0]]);
             array_splice($groupSessions[$item['travel_game_id']], 7, 0, [$tempArray[1]]);
         }
-
+        
         $checkNftMint = UserNft::where([
             'booth_id'=> $booth->id,
             'session_id' => $session->id,
@@ -543,7 +543,6 @@ class Job extends Controller
         ])->first();
 
         $qrCode = '';
-
         if ($checkNftMint) {
             $qrCode = base64_encode(QrCode::format('png')->size(250)->generate(route('nft.claimAction', $checkNftMint->id)));
         } else {
@@ -570,8 +569,7 @@ class Job extends Controller
                 $qrCode = base64_encode(QrCode::format('png')->size(250)->generate(route('nft.claimAction', $nft->id)));
             }
         }
-
-        return view('web.events.travel_game', [
+        $data = [
             'event' => $event,
             'totalCompleted' => $totalCompleted,
             'session_id' => $session->id,
@@ -582,11 +580,12 @@ class Job extends Controller
             'nft' => $sessionNFT && $sessionNFT['nft'] ? 1 : 0,
             'flagU' => $flagU,
             'qrCode' => $qrCode,
-
+            'checkNftMint' => $checkNftMint,
             'groupSessions' => ($groupSessions),
-        ]);
+        ];
+        return view('web.events.travel_game', $data);
     }
-    //Check user get code when have attend 6/8 session in booth
+    //Check user get code when have at  tend 6/8 session in booth
     public function checkUserGetCode(Request $request, $taskId)
     {
         try {
