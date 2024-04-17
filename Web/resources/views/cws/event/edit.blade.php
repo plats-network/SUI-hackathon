@@ -149,6 +149,7 @@
                     <div class="card-body">
                         <form method="POST"
                               id="post_form"
+                              onSubmit="event.preventDefault();"
                               action="{{$is_update ? route('cws.eventUpdate', ['id' => $event->id]) : route('cws.eventStore')}}">
                             @csrf
                             <input type="hidden" name="id" value="{{ $event->id }}">
@@ -1279,6 +1280,12 @@
                 $('#post_form').submit();
             });
 
+            $(document).on('click', '.min-save-btn', function (event) {
+                console.log('Save');
+                let idForm = '#post_form';
+                $(idForm).removeAttr('onsubmit');
+                $(idForm).submit();
+            });
 
             var isPreview = {{$isPreview}};
             //Check is preview page will disable all input
@@ -1672,6 +1679,7 @@
         }
 
         function nextPrev(n) {
+            console.log('next');
             //Todo check validate then next
             //Check if n = 1 and validate form before next
             if (validateForm(n) == false) {
