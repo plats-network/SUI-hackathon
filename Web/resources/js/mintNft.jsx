@@ -10,8 +10,7 @@ function createMintNftTxnBlock(data) {
     const txb = new TransactionBlock();
 
     // note that this is a devnet contract address
-    const contractAddress =
-        "0x5ff08c4a46f0e68e9677f6be420b6adf9f0fc90355f978ea235173fffc061a5c";
+    const contractAddress = import.meta.env.VITE_PACKAGE_ID;
     const contractModule = "client";
     const contractMethod = "mint_batch";
 
@@ -21,7 +20,7 @@ function createMintNftTxnBlock(data) {
     const nftCategory = data.nft_category;
     const nftDescription = data.nft_symbol;
     const nftImgUrl = data.image_file ?? "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
-    const nftCollectionId = "0x2587305d59dbcc09406e1ef0147053fff3019a64aca312108adac2913785a6d0"
+    const nftCollectionId = import.meta.env.VITE_COLLECTION_ID;
 
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,
@@ -46,7 +45,7 @@ function createMintNftTxnBlock(data) {
     return txb;
 }
 
-export default function MintNft({nftData, _setMinted, nftMinted, setNftData, setItems, items}) {
+export default function mintNft({nftData, _setMinted, nftMinted, setNftData, setItems, items}) {
     const wallet = useWallet();
     const [nftInputs, setNftInputs] = useState([]);
     const mnemonic_client = $('#mnemonic_client').val();

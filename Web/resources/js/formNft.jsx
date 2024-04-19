@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import {WalletProvider} from '@suiet/wallet-kit';
 import axios from 'axios';
 import NftItem from './sui_components/nftItem';
-import MintNft from './mintNft';
+import MintNft1 from './mintNft';
 import NftItemMinted from "./sui_components/nftItemMinted";
 
 function NftForm() {
@@ -149,7 +149,7 @@ function NftForm() {
                      style={{borderLeft: '1px', borderRight: '1px solid'}}>
                     <div className="p-2">
                         <WalletProvider>
-                            <MintNft
+                            <MintNft1
                                 nftData={nftData}
                                 _setMinted={_setMinted}
                                 nftMinted={nftMinted}
