@@ -25,7 +25,7 @@ function saltRandomString(length) {
 
 // đăng nhập google
 $(".Google").click(async function(){
-
+console.log(import.meta.env.VITE_REDIRECT_URI);
     //chuyển sang google để đăng nhập
     const { epoch, epochDurationMs, epochStartTimestampMs } = await getSystemState();
     const maxEpoch = Number(epoch) + 2;
@@ -38,7 +38,7 @@ $(".Google").click(async function(){
         client_id: '290554041285-g77ars54m9vc2hvugv1oekhtd54ell9p.apps.googleusercontent.com',
         nonce: nonce,
         // redirect_uri: 'https://suivent.plats.network',
-        redirect_uri: import.meta.env.VITE_REDIRECT_URI,
+        redirect_uri: $('meta[name="redirect_uri"]').attr('content'),
         response_type: 'id_token',
         scope: 'openid',
     });
