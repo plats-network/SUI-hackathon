@@ -324,7 +324,6 @@ class Job extends Controller
      */
     public function getTravelGame(Request $request, $taskId)
     {
-        
         try {
             $event = $this->task->find($taskId);
             //$checkUserGetCode = $this->checkUserGetCode($request, $taskId);
@@ -569,6 +568,9 @@ class Job extends Controller
                 $qrCode = base64_encode(QrCode::format('png')->size(250)->generate(route('nft.claimAction', $nft->id)));
             }
         }
+        
+        $nftMint =  NFTMint::where('session_id',$session->id ?? '')->first();
+        
         $data = [
             'event' => $event,
             'totalCompleted' => $totalCompleted,
@@ -582,6 +584,7 @@ class Job extends Controller
             'qrCode' => $qrCode,
             'checkNftMint' => $checkNftMint,
             'groupSessions' => ($groupSessions),
+            'nftMint'=>$nftMint
         ];
         return view('web.events.travel_game', $data);
     }
