@@ -70,16 +70,19 @@ export default function App() {
         };
         const tx = new TransactionBlock();
         let packageId = $('meta[name="package_id"]').attr('content');
-        let collection_id = $('meta[name="collection_id"]').attr('content');        
+        let collection_id = $('meta[name="collection_id"]').attr('content');
         tx.moveCall({
             target: `${packageId}::client::mint_batch_booths`,
             arguments: [
+                // tx.pure(collection_id),
+
                 tx.pure(newData.nameBooth),
                 // description: vector<vector<u8>>,
                 tx.pure(newData.descriptionBooth),
-                // url: vector<vector<u8>>,
+
                 tx.pure(newData.fileBooth),
 
+                // url: vector<vector<u8>>,
                 tx.object(collection_id),
             ],
             typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
@@ -88,15 +91,24 @@ export default function App() {
         try {
             const result = await wallet.signAndExecuteTransactionBlock({
                 transactionBlock: tx,
+                options: {
+                    showObjectChanges: true,
+                },
             });
 
             console.log('signAndExecuteTransactionBlock',result);
             
-            if(!result.confirmedLocalExecution){
+            if(result.confirmedLocalExecution != true){
                 alert('nft minted Booth fail!');
                 return;
             }
-
+            // đoạn này là user claim
+            // let sessionIds =  result.objectChanges.filter((o) =>
+            //     o.type === "created" &&
+            //     o.objectType.includes("::ticket_collection::NFTBooth")
+            // ).map(item => item.objectId);
+            // console.log('sessionIds',sessionIds);
+            console.log(data);
             // Lặp qua mỗi đối tượng trong mảng data
             data.forEach(obj => {
                 // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
@@ -107,7 +119,7 @@ export default function App() {
             $('.loading').hide();   
             alert('nft minted Booth successfully!');
         } catch (error) {
-                
+            console.log('error',error);
             $('.loading').hide();
 
             alert('nft minted Booth fails!');

@@ -11,6 +11,9 @@ import {
     MINT_SIZE
 } from "@solana/spl-token";
 import { generateNonce, generateRandomness,jwtToAddress } from '@mysten/zklogin';
+import {TransactionBlock} from "@mysten/sui.js/transactions";
+import { getFullnodeUrl, SuiClient }  from '@mysten/sui.js/client';
+import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
 
 import axios from "axios";
 
@@ -49,8 +52,49 @@ $('#button-claim-test').click(async function(){
 
 $('#button-claim').click(async function () {
     //$('.loading').show();
+    //user login jdk
+    const address_nft_min = $("#address_nft_min").val();
+    console.log('address_nft_min',address_nft_min);
+    const zkLoginUserAddress = localStorage.getItem("zkLoginUserAddress");
+    if(!zkLoginUserAddress){
+        alert('user can`t login')
+        return;
+    }
+
+    const tx = new TransactionBlock();
+    const client = new SuiClient({
+        url: getFullnodeUrl('testnet'),
+    });
+    tx.transferObjects([tx.object(address_nft_min)] , zkLoginUserAddress);
+
+
+    //console.log('signAndExecuteTransactionBlock',result);
+    let mnemonic_client = 'genius exit shallow wealth boring layer rotate model calm behind immune maze';
+    // let collection_id = '0x2587305d59dbcc09406e  1ef0147053fff3019a64aca312108adac2913785a6d0';
+    // let package_id = '0x5ff08c4a46f0e68e9677f6be420b6adf9f0fc90355f978ea235173fffc061a5c';
+    const keypair = Ed25519Keypair.deriveKeypair(mnemonic_client);
+    try {
+        
+        const resultUserClaim = await client.signAndExecuteTransactionBlock({
+            signer: keypair,
+            transactionBlock: tx,
+        });
+        console.log(resultUserClaim);    
+        console.log(`Sessions id :`,address_nft_min);
+        console.log('resultUserClaim',resultUserClaim);
+        $('#button-claim').hide()
+        $('#button-claim-link').attr('href', 'https://suiscan.xyz/testnet/tx/'+resultUserClaim.digest);
+        $('#button-claim-link').show();
+        alert('user clainm success');
+        
+    } catch (error) {
+        console.log('claim sesisons error',error);
+        alert('user clainm fail');
+    }
+
+
     
-   
+    return;
     const emailLogin = $('#email_login').val();
     console.log(emailLogin);
     //const didToken = await magic?.auth.loginWithEmailOTP({email: emailLogin})
