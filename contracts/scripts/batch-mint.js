@@ -19,28 +19,30 @@ async function mint() {
     let packageId = process.env.PACKAGE_ID;
     let collectionId = process.env.COLLECTION_ID;
     tx.moveCall({
-        target: `${packageId}::client::mint_batch`,
+        target: `${packageId}::client::mint_batch_tickets`,
         arguments: [
-            // collection object id 
-            //tx.object('0x0d6422b82f418e592546019b81585963300f2f29acb86a281e5add34f3388c7d'),
-            tx.object(collectionId),
+            // event_id
+            tx.pure("8ba9148d4e85e4a6862e8fa613f6cf6b"),
             // name: vector<u8>,
             tx.pure("SUI Hackathon"),
             // description: vector<u8>,
             tx.pure("This is a ticket yo join SUI Hackathon"),
             // url: vector<u8>,
-            tx.pure("https://picsum.photos/id/237/200/300"),
+            tx.pure("https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"),
             // catogory: vector<u8>,
             tx.pure("Standard"),
             // max_supply: u64,
             tx.pure(2),
         ],
-        typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
+        //typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
 
     const result = await client.signAndExecuteTransactionBlock({
         signer: keypair,
         transactionBlock: tx,
+        options: {
+            showObjectChanges: true,
+        },
     });
 
     console.log({ result });
