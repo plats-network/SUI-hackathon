@@ -17,7 +17,7 @@ export default function MintNft1({nftData, _setMinted, nftMinted, setNftData, se
     const contractAddress =
         "0xc4ad98ab991591aebb1c72cfd6080d8706d5c819bda9572f009be3d35b799023";
     const contractModule = "client";
-    const contractMethod = "mint_batch_sessions";
+    const contractMethod = "mint_batch_tickets";
     // const collectionId = "0x2587305d59dbcc09406e1ef0147053fff3019a64aca312108adac2913785a6d0";
     async function mintNft(event) {
         event.preventDefault();
