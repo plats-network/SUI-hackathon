@@ -149,6 +149,7 @@ class NFTController extends Controller
             $userNft->type = $nft->type;
             $userNft->booth_id = $nft->booth_id;
             $userNft->task_id = $nft->task_id;
+            $userNft->digest = $request->digest ?? '';
             $userNft->save();
 //            $nft = NFT\NFTMint::find($request->nft_id);
 //            $nft->status = 3;

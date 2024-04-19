@@ -243,16 +243,20 @@ $('.btn-claim-id').click(async function () {
             signer: keypair,
             transactionBlock: tx,
         });
+        console.log(result);
+        let digest = result.digest;
         const body = {
-            nft_id: nftId
+            nft_id: nftId,
+            digest: digest,
         }
         // console.log(body);
 
         const res = await axios.post("/update_nft_status", body);
-        alert('Claim NFT is success. Please see on https://suiscan.xyz/')
+        alert(`Claim NFT is success. Please see on https://suiscan.xyz/${digest}`);
         $('.loading').hide();
         // $('.claim-success').show();
         $('.claim-success').css('display', 'block');
+        $('.sol-link').attr('href', `https://suiscan.xyz/${digest}`);
         $('.sol-link').show();
         $('.btn-claim-id').hide();
         $('.claim-btn').hide();
