@@ -158,19 +158,16 @@ export default function App() {
                     o.objectType.includes("::ticket_collection::NFTSession")
             ).map(item => item.objectId);
             console.log('sessionIds',sessionIds);
+            //user login jdk
+            // const user = "0x70f94573c6cd732304f2c0fd9d80cf7d6206e4609c5c4b259972e90885fc3acb";
+            // tx.transferObjects([tx.object(sessionIds)] , user);
 
-            const user = "0x70f94573c6cd732304f2c0fd9d80cf7d6206e4609c5c4b259972e90885fc3acb";
-            
-            tx.transferObjects([tx.object(sessionIds)] , user);
-
-            const resultUserClaim = await client.signAndExecuteTransactionBlock({
-                signer: keypair,
-                transactionBlock: tx,
-            });
-            
-            console.log(`Sessions id :`,$sessionIds);
-            console.log('resultUserClaim',resultUserClaim);
-
+            // const resultUserClaim = await client.signAndExecuteTransactionBlock({
+            //     signer: keypair,
+            //     transactionBlock: tx,
+            // });
+            // console.log(`Sessions id :`,$sessionIds);
+            // console.log('resultUserClaim',resultUserClaim);
             // hết đoạn này là user claim
 
             // Lặp qua mỗi đối tượng trong mảng data
