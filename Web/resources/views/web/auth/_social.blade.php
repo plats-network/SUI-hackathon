@@ -10,6 +10,9 @@
     justify-content: center;
   }
 </style>
+<head>
+    <meta name='redirect_uri' content="{{ env('REDIRECT_URI')}}">
+</head>
 <!--  <div class="social-sign row">
  <a href="{{ url('/login/facebook') }}" class="loginBtn loginBtn--facebook">
       Login with Facebook

@@ -9,8 +9,11 @@
     {{--Editor--}}
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.min.css"/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.min.css"/>
+    <meta name='mnemonic_client' content="{{ env('MNEMONIC_CLIENT')}}">
+    <meta name='package_id' content="{{ env('PACKAGE_ID')}}">
+    <meta name='collection_id' content="{{ env('COLLECTION_ID')}}">
+    <meta name='nft_hash_id' content="{{ $nft_hash_id }}">
 @endsection
 
 @section('name_page')
@@ -20,6 +23,7 @@
        'resources/js/mint.js',
 //        'resources/js/connect_suit.jsx',
         'resources/js/formNft.jsx',
+        'resources/js/testReactjs.jsx',
     ])
     <div class="page-title-box align-self-center d-none d-md-block">
         <h4 class="page-title mb-0">
@@ -98,6 +102,7 @@
     </style>
     <div class="text-end">
         <div id="button_connect_suit" style="display: inline-block"></div>
+        <button id="connectSUi">Connect</button>
     </div>
     <div class="container-fluid">
         <div class="row">
@@ -404,7 +409,7 @@
                                                             <div class="col-4"></div>
                                                             <div class="col-5">
                                                                 <img
-                                                                    src="data:image/png;base64, {!! $qrCode !!}"
+                                                                    src="data:image/png;base64, {{ $qrCode }}"
                                                                     alt="QR Code" style="max-width: 400px;">
                                                             </div>
                                                         </div>

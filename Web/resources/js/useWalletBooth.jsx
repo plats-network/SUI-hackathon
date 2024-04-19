@@ -28,7 +28,7 @@ export default function App() {
         setBoothData(newBoothData);
     }
 
-    const appendNftBoothDetail = (details) => {
+    const appendNftBoothDetail = async (details) => {
         console.log('details',details);
         // Khai báo một biến để chứa chuỗi HTML
         let html = '';
@@ -69,7 +69,8 @@ export default function App() {
             fileBooth: data.map(item => item.fileBooth)
         };
         const tx = new TransactionBlock();
-        let packageId = "0x3827b28d5f79b559cf7f9f545cbc99a2653e19d7c99173cec1a9428a478357f5";
+        let packageId = $('meta[name="package_id"]').attr('content');
+        let collection_id = $('meta[name="collection_id"]').attr('content');        
         tx.moveCall({
             target: `${packageId}::client::mint_batch_booths`,
             arguments: [
@@ -79,7 +80,7 @@ export default function App() {
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileBooth),
 
-                tx.object('0x3b0b0833c020f964c09991796945efa46b4cd66af696df698ae9a41a75383819'),
+                tx.object(collection_id),
             ],
             typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
@@ -89,12 +90,13 @@ export default function App() {
                 transactionBlock: tx,
             });
 
-            console.log(result);
+            console.log('signAndExecuteTransactionBlock',result);
             
             if(!result.confirmedLocalExecution){
                 alert('nft minted Booth fail!');
                 return;
             }
+
             // Lặp qua mỗi đối tượng trong mảng data
             data.forEach(obj => {
                 // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
@@ -108,16 +110,21 @@ export default function App() {
                 
             $('.loading').hide();
 
-            alert('nft minted Session fails!');
+            alert('nft minted Booth fails!');
 
         }
+    }
+    const loginSui = async () => {
+        let nft_hash_id = $('meta[name="nft_hash_id"]').attr('content');
+
+        console.log('nft_hash_id',nft_hash_id);
     }
     useEffect(() => {
 
         if(boothData.length > 0){
 
             mint(wallet,boothData);
-
+            loginSui();
             console.log(wallet);
             console.log(boothData);
         }
@@ -127,7 +134,7 @@ export default function App() {
     return (
         <div className="App">
             {/* <h1 className="title gradient">Hello, Suiet Wallet Kit</h1> */}
-            <ConnectButton />
+            <ConnectButton label={'Connect Wallet'} />
 
             <section>
                 {/* <p>

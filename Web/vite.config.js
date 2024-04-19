@@ -59,6 +59,7 @@ export default defineConfig({
                 'resources/js/mintNftSession.jsx',
                 'resources/js/app/provider.jsx',
                 'resources/js/views/solana.jsx',
+                'resources/js/testReactjs.jsx'
             ],
             refresh: true,
         }),

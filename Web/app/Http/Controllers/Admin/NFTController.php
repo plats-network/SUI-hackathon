@@ -138,7 +138,7 @@ class NFTController extends Controller
                 Auth::login($newUser);
             }
         }
-        if ($nft) {
+        if (!empty($nft)) {
             // update nft
             $nft->status = 3;
             $nft->save();
@@ -151,7 +151,6 @@ class NFTController extends Controller
             $userNft->task_id = $nft->task_id;
             $userNft->digest = $request->digest ?? '';
             $userNft->save();
-
 //            $nft = NFT\NFTMint::find($request->nft_id);
 //            $nft->status = 3;
 //            $nft->save();

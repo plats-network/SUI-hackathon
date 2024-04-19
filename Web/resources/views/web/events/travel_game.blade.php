@@ -141,7 +141,7 @@
                                 $userNft->save();
                         }
                     @endphp
-                
+
                     @if ($nft && $nft->status < 3)
                         <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
                         <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">

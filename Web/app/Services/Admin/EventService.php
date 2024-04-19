@@ -355,6 +355,7 @@ class EventService extends BaseService
     private function saveSession($task, $sessions, $dataParam)
     {
         $index = 0;
+        
         if (isset($sessions['id']) && $sessions['id']) {
             $event = TaskEvent::where('id', $sessions['id'])->first();
             if (!$event) {
@@ -366,7 +367,6 @@ class EventService extends BaseService
                 'max_job' => $sessions['max_job'] ?? 1,
                 'description' => $sessions['description']
             ]);
-
 
             if (isset($sessions['detail']) && $sessions['detail']) {
 
@@ -447,6 +447,7 @@ class EventService extends BaseService
                 }
             }
         } else {
+            
             $event = TaskEvent::create([
                 'task_id' => $task->id,
                 'name' => $sessions['name'],
@@ -455,7 +456,7 @@ class EventService extends BaseService
                 'type' => 0,
                 'code' => Str::random(35)
             ]);
-
+          
             if (isset($sessions['detail']) && $sessions['detail']) {
 
                 foreach ($sessions['detail'] as $key => $item) {
@@ -484,6 +485,23 @@ class EventService extends BaseService
                                 'is_a4' => isset($item['is_a4']) && $item['is_a4'] == '1' ? true : false
                             ]);
                         }
+                    }
+                    // nếu có address nft nghĩa là user đã mint sang bên mạng của web 3 rồi
+                    if(isset($item['nft-address']) && !empty($item['nft-address'])){
+                        
+                        $arrNFTMint = [
+                            'task_id' => $sessionTask->id,
+                            'session_id' => $sessionTask->id,
+                            'nft_uri' => $item['nft-uri'] ?? '',
+                            'address_nft' => $item['nft-address'] ?? '',
+                            'nft_res' => $item['nft-res'] ?? '',
+                            'nft_title' => $item['description'] ?? '',
+                            'nft_symbol' => $item['name'] ?? '',
+                            'type'=>2,//session,
+                            'status'=>1
+                        ];
+                       
+                        NFTMint::create($arrNFTMint);
                     }
 
                     if (isset($dataParam['nft-ticket-name-session'])) {
