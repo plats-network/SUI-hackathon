@@ -12,7 +12,7 @@ function createMintNftTxnBlock(data) {
     // note that this is a devnet contract address
     const contractAddress = import.meta.env.VITE_PACKAGE_ID;
     const contractModule = "client";
-    const contractMethod = "mint_batch_tickets";
+    const contractMethod = "mint_batch";
 
 
     const nftName = data.nft_name;
@@ -21,14 +21,12 @@ function createMintNftTxnBlock(data) {
     const nftDescription = data.nft_symbol;
     const nftImgUrl = data.image_file ?? "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
     const nftCollectionId = import.meta.env.VITE_COLLECTION_ID;
-    const event_id = $('meta[name="nft_hash_id"]').attr('content');
+
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,
         arguments: [
             // collection object id
-            // txb.object(nftCollectionId),
-            // event_id
-            txb.pure(event_id),
+            txb.object(nftCollectionId),
             // name: vector<u8>,
             txb.pure(nftName),
             // description: vector<u8>,
@@ -40,7 +38,7 @@ function createMintNftTxnBlock(data) {
             // max_supply: u64,
             txb.pure(nftAmount),
         ],
-        // typeArguments: [`${contractAddress}::ticket_collection::NFTTicket`]
+        typeArguments: [`${contractAddress}::ticket_collection::NFTTicket`]
 
     });
 
