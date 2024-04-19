@@ -486,15 +486,15 @@ class EventService extends BaseService
                             ]);
                         }
                     }
-                 
                     // nếu có address nft nghĩa là user đã mint sang bên mạng của web 3 rồi
-                    if(isset($item['address-nft']) && !empty($item['address-nft'])){
+                    if(isset($item['nft-address']) && !empty($item['nft-address'])){
                         
                         $arrNFTMint = [
                             'task_id' => $sessionTask->id,
                             'session_id' => $sessionTask->id,
-                            'nft_uri' => $item['address-nft'] ?? '',
-                            'address_nft' => $item['address-nft'] ?? '',
+                            'nft_uri' => $item['nft-uri'] ?? '',
+                            'address_nft' => $item['nft-address'] ?? '',
+                            'nft_res' => $item['nft-res'] ?? '',
                             'nft_title' => $item['description'] ?? '',
                             'nft_symbol' => $item['name'] ?? '',
                             'type'=>2,//session,
