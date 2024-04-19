@@ -501,7 +501,7 @@ class EventController extends Controller
             'quiz' => $quiz,
             'eventId' => $eventId,
             'userCheckIn' => $userCheckIn,
-            'qrCode' => $qrCode,
+            'qrCode' => base64_encode($qrCode),
             'sponsor' => $sponsor,
             'taskEventSocials' => $taskEventSocials,
             'taskEventDiscords' => $taskEventDiscords,
@@ -512,8 +512,8 @@ class EventController extends Controller
             'is_update' => 0,
             'isPreview' => $isPreview,
             'travelGames' => $travelGames,
+            'nft_hash_id'=>md5(uniqid())// id hash để quản lý bên mạng web3
         ];
-
         return view('cws.event.edit', $data);
     }
 

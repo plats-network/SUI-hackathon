@@ -6,7 +6,6 @@
                class="image-file"
                id="image-file{{$indexImageItem}}"
                name="file-image-nft"
-               value=""
         />
         <label for="image-file{{$indexImageItem}}">
             <img class="image-label img-preview" src="{{ asset('/imgs/no-image.png') }}">

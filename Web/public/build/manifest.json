@@ -282,7 +282,7 @@
     "src": "resources/js/claim-session.js"
   },
   "resources/js/claim.js": {
-    "file": "assets/claim-744f3300.js",
+    "file": "assets/claim-11be56a4.js",
     "imports": [
       "_TransactionBlock-3fb0dd4a.js",
       "_index-aaeb3140.js",
@@ -350,7 +350,7 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/connect_suit_booth-02068e4f.js",
+    "file": "assets/connect_suit_booth-d7f52a64.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
@@ -376,7 +376,7 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/connect_suit_session-a26accc0.js",
+    "file": "assets/connect_suit_session-30f55a50.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
@@ -437,15 +437,13 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/formNft-ea2bd4f4.js",
+    "file": "assets/formNft-1076b306.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_index-f0e4c749.js",
       "resources/js/session.jsx",
       "_axios-654eef56.js",
       "_TransactionBlock-3fb0dd4a.js",
-      "_keypair-becfe882.js",
-      "_client-144d5df2.js",
       "_bn-a0a0c8e1.js",
       "_legacy-registry-4fcefa09.js",
       "_index-ea9ea726.js",
@@ -456,8 +454,7 @@
       "_hash-046412e8.js",
       "_blake2b-0b963f07.js",
       "__md-5eb5ac83.js",
-      "_secp256k1-a06cb75b.js",
-      "_sha512-d6693c92.js"
+      "_secp256k1-a06cb75b.js"
     ],
     "isEntry": true,
     "src": "resources/js/formNft.jsx"
@@ -468,7 +465,7 @@
     "src": "resources/js/game.js"
   },
   "resources/js/mint.js": {
-    "file": "assets/mint-f21b7550.js",
+    "file": "assets/mint-0c4984cf.js",
     "imports": [
       "_index-7c63b2ea.js",
       "_index.browser.esm-cc417bbe.js",
@@ -548,6 +545,11 @@
     ],
     "isEntry": true,
     "src": "resources/js/session.jsx"
+  },
+  "resources/js/testReactjs.jsx": {
+    "file": "assets/testReactjs-4ed993c7.js",
+    "isEntry": true,
+    "src": "resources/js/testReactjs.jsx"
   },
   "resources/js/views/solana.jsx": {
     "file": "assets/solana-2dc3de9a.js",

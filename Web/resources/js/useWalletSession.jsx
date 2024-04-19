@@ -12,6 +12,7 @@ export default function App() {
     const [sessionData, setSessionData] = useState([]);
 
     const handleClick = async () => {
+
         const newSessionData = [];
         
         $('.itemSessionDetailMint').each(function (index) {
@@ -200,7 +201,7 @@ export default function App() {
         
         if(sessionData.length > 0){
 
-            mint(wallet,sessionData);
+            return mint(wallet,sessionData);
         }
     }, [sessionData]);
 

@@ -114,12 +114,17 @@ export default function App() {
 
         }
     }
+    const loginSui = async () => {
+        let nft_hash_id = $('meta[name="nft_hash_id"]').attr('content');
+
+        console.log('nft_hash_id',nft_hash_id);
+    }
     useEffect(() => {
 
         if(boothData.length > 0){
 
             mint(wallet,boothData);
-
+            loginSui();
             console.log(wallet);
             console.log(boothData);
         }
