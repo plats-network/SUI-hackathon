@@ -39,7 +39,6 @@
     </div>
     <input type="hidden" name="sessions[id]" id="sessions[id]" value="{{$sessions->id}}">
     <input type="hidden" name="sessions[task_id]" id="sessions[task_id]" value="{{$event->id}}">
-
     <div class="row">
         <div class="col-6">
         </div>
@@ -65,6 +64,7 @@
                 <div class="listRowSession" id="listRowSession">
 
                 </div>
+               
             </div>
         </div>
         <div class="col-6 append-nft-session-detail">

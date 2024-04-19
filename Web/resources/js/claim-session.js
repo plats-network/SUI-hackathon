@@ -74,7 +74,7 @@ $('#button-claim').click(async function () {
         console.log(body);
 
         const res = await axios.post("/update_nft_status", body);
-        alert('Claim NFT is success. Please see on https://explorer.solana.com/')
+        alert('Claim NFT is success')
         $('.loading').hide();
         $('#button-claim').hide()
         $('#button-claim-link').show();

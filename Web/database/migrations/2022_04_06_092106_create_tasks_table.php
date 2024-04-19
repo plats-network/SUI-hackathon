@@ -27,6 +27,7 @@ return new class extends Migration
             $table->tinyInteger('view_count')->default(0);
             $table->timestamps();
             $table->softDeletes();
+          
         });
 
         Schema::create('task_locations', function (Blueprint $table) {

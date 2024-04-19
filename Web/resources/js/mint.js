@@ -39,12 +39,42 @@ const convert_to_base64 = file => new Promise((response) => {
 });
 
 $('.page-content').on("change", ".image-file", async function () {
-    console.log(1);
+
+    console.log('up file mint.js line: 42');
     const input = $(this).parent().find('.image-label')
-    let file = $(this).prop('files');
-    const my_image = await convert_to_base64(file[0]);
-    input.attr('src', my_image);
-    // input.css('backgroundImage', `url(${my_image})`);
+    let file = $(this).prop('files')[0];
+
+    // gọi file loading
+    input.attr('src', '/imgs/loading/loading-upfile.webp');
+    
+    if (file) {
+        let formData = new FormData(); // Tạo đối tượng FormData
+        formData.append('file', file); // Thêm file vào FormData
+
+        // Gửi yêu cầu POST đến API
+        try {
+            const responseUpfile = await axios.post('/upload-image-nft', formData, {
+                headers: {
+                    'accept': 'application/json',
+                    'Accept-Language': 'en-US,en;q=0.8',
+                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                }
+            }).then(async response => {
+                console.log(response.data);
+                if(response.data.path){
+                    
+                    input.attr('src', response.data.path);
+                    $(this).attr('link-img', response.data.path);
+                }
+            });
+            console.log('responseUpfile',responseUpfile);
+        } catch (error) {
+           
+            input.attr('src','imgs/no-image.png');
+            // Xử lý khi gửi yêu cầu gặp lỗi
+            console.error("Lỗi khi gửi yêu cầu: " + error.message);
+        }
+    }
 });
 
 $('.page-content').on("click", ".btn-delete-nft-ticket", async function () {
@@ -307,8 +337,9 @@ $('.page-content').on("click", "#btnGenItemNft", async function () {
 });
 
 $('.page-content #listRowSession').on("change", ".image-file", async function () {
-    
+    return;
     let file = $(this).prop('files')[0]; // Lấy file đã chọn
+    console.log(file);
     if (file) {
         let formData = new FormData(); // Tạo đối tượng FormData
         formData.append('file', file); // Thêm file vào FormData
@@ -338,7 +369,7 @@ $('.page-content #listRowSession').on("change", ".image-file", async function ()
 });
 
 $('.page-content #listRowBooth').on("change", ".image-file", async function () {
-
+    return;
     let file = $(this).prop('files')[0]; // Lấy file đã chọn
     if (file) {
         let formData = new FormData(); // Tạo đối tượng FormData
