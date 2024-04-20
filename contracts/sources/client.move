@@ -2,11 +2,12 @@ module sui_nft::client {
 
 
     use sui::tx_context::{TxContext};
-    use sui_nft::ticket_collection::{Self as collection};
+    use sui_nft::ticket_collection::{Self as collection, EventTicket};
     use sui::object::ID;
 
 
     public entry fun mint_ticket(
+        event_ticket: &mut EventTicket,
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
@@ -16,7 +17,7 @@ module sui_nft::client {
         ctx: &mut TxContext
     ): ID {
 
-        let nft_id = collection::mint_ticket(name, description, image_url, category, event_id, token_id, ctx);
+        let nft_id = collection::mint_ticket(event_ticket, name, description, image_url, category, event_id, token_id, ctx);
         nft_id
     }
 

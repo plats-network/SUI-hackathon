@@ -7,11 +7,13 @@ module sui_nft::ticket_collection {
     use std::vector;
     use sui::event;
     use sui_nft::utils::{Self};
+    use sui::bag::{Bag, Self};
+    use sui::dynamic_object_field as ofield;
     friend sui_nft::client;
     friend sui_nft::admin;
 
 
-    struct NFTTicket has key {
+    struct NFTTicket has key, store {
         id: UID,
         /// Name for the token
         name: String,
@@ -26,6 +28,16 @@ module sui_nft::ticket_collection {
         // token ID 
         token_id: u64,
 
+    }
+
+    struct EventTicket has key {
+        id: UID,
+        tickets: Bag
+    
+    }
+
+    struct EventTicketClaimed has key, store {
+        id : UID,
     }
 
 
@@ -96,6 +108,19 @@ module sui_nft::ticket_collection {
         transfer::public_transfer(publisher, sender);
     }
 
+    // create a new shared EventTicket
+    public fun create_tickets(ctx: &mut TxContext) {
+        let id = object::new(ctx);
+        let tickets = bag::new(ctx);
+        transfer::share_object(
+            EventTicket {
+                id,
+                tickets
+            }
+        )
+    
+    
+    }
 
     public(friend) fun assert_authority<T>(pub: &Publisher) {
         assert!(package::from_package<T>(pub), ENotOwner);
@@ -143,6 +168,7 @@ module sui_nft::ticket_collection {
 
 
     public(friend) fun mint_ticket(
+        event_ticket: &mut EventTicket,
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
@@ -151,13 +177,41 @@ module sui_nft::ticket_collection {
         token_id: u64,
         ctx: &mut TxContext
     
-    ): ID {
+    ): ID {        
         let nft = mint_to_sender(name,  description, image_url, event_id, category, token_id,  ctx);
         let nft_id = *object::uid_as_inner(&nft.id);
-        transfer::transfer(nft, tx_context::sender(ctx));
+        //transfer::transfer(nft, tx_context::sender(ctx));
+        let claimed = EventTicketClaimed {id: object::new(ctx)};
+        ofield::add(&mut claimed.id, true,  nft);
+        bag::add(&mut event_ticket.tickets, nft_id, claimed);
         nft_id
 
     }
+    // Internal claim function 
+    fun internal_claim<T: key + store>(
+        event_ticket: &mut EventTicket,
+        ticket_id: ID
+    ): T {
+        let EventTicketClaimed {id} = bag::remove(&mut event_ticket.tickets, ticket_id);
+        // todo with payment
+
+        let ticket = ofield::remove(&mut id, true);
+        object::delete(id);
+        ticket
+    }
+
+    // Claim by user
+    public fun claim<T: key + store>(
+        event_ticket: &mut EventTicket,
+        ticket_id: ID,
+        ctx: &mut TxContext
+    ) {
+        transfer::public_transfer(
+            internal_claim<T>(event_ticket, ticket_id),
+            tx_context::sender(ctx)
+        )
+    }
+
     public(friend) fun mint_tickets(
         event_id: vector<u8>,
         name: vector<u8>,
@@ -346,6 +400,11 @@ module sui_nft::ticket_collection {
         let client1 = @0xABCD;
         let client2 = @0xABCDE;
         let admin = @0xABCDEF;
+        let user1 = @0xAB;
+        let user2 = @0xABC;
+
+        let ticket_created_id;
+
         //let user = @0xAB;
         let event_id_1 = b"8ba9148d4e85e4a6862e8fa613f6cf6b";
         let event_id_2 = b"8ba9148d4e85e4a6862e8fa613f6cf6a";
@@ -368,17 +427,74 @@ module sui_nft::ticket_collection {
             test_scenario::return_to_sender(scenario, pub);
         };
 
-        // test_scenario::next_tx(scenario, admin);
-        // {
-        //     // check Publisher
-        //     let pub = test_scenario::take_from_sender<Publisher>(scenario);
-        //     debug::print(&pub);
-        //     let clients = test_scenario::take_from_sender<Clients>(scenario);
-        //     debug::print(&clients);
-        //     add_client<ID>(&mut clients,  client, &pub );
-        //     test_scenario::return_to_sender(scenario, pub);
-        //     test_scenario::return_to_sender(scenario, clients);
-        // };
+        // Create ticket events  
+        test_scenario::next_tx(scenario, admin);
+
+        {
+            create_tickets(ctx(scenario));
+
+        };
+
+        test_scenario::next_tx(scenario, admin);
+
+        {
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+            debug::print(&utf8(b"EVENT TICKET CREATED "));
+            debug::print(&event_ticket);
+            test_scenario::return_shared<EventTicket>(event_ticket);
+
+        };
+
+
+        test_scenario::next_tx(scenario, client1);
+
+        {
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+            let ticket_id = mint_ticket(&mut event_ticket, b"This is sui hackthon VN", b"This is description", b"abc.xyz", b"Standard",  event_id_1, 3, ctx(scenario));
+            debug::print(&utf8(b"TICKET NFT CREATED "));
+            debug::print(&ticket_id);
+            // assign ticket created id to serve for claim 
+            ticket_created_id = ticket_id;
+
+            test_scenario::return_shared<EventTicket>(event_ticket);
+
+        };
+
+        test_scenario::next_tx(scenario, client1);
+        {
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+            debug::print(&utf8(b"EVENT TICKET AFTER CREATING 1 NFT TICKET"));
+            
+            debug::print(&event_ticket);
+            test_scenario::return_shared<EventTicket>(event_ticket);
+
+        };
+        // claim by user
+        test_scenario::next_tx(scenario, user1);
+        {
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+            claim<NFTTicket>(&mut event_ticket, ticket_created_id, ctx(scenario));
+
+            test_scenario::return_shared<EventTicket>(event_ticket);
+
+        };
+
+        test_scenario::next_tx(scenario, user1);
+        {
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+            let ticket_by_user = test_scenario::take_from_sender<NFTTicket>(scenario);
+
+            debug::print(&utf8(b"EVENT TICKET AFTER CLAIMING 1 NFT TICKET"));
+            debug::print(&event_ticket);
+
+            debug::print(&utf8(b"TICKET CLAIMED BY USER"));
+            debug::print(&ticket_by_user);
+
+            test_scenario::return_to_sender(scenario, ticket_by_user);
+            test_scenario::return_shared<EventTicket>(event_ticket);
+
+        };
+
 
         // mint batch tickets with client 1 
         test_scenario::next_tx(scenario, client1);
