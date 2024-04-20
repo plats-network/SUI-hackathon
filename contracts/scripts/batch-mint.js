@@ -17,10 +17,12 @@ async function mint() {
     const tx = new TransactionBlock();
     //let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
     let packageId = process.env.PACKAGE_ID;
-    let collectionId = process.env.COLLECTION_ID;
+    let collectionId = process.env.EVENT_ID;
     tx.moveCall({
         target: `${packageId}::client::mint_batch_tickets`,
         arguments: [
+            // ticket event id 
+            tx.object(collectionId),
             // event_id
             tx.pure("8ba9148d4e85e4a6862e8fa613f6cf6b"),
             // name: vector<u8>,

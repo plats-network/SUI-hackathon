@@ -23,6 +23,7 @@ module sui_nft::client {
 
 
     public entry fun mint_batch_tickets(
+        event_ticket: &mut EventTicket,
         event_id: vector<u8>,
         name: vector<u8>,
         description: vector<u8>,
@@ -32,12 +33,13 @@ module sui_nft::client {
         ctx: &mut TxContext
     ): vector<ID>{
 
-        let tickets = collection::mint_tickets(event_id, name, description, url, catogory, max_supply, ctx );
+        let tickets = collection::mint_tickets(event_ticket, event_id, name, description, url, catogory, max_supply, ctx );
 
         tickets
     }
 
     public entry fun mint_session(
+        event_ticket: &mut EventTicket,
         name: vector<u8>,
         description: vector<u8>,
         url: vector<u8>,
@@ -45,13 +47,14 @@ module sui_nft::client {
         ctx: &mut TxContext
     ): ID {
         
-        let session_id = collection::mint_session(name, description, url, event_id, ctx);
+        let session_id = collection::mint_session(event_ticket, name, description, url, event_id, ctx);
 
         session_id
 
     }
 
     public entry fun mint_batch_sessions(
+        event_ticket: &mut EventTicket,
         event_id: vector<u8>,
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
@@ -59,7 +62,7 @@ module sui_nft::client {
         ctx: &mut TxContext
     ): vector<ID> {
         
-        let sessions = collection::mint_sessions(names, descriptions, urls, event_id,  ctx);
+        let sessions = collection::mint_sessions(event_ticket, names, descriptions, urls, event_id,  ctx);
         sessions
 
     }

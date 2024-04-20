@@ -16,8 +16,8 @@ const NFTSessionType = `${packageId}::ticket_nft::NFTSession`;
 const NFTBoothType = `${packageId}::ticket_nft::NFTBooth`;
 const CoinType = "0x2::sui::SUI";
 
-async function mint() {
-    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
+async function createTicket() {
+    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_PUBLISHER);
     const client = new SuiClient({
         url: getFullnodeUrl('testnet'),
     });
@@ -25,15 +25,10 @@ async function mint() {
 
 
     tx.moveCall({
-        target: `${packageId}::client::create_new_collection`,
-        arguments: [
-            tx.pure("https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"),
-            tx.pure("SUI Hackathon 2024"),
-            tx.pure("This is a ticket to join SUI Hackathon 2024"),
-            tx.pure("0"),
-        ],
+        target: `${packageId}::ticket_collection::create_tickets`,
+        arguments: [],
 
-        typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
+        //typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
 
     const txs = await client.signAndExecuteTransactionBlock({
@@ -48,18 +43,18 @@ async function mint() {
     });
 
 
-    console.log("create collection tx", JSON.stringify(txs, null, 2));
+    console.log("create ticket tx", JSON.stringify(txs, null, 2));
 
     const ticketCollectionId = (
         txs.objectChanges.filter(
           (o) =>
             o.type === "created" &&
-            o.objectType.includes("::ticket_collection::TicketCollection")
+            o.objectType.includes("::ticket_collection::EventTicket")
         )[0]
       ).objectId;
-      console.log(`ticket collection id : ${ticketCollectionId}`);
+      console.log(`ticket  id : ${ticketCollectionId}`);
     // get collection object id 
 
 }
 
-mint();
+createTicket();

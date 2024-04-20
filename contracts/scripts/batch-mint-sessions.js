@@ -15,10 +15,12 @@ async function mintSessions() {
         url: getFullnodeUrl('testnet'),
     });
     const tx = new TransactionBlock();
-    const collectionId = process.env.COLLECTION_ID;
+    const collectionId = process.env.EVENT_ID;
     tx.moveCall({
         target: `${process.env.PACKAGE_ID}::client::mint_batch_sessions`,
         arguments: [
+            // ticket event id 
+            tx.object(collectionId),
             // event_id
             tx.pure("8ba9148d4e85e4a6862e8fa613f6cf6b"),
             // name: vector<vector<u8>>,

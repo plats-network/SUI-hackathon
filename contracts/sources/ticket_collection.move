@@ -32,11 +32,16 @@ module sui_nft::ticket_collection {
 
     struct EventTicket has key {
         id: UID,
-        tickets: Bag
+        tickets: Bag,
+        sessions: Bag
     
     }
 
     struct EventTicketClaimed has key, store {
+        id : UID,
+    }
+
+    struct EventSessionClaimed has key, store {
         id : UID,
     }
 
@@ -54,7 +59,7 @@ module sui_nft::ticket_collection {
         event_id: String,
     }
 
-    struct NFTSession has key {
+    struct NFTSession has key, store {
         id: UID,
         /// Name for the token
         name: String,
@@ -112,10 +117,12 @@ module sui_nft::ticket_collection {
     public fun create_tickets(ctx: &mut TxContext) {
         let id = object::new(ctx);
         let tickets = bag::new(ctx);
+        let sessions  = bag::new(ctx);
         transfer::share_object(
             EventTicket {
                 id,
-                tickets
+                tickets,
+                sessions
             }
         )
     
@@ -187,8 +194,8 @@ module sui_nft::ticket_collection {
         nft_id
 
     }
-    // Internal claim function 
-    fun internal_claim<T: key + store>(
+    // Internal claim ticket function 
+    fun internal_claim_ticket<T: key + store>(
         event_ticket: &mut EventTicket,
         ticket_id: ID
     ): T {
@@ -200,19 +207,20 @@ module sui_nft::ticket_collection {
         ticket
     }
 
-    // Claim by user
-    public fun claim<T: key + store>(
+    // Claim ticket by user
+    public entry fun claim_ticket<T: key + store>(
         event_ticket: &mut EventTicket,
         ticket_id: ID,
         ctx: &mut TxContext
     ) {
         transfer::public_transfer(
-            internal_claim<T>(event_ticket, ticket_id),
+            internal_claim_ticket<T>(event_ticket, ticket_id),
             tx_context::sender(ctx)
         )
     }
 
     public(friend) fun mint_tickets(
+        event_ticket: &mut EventTicket,
         event_id: vector<u8>,
         name: vector<u8>,
         description: vector<u8>,
@@ -226,14 +234,17 @@ module sui_nft::ticket_collection {
         while (i < max_supply){
             let nft = mint_to_sender(name,  description, url, event_id, catogory, i,  ctx);
             let nft_id = *object::uid_as_inner(&nft.id);
+            let claimed = EventTicketClaimed {id: object::new(ctx)};
+            ofield::add(&mut claimed.id, true,  nft);
+            bag::add(&mut event_ticket.tickets, nft_id, claimed);
             vector::push_back(&mut tickets, nft_id);
-            transfer::transfer(nft, tx_context::sender(ctx));
             i = i +1;
         };  
         tickets
     }
 
     public(friend) fun mint_session(
+        event_ticket: &mut EventTicket,
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
@@ -241,20 +252,21 @@ module sui_nft::ticket_collection {
         ctx: &mut TxContext  
     
     ): ID{
-        let sender = tx_context::sender(ctx);
         let session = mint_session_single(name,  description, image_url, event_id, ctx);
         let session_id = *object::uid_as_inner(&session.id);
-        transfer::transfer(session, sender);
+        let claimed = EventSessionClaimed {id: object::new(ctx)};
+        ofield::add(&mut claimed.id, true,  session);
+        bag::add(&mut event_ticket.sessions, session_id, claimed);
         session_id
     }
     public(friend) fun mint_sessions(
+        event_ticket: &mut EventTicket,
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
         urls: vector<vector<u8>>,
         event_id: vector<u8>,
         ctx: &mut TxContext    
     ): vector<ID>{
-        let sender = tx_context::sender(ctx);
         let sessions = vector::empty();
         let i = 0; 
         // todo
@@ -266,13 +278,41 @@ module sui_nft::ticket_collection {
             let url = vector::borrow(&urls, i);
             let session = mint_session_single(*name,  *description, *url, event_id,  ctx);
             let session_id = *object::uid_as_inner(&session.id);
+            let claimed = EventSessionClaimed {id: object::new(ctx)};
+            ofield::add(&mut claimed.id, true,  session);
+            bag::add(&mut event_ticket.sessions, session_id, claimed);
             vector::push_back(&mut sessions, session_id);
-            transfer::transfer(session, sender);
             i = i +1;
         };
 
         sessions
     }
+
+    // Internal claim session function 
+    fun internal_claim_session<T: key + store>(
+        event_ticket: &mut EventTicket,
+        session_id: ID
+    ): T {
+        let EventSessionClaimed {id} = bag::remove(&mut event_ticket.sessions, session_id);
+        // todo with payment
+
+        let session = ofield::remove(&mut id, true);
+        object::delete(id);
+        session
+    }
+
+    // Claim ticket by user
+    public entry fun claim_session<T: key + store>(
+        event_ticket: &mut EventTicket,
+        session_id: ID,
+        ctx: &mut TxContext
+    ) {
+        transfer::public_transfer(
+            internal_claim_session<T>(event_ticket, session_id),
+            tx_context::sender(ctx)
+        )
+    }
+
     public(friend) fun mint_booth(
         name: vector<u8>,
         description: vector<u8>,
@@ -359,9 +399,6 @@ module sui_nft::ticket_collection {
             event_id: string::utf8(event_id),
         };
 
-        // let nft_id = object::uid_to_bytes(&nft.id);
-        // let recipient = tx_context::sender(ctx);
-        // let recipient_id = object::id_from_address(*&recipient);
         nft
     }
 
@@ -404,6 +441,7 @@ module sui_nft::ticket_collection {
         let user2 = @0xABC;
 
         let ticket_created_id;
+        let ticket_created_ids;
 
         //let user = @0xAB;
         let event_id_1 = b"8ba9148d4e85e4a6862e8fa613f6cf6b";
@@ -473,7 +511,7 @@ module sui_nft::ticket_collection {
         test_scenario::next_tx(scenario, user1);
         {
             let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
-            claim<NFTTicket>(&mut event_ticket, ticket_created_id, ctx(scenario));
+            claim_ticket<NFTTicket>(&mut event_ticket, ticket_created_id, ctx(scenario));
 
             test_scenario::return_shared<EventTicket>(event_ticket);
 
@@ -500,26 +538,80 @@ module sui_nft::ticket_collection {
         test_scenario::next_tx(scenario, client1);
 
         {
-
-            let tickets: vector<ID> = mint_tickets(event_id_1, b"This is sui hackthon VN", b"This is description", b"abc.xyz", b"Standard",3, ctx(scenario));
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+            let tickets: vector<ID> = mint_tickets(&mut event_ticket, event_id_1, b"This is sui hackthon VN", b"This is description", b"abc.xyz", b"Standard",3, ctx(scenario));
             debug::print(&utf8(b"CHECK MINT BATCH TICKETS WITH CLIENT 1"));
             debug::print(&tickets);
-            //test_scenario::return_to_sender(scenario, tickets);
+            ticket_created_ids = tickets;
+            test_scenario::return_shared<EventTicket>(event_ticket);
         };
 
 
-        // check batch tickets with client 2
+        // mint batch tickets with client 2
         test_scenario::next_tx(scenario, client2);
 
         {
-
-            let tickets: vector<ID> = mint_tickets(event_id_2, b"This is sui hackathon Global", b"This is description", b"abc.xyz", b"Standard",3, ctx(scenario));
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+            let tickets: vector<ID> = mint_tickets(&mut event_ticket, event_id_2, b"This is sui hackathon Global", b"This is description", b"abc.xyz", b"Standard",3, ctx(scenario));
 
             debug::print(&utf8(b"CHECK MINT BATCH TICKETS WITH CLIENT 2"));
             debug::print(&tickets);
-            //test_scenario::return_to_sender(scenario, tickets);
+
+            test_scenario::return_shared<EventTicket>(event_ticket);
         };
 
+        test_scenario::next_tx(scenario, admin);
+        {
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+            debug::print(&utf8(b"EVENT TICKET AFTER MINTING BATCH BY USER1 AND USER2"));
+            
+            debug::print(&event_ticket);
+            test_scenario::return_shared<EventTicket>(event_ticket);
+
+        };
+
+        // user1 claim ticket from client 1 
+        test_scenario::next_tx(scenario, user1);
+        {
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+
+            let ticket_id_1 = *vector::borrow(&ticket_created_ids, 0);
+
+            claim_ticket<NFTTicket>(&mut event_ticket, ticket_id_1, ctx(scenario));
+
+            test_scenario::return_shared<EventTicket>(event_ticket);
+
+        };
+
+        // user2 claim ticket from client 1
+        test_scenario::next_tx(scenario, user2);
+        {
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+
+            let ticket_id_2 = *vector::borrow(&ticket_created_ids, 1);
+            claim_ticket<NFTTicket>(&mut event_ticket, ticket_id_2, ctx(scenario));
+
+            test_scenario::return_shared<EventTicket>(event_ticket);
+
+        };
+
+        // check ticket claimed by user1 and user 2 
+        test_scenario::next_tx(scenario, admin);
+        {
+            let ticket_by_user1 = test_scenario::take_from_address<NFTTicket>(scenario, user1);
+            let ticket_by_user2 = test_scenario::take_from_address<NFTTicket>(scenario, user2);
+
+
+            debug::print(&utf8(b"TICKET CLAIMED BY USER1"));
+            debug::print(&ticket_by_user1);
+
+            debug::print(&utf8(b"TICKET CLAIMED BY USER2"));
+            debug::print(&ticket_by_user2);
+
+            test_scenario::return_to_address(user1, ticket_by_user1);
+            test_scenario::return_to_address(user2, ticket_by_user2);
+
+        };
 
         test_scenario::next_tx(scenario, client1);
 
