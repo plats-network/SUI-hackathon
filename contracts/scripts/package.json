@@ -10,8 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@mysten/sui.js": "^0.50.1",
-    "dotenv":"^16.4.5"
-  
-  
+    "@shinami/clients": "^0.7.3",
+    "dotenv": "^16.4.5"
   }
 }
