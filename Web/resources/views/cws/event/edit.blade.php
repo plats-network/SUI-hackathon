@@ -13,7 +13,9 @@
     <meta name='mnemonic_client' content="{{ env('MNEMONIC_CLIENT')}}">
     <meta name='package_id' content="{{ env('PACKAGE_ID')}}">
     <meta name='collection_id' content="{{ env('COLLECTION_ID')}}">
-    <meta name='nft_hash_id' content="{{ $nft_hash_id }}">
+    <meta name='nft_hash_id' content="{{ $nft_hash_id ?? '' }}">
+    <meta name='event_id' content="{{ env('EVENT_OBJECT_ID')}}">
+    
 @endsection
 
 @section('name_page')
@@ -102,7 +104,7 @@
     </style>
     <div class="text-end">
         <div id="button_connect_suit" style="display: inline-block"></div>
-        <button id="connectSUi">Connect</button>
+        {{--  <button id="connectSUi">Connect</button>  --}}
     </div>
     <div class="container-fluid">
         <div class="row">
@@ -173,9 +175,9 @@
                                     <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session</a>
                                     </li>
-                                    <li class="nav-item ">
+                                    {{--  <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab3" data-step="3">Booth</a>
-                                    </li>
+                                    </li>  --}}
                                     @if($is_update)
                                         <li class="nav-item">
                                             <a class="nav-link navItemTab" id="navItemTab4" data-step="4" href="#">Check-in</a>

@@ -19,9 +19,11 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@mysten/bcs": "^0.7.4",
         "@mysten/sui.js": "0.50.1",
         "@suiet/wallet-kit": "^0.2.24",
         "@alpinejs/collapse": "^3.13.2",
+        "@shinami/clients": "^0.7.3",
         "@coral-xyz/anchor": "^0.29.0",
         "@editorjs/editorjs": "^2.27.0",
         "@editorjs/header": "^2.7.0",

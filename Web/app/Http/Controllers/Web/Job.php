@@ -21,6 +21,7 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use \GuzzleHttp\Client;
 
 class Job extends Controller
 {
@@ -717,5 +718,80 @@ class Job extends Controller
                 'message' => 'Successful'
             ]
         ], 200);
+    }
+
+    // Save sponsor
+    // method: POST
+    // URL: /zkp/get
+    public function zkp(Request $request){
+        $data = $request->only(['jwt','extendedEphemeralPublicKey','jwtRandomness','maxEpoch','salt','keyClaimName']);
+
+        $validator = [
+        
+            'jwt'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'extendedEphemeralPublicKey'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'jwtRandomness'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'maxEpoch'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'salt'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'keyClaimName'=>[
+                'required',
+                'min:1',
+                'string'
+            ]
+        ];
+
+        $messages = [
+
+        ];
+
+        $validator = Validator::make($data, $validator,$messages);
+
+        // validate data
+        if ($validator->fails()) {
+
+            return response()->json([
+                'status' => false,
+                'message' =>  $validator->messages()->first()
+            ], 400);
+        }
+        
+        $client = new Client();
+
+        $response = $client->post('https://prover-dev.mystenlabs.com/v1', [
+            'headers' => [
+            'Content-Type' => 'application/json',
+            ],
+            'json' => $data,
+        ]);
+
+        try {
+            return $response->getBody();
+        } catch (\Exception $e) {
+            return response()->json([
+                'data' => [
+                    'message' => 'Error: ' . $e->getMessage()
+                ]
+            ], 500);
+        }
     }
 }

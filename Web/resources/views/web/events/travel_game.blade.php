@@ -1,5 +1,11 @@
 @extends('web.layouts.event_app')
-
+<head>
+    <meta name='mnemonic_client' content="{{ env('MNEMONIC_CLIENT')}}">
+    <meta name='package_id' content="{{ env('PACKAGE_ID')}}">
+    <meta name='collection_id' content="{{ env('COLLECTION_ID')}}">
+    <meta name='nft_hash_id' content="{{ $nft_hash_id ?? '' }}">
+    <meta name='event_id' content="{{ env('EVENT_OBJECT_ID')}}">
+</head>
 @section('content')
     @vite('resources/js/claim-session.js')
     @php
@@ -156,7 +162,7 @@
                     @if($nftMint)
                         <input id="address_nft_min" value="{{ $nftMint->address_nft }}" type="hidden">
                     @endif
-                    
+
                     <a class="link-primary" style="display: none; color:blue" id="button-claim-link" target="_blank" href="https://suiscan.xyz/testnet/tx/G7xVJjyBZzAKLv9xa2WZR9tuVF3ksdneRfntd89o4u9E">SUI Explorer</a>
                 </div>
                 <ul class="nav nav-tabs">
