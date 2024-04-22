@@ -247,7 +247,7 @@
     "src": "resources/js/app/provider.jsx"
   },
   "resources/js/claim-session.js": {
-    "file": "assets/claim-session-d82087e9.js",
+    "file": "assets/claim-session-fa29cf6b.js",
     "imports": [
       "_index-aaeb3140.js",
       "_index-c8dd072a.js",

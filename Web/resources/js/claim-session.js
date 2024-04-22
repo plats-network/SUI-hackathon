@@ -158,21 +158,12 @@ $('#button-claim').click(async function () {
     console.log('zkpPayload',zkpPayload);
     
     const proofResponse = await axios.post("/zkp/post", zkpPayload);
-    const zkLoginSignatur = {
-        inputs: {
-            ...proofResponse.data,
-            addressSeed
-        },
-        maxEpoch:Number(maxEpoch),
-        userSignature:signature,
-    };
-    console.log('zkLoginSignatur',zkLoginSignatur);
     const zkLoginSignature  = getZkLoginSignature({
         inputs: {
             ...proofResponse.data,
             addressSeed
         },
-        maxEpoch:Number(maxEpoch),
+        maxEpoch:maxEpoch,
         userSignature:signature,
     });
 
