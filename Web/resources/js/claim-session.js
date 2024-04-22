@@ -21,6 +21,7 @@ import axios from "axios";
 import {toBigIntBE} from "bigint-buffer";
 import {fromB64} from "@mysten/bcs";
 import { log } from 'console';
+import { SerializedSignature, decodeSuiPrivateKey } from '@mysten/sui.js/cryptography';
 
 const rpcUrl = 'https://api.devnet.solana.com';
 
@@ -55,6 +56,11 @@ $('#button-claim-test').click(async function(){
     const accountBalances = await client.getBalance({owner: zkLoginUserAddress});
 });
 
+function keypairFromSecretKey(privateKeyBase64){
+    const keyPair = decodeSuiPrivateKey(privateKeyBase64);
+    return Ed25519Keypair.fromSecretKey(keyPair.secretKey);
+}
+
 $('#button-claim').click(async function () {
     //$('.loading').show();
     //user login jdk
@@ -84,6 +90,7 @@ $('#button-claim').click(async function () {
     let ranDomness = localStorage.getItem('randomness');
     let maxEpoch = localStorage.getItem('maxEpoch');
     let salt = localStorage.getItem('salt');
+    let ephemeralPrivateKey = localStorage.getItem('ephemeraPrivateKey');
 
     
     console.log('keypair',keypair);
@@ -96,23 +103,40 @@ $('#button-claim').click(async function () {
 
     const txb = new TransactionBlock();
     
+    //https://cws-suivent.plats.test/dE
+    const object_id   = '0x2f50f9643f52174a339568fe829c83909abdb21c66f29340a7cf2d55719761d3';
+    
+    txb.setSender(zkLoginUserAddress);
+    txb.setGasBudget(5000000);
     txb.moveCall({
         target: `${packageId}::ticket_collection::claim_session`,
         arguments: [
             txb.object(event_object_id),
-            // sessionID
-            // $("nft_hash_id").val(),
-            txb.pure("0x20be40b235cbefcc4c9f970252a6ea46f95dd31138d81be8b9009bd6f0cc9275")
+            txb.pure('0x2f50f9643f52174a339568fe829c83909abdb21c66f29340a7cf2d55719761d3')
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTSession`]
     });
-
-    txb.setSender(zkLoginUserAddress);
     
-    // ==================================
+    const ephemeralKeyPairs = keypairFromSecretKey(ephemeralPrivateKey);
+
+    console.log('Pair',ephemeralKeyPairs);
+
+    // const convertKeypair = {
+    //     "keypair": {
+    //         "publicKey": Object.values(keypair.keypair.publicKey),
+    //         "secretKey": Object.values(keypair.keypair.secretKey),
+    //     }
+    // };
+
+    // console.log('convertKeypair',convertKeypair);
+    
+    // const ephemeralKeyPair = new Ed25519Keypair();
+    // console.log('ephemeralKeyPair',ephemeralKeyPair);
+    // return;
+    // // ==================================
     const { bytes, signature } = await txb.sign({
         client,
-        signer: keypair, // This must be the same ephemeral key pair used in the ZKP request
+        signer: ephemeralKeyPairs, // This must be the same ephemeral key pair used in the ZKP request
     });
 
     const jwtPayload = jwtDecode(jwtUser);
@@ -121,15 +145,10 @@ $('#button-claim').click(async function () {
     
     console.log(addressSeed);
 
-    // ==================================
-    console.log('keypair.publicKey',keypair.keypair.publicKey);
-
-    const convertPublicKeyArray = Object.entries(keypair.keypair.publicKey).map(([key, value]) => value);
-
     const zkpPayload = {
         jwt: jwtUser,
         extendedEphemeralPublicKey: toBigIntBE(
-            Buffer.from(convertPublicKeyArray),
+            Buffer.from(ephemeralKeyPairs.keypair.publicKey),
         ).toString(),
         jwtRandomness: ranDomness,
         maxEpoch: maxEpoch,
@@ -139,18 +158,25 @@ $('#button-claim').click(async function () {
     console.log('zkpPayload',zkpPayload);
     
     const proofResponse = await axios.post("/zkp/post", zkpPayload);
-    console.log('res',proofResponse.data);
-    
+    const zkLoginSignatur = {
+        inputs: {
+            ...proofResponse.data,
+            addressSeed
+        },
+        maxEpoch:Number(maxEpoch),
+        userSignature:signature,
+    };
+    console.log('zkLoginSignatur',zkLoginSignatur);
     const zkLoginSignature  = getZkLoginSignature({
         inputs: {
             ...proofResponse.data,
             addressSeed
         },
-        maxEpoch,
-        signature,
+        maxEpoch:Number(maxEpoch),
+        userSignature:signature,
     });
 
-    const result = client.executeTransactionBlock({
+    const result = await client.executeTransactionBlock({
         transactionBlock: bytes,
         signature: zkLoginSignature,
     });

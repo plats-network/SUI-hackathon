@@ -28,7 +28,7 @@ $(".Google").click(async function(){
 console.log(import.meta.env.VITE_REDIRECT_URI);
     //chuyển sang google để đăng nhập
     const { epoch, epochDurationMs, epochStartTimestampMs } = await getSystemState();
-    const maxEpoch = Number(epoch) + 2;
+    const maxEpoch = Number(epoch) + 10;
     const ephemeralKeyPair = new Ed25519Keypair();
     console.log(ephemeralKeyPair);
     const randomness = generateRandomness();
@@ -51,7 +51,8 @@ console.log(import.meta.env.VITE_REDIRECT_URI);
     localStorage.setItem("ephemeralKeyPair",JSON.stringify(ephemeralKeyPair));
     localStorage.setItem("randomness",randomness);
     localStorage.setItem("maxEpoch",maxEpoch);
-    
+    localStorage.setItem("ephemeraPrivateKey",JSON.stringify(ephemeralKeyPair.getSecretKey()));
+
     
     console.log('ephemeralKeyPair',ephemeralKeyPair);
 
@@ -77,7 +78,8 @@ async function getTokenSocial(){
 
     if(!jwt) return;
     //tạo salt ngẫu nhiên hiện tại đang fix cứng, phải đợi bên t2(zklogin) duyệt sal qua token
-    const salt = saltRandomString(16);
+    // const salt = saltRandomString(16);
+    const salt = '5788210558977639';
     const zkLoginUserAddress =  jwtToAddress(jwt, salt);
     localStorage.setItem('zkLoginUserAddress', zkLoginUserAddress)
     localStorage.setItem('salt', salt)

@@ -1,6 +1,6 @@
 {
-  "_ModalWallet-141779df.js": {
-    "file": "assets/ModalWallet-141779df.js",
+  "_ModalWallet-06f27a68.js": {
+    "file": "assets/ModalWallet-06f27a68.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "resources/js/deposit.jsx",
@@ -8,8 +8,8 @@
       "_axios-654eef56.js"
     ]
   },
-  "_TransactionBlock-56054d2a.js": {
-    "file": "assets/TransactionBlock-56054d2a.js",
+  "_TransactionBlock-60cebc29.js": {
+    "file": "assets/TransactionBlock-60cebc29.js",
     "imports": [
       "_index-ea9ea726.js",
       "_blake2b-0b963f07.js"
@@ -45,10 +45,14 @@
       "_index-f0e4c749.js"
     ]
   },
-  "_client-d48901d8.js": {
-    "file": "assets/client-d48901d8.js",
+  "_client-e0668a16.js": {
+    "file": "assets/client-e0668a16.js",
     "imports": [
-      "_TransactionBlock-56054d2a.js"
+      "_nacl-fast-fc85d38b.js",
+      "_TransactionBlock-60cebc29.js",
+      "_blake2b-0b963f07.js",
+      "__md-5eb5ac83.js",
+      "_sha512-d6693c92.js"
     ]
   },
   "_contract-metadata-d6fcb743.js": {
@@ -60,12 +64,6 @@
       "_bn-a0a0c8e1.js"
     ]
   },
-  "_events-f79199d1.js": {
-    "file": "assets/events-f79199d1.js",
-    "imports": [
-      "_bn-a0a0c8e1.js"
-    ]
-  },
   "_hash-046412e8.js": {
     "file": "assets/hash-046412e8.js",
     "imports": [
@@ -73,12 +71,11 @@
       "_util-fc318f65.js"
     ]
   },
-  "_index-061376ae.js": {
-    "file": "assets/index-061376ae.js",
+  "_index-381dfe06.js": {
+    "file": "assets/index-381dfe06.js",
     "imports": [
       "_bn-a0a0c8e1.js",
       "_util-fc318f65.js",
-      "_events-f79199d1.js",
       "_hash-046412e8.js"
     ]
   },
@@ -133,22 +130,12 @@
       "_bn-a0a0c8e1.js"
     ]
   },
-  "_keypair-516a715e.js": {
-    "file": "assets/keypair-516a715e.js",
-    "imports": [
-      "_nacl-fast-b741c1fc.js",
-      "_TransactionBlock-56054d2a.js",
-      "_blake2b-0b963f07.js",
-      "__md-5eb5ac83.js",
-      "_sha512-d6693c92.js"
-    ]
-  },
-  "_nacl-fast-b741c1fc.js": {
-    "file": "assets/nacl-fast-b741c1fc.js",
+  "_nacl-fast-fc85d38b.js": {
+    "file": "assets/nacl-fast-fc85d38b.js",
     "imports": [
       "_bn-a0a0c8e1.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-061376ae.js"
+      "_index-381dfe06.js"
     ]
   },
   "_secp256k1-a06cb75b.js": {
@@ -184,14 +171,13 @@
     "src": "node_modules/@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png"
   },
   "resources/js/ModalWallet.jsx": {
-    "file": "assets/ModalWallet-436fa078.js",
+    "file": "assets/ModalWallet-9183fc2c.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "resources/js/deposit.jsx",
       "_bn-a0a0c8e1.js",
       "_util-fc318f65.js",
-      "_index-061376ae.js",
-      "_events-f79199d1.js",
+      "_index-381dfe06.js",
       "_hash-046412e8.js"
     ],
     "isEntry": true,
@@ -209,20 +195,19 @@
     "css": [
       "assets/admin-e0ec9739.css"
     ],
-    "file": "assets/admin-4c20da2c.js",
+    "file": "assets/admin-17411745.js",
     "imports": [
       "_bn-a0a0c8e1.js",
-      "_nacl-fast-b741c1fc.js",
+      "_nacl-fast-fc85d38b.js",
       "_encoding-e26e765b.js",
       "_util-fc318f65.js",
       "_sha256-a86b6b42.js",
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
-      "_events-f79199d1.js",
+      "_index-381dfe06.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-061376ae.js",
-      "_hash-046412e8.js",
-      "_index-f0e4c749.js"
+      "_index-f0e4c749.js",
+      "_hash-046412e8.js"
     ],
     "isEntry": true,
     "src": "resources/js/admin.js"
@@ -262,7 +247,7 @@
     "src": "resources/js/app/provider.jsx"
   },
   "resources/js/claim-session.js": {
-    "file": "assets/claim-session-f52a11da.js",
+    "file": "assets/claim-session-d82087e9.js",
     "imports": [
       "_index-aaeb3140.js",
       "_index-c8dd072a.js",
@@ -271,33 +256,35 @@
       "_bn-a0a0c8e1.js",
       "_index-b65d164b.js",
       "_index-ea9ea726.js",
-      "_TransactionBlock-56054d2a.js",
+      "_TransactionBlock-60cebc29.js",
       "_axios-654eef56.js",
       "_util-fc318f65.js",
-      "_client-d48901d8.js",
-      "_events-f79199d1.js",
+      "_client-e0668a16.js",
+      "_index-381dfe06.js",
       "_sha256-a86b6b42.js",
       "_sha512-d6693c92.js",
       "__md-5eb5ac83.js",
       "_secp256k1-a06cb75b.js",
       "_encoding-e26e765b.js",
-      "_blake2b-0b963f07.js"
+      "_blake2b-0b963f07.js",
+      "_nacl-fast-fc85d38b.js",
+      "__commonjs-dynamic-modules-302442b1.js",
+      "_hash-046412e8.js"
     ],
     "isEntry": true,
     "src": "resources/js/claim-session.js"
   },
   "resources/js/claim.js": {
-    "file": "assets/claim-9122a7aa.js",
+    "file": "assets/claim-53a02e7f.js",
     "imports": [
-      "_TransactionBlock-56054d2a.js",
+      "_TransactionBlock-60cebc29.js",
       "_index-aaeb3140.js",
       "_index-c8dd072a.js",
       "_index.browser.esm-82bec2c1.js",
       "_abi-75b191bb.js",
       "_bn-a0a0c8e1.js",
       "_axios-654eef56.js",
-      "_keypair-516a715e.js",
-      "_client-d48901d8.js",
+      "_client-e0668a16.js",
       "_index-ea9ea726.js",
       "_blake2b-0b963f07.js",
       "__md-5eb5ac83.js",
@@ -306,48 +293,45 @@
       "_sha512-d6693c92.js",
       "_secp256k1-a06cb75b.js",
       "_encoding-e26e765b.js",
-      "_nacl-fast-b741c1fc.js",
+      "_nacl-fast-fc85d38b.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-061376ae.js",
-      "_events-f79199d1.js",
+      "_index-381dfe06.js",
       "_hash-046412e8.js"
     ],
     "isEntry": true,
     "src": "resources/js/claim.js"
   },
   "resources/js/connect-wallet-admin.jsx": {
-    "file": "assets/connect-wallet-admin-c8cfe17f.js",
+    "file": "assets/connect-wallet-admin-68958a97.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
-      "_ModalWallet-141779df.js",
+      "_ModalWallet-06f27a68.js",
       "resources/js/deposit.jsx",
       "_bn-a0a0c8e1.js",
       "_index-f0e4c749.js",
       "_contract-metadata-d6fcb743.js",
       "_axios-654eef56.js",
       "_util-fc318f65.js",
-      "_index-061376ae.js",
-      "_events-f79199d1.js",
+      "_index-381dfe06.js",
       "_hash-046412e8.js"
     ],
     "isEntry": true,
     "src": "resources/js/connect-wallet-admin.jsx"
   },
   "resources/js/connect-wallet.jsx": {
-    "file": "assets/connect-wallet-1f740586.js",
+    "file": "assets/connect-wallet-b0c2f951.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
-      "_ModalWallet-141779df.js",
+      "_ModalWallet-06f27a68.js",
       "resources/js/deposit.jsx",
       "_bn-a0a0c8e1.js",
       "_index-f0e4c749.js",
       "_contract-metadata-d6fcb743.js",
       "_axios-654eef56.js",
       "_util-fc318f65.js",
-      "_index-061376ae.js",
-      "_events-f79199d1.js",
+      "_index-381dfe06.js",
       "_hash-046412e8.js"
     ],
     "isEntry": true,
@@ -357,20 +341,19 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/connect_suit_booth-eba9abb1.js",
+    "file": "assets/connect_suit_booth-0cf55115.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
       "_index-f0e4c749.js",
       "resources/js/session.jsx",
-      "_TransactionBlock-56054d2a.js",
+      "_TransactionBlock-60cebc29.js",
       "_bn-a0a0c8e1.js",
       "_index-ea9ea726.js",
-      "_nacl-fast-b741c1fc.js",
+      "_nacl-fast-fc85d38b.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-061376ae.js",
+      "_index-381dfe06.js",
       "_util-fc318f65.js",
-      "_events-f79199d1.js",
       "_hash-046412e8.js",
       "_blake2b-0b963f07.js",
       "__md-5eb5ac83.js",
@@ -383,20 +366,19 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/connect_suit_session-f0dbe1c8.js",
+    "file": "assets/connect_suit_session-a0c76b58.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
       "_index-f0e4c749.js",
       "resources/js/session.jsx",
-      "_TransactionBlock-56054d2a.js",
+      "_TransactionBlock-60cebc29.js",
       "_bn-a0a0c8e1.js",
       "_index-ea9ea726.js",
-      "_nacl-fast-b741c1fc.js",
+      "_nacl-fast-fc85d38b.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-061376ae.js",
+      "_index-381dfe06.js",
       "_util-fc318f65.js",
-      "_events-f79199d1.js",
       "_hash-046412e8.js",
       "_blake2b-0b963f07.js",
       "__md-5eb5ac83.js",
@@ -406,7 +388,7 @@
     "src": "resources/js/connect_suit_session.jsx"
   },
   "resources/js/deposit-wallet.jsx": {
-    "file": "assets/deposit-wallet-4b448134.js",
+    "file": "assets/deposit-wallet-4a469f7e.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
@@ -415,21 +397,19 @@
       "_bn-a0a0c8e1.js",
       "_index-f0e4c749.js",
       "_util-fc318f65.js",
-      "_index-061376ae.js",
-      "_events-f79199d1.js",
+      "_index-381dfe06.js",
       "_hash-046412e8.js"
     ],
     "isEntry": true,
     "src": "resources/js/deposit-wallet.jsx"
   },
   "resources/js/deposit.jsx": {
-    "file": "assets/deposit-0b5db625.js",
+    "file": "assets/deposit-6c8cd796.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_bn-a0a0c8e1.js",
       "_util-fc318f65.js",
-      "_index-061376ae.js",
-      "_events-f79199d1.js",
+      "_index-381dfe06.js",
       "_hash-046412e8.js"
     ],
     "isEntry": true,
@@ -444,20 +424,19 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/formNft-56ef11da.js",
+    "file": "assets/formNft-5be66095.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_index-f0e4c749.js",
       "resources/js/session.jsx",
       "_axios-654eef56.js",
-      "_TransactionBlock-56054d2a.js",
+      "_TransactionBlock-60cebc29.js",
       "_bn-a0a0c8e1.js",
       "_index-ea9ea726.js",
-      "_nacl-fast-b741c1fc.js",
+      "_nacl-fast-fc85d38b.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-061376ae.js",
+      "_index-381dfe06.js",
       "_util-fc318f65.js",
-      "_events-f79199d1.js",
       "_hash-046412e8.js",
       "_blake2b-0b963f07.js",
       "__md-5eb5ac83.js",
@@ -496,17 +475,16 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/mintNftSession-ed3b8ecb.js",
+    "file": "assets/mintNftSession-5f8c86eb.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "resources/js/session.jsx",
       "_bn-a0a0c8e1.js",
       "_index-ea9ea726.js",
-      "_nacl-fast-b741c1fc.js",
+      "_nacl-fast-fc85d38b.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-061376ae.js",
+      "_index-381dfe06.js",
       "_util-fc318f65.js",
-      "_events-f79199d1.js",
       "_hash-046412e8.js",
       "_blake2b-0b963f07.js",
       "__md-5eb5ac83.js",
@@ -534,20 +512,19 @@
     "src": "resources/js/profile-nft.js"
   },
   "resources/js/session.jsx": {
-    "file": "assets/session-1c606989.js",
+    "file": "assets/session-23f0d40e.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_index-ea9ea726.js",
-      "_nacl-fast-b741c1fc.js",
+      "_nacl-fast-fc85d38b.js",
       "_blake2b-0b963f07.js",
       "__md-5eb5ac83.js",
       "_secp256k1-a06cb75b.js",
       "_index-f0e4c749.js",
       "_bn-a0a0c8e1.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-061376ae.js",
+      "_index-381dfe06.js",
       "_util-fc318f65.js",
-      "_events-f79199d1.js",
       "_hash-046412e8.js"
     ],
     "isEntry": true,
@@ -579,22 +556,20 @@
     "src": "resources/js/views/solana.jsx"
   },
   "resources/js/zklogin.js": {
-    "file": "assets/zklogin-430b3f8f.js",
+    "file": "assets/zklogin-565f6de6.js",
     "imports": [
       "_index-b65d164b.js",
       "__md-5eb5ac83.js",
-      "_client-d48901d8.js",
-      "_keypair-516a715e.js",
+      "_client-e0668a16.js",
       "_blake2b-0b963f07.js",
-      "_TransactionBlock-56054d2a.js",
-      "_index-ea9ea726.js",
+      "_nacl-fast-fc85d38b.js",
       "_bn-a0a0c8e1.js",
-      "_nacl-fast-b741c1fc.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-061376ae.js",
+      "_index-381dfe06.js",
       "_util-fc318f65.js",
-      "_events-f79199d1.js",
       "_hash-046412e8.js",
+      "_TransactionBlock-60cebc29.js",
+      "_index-ea9ea726.js",
       "_sha512-d6693c92.js"
     ],
     "isEntry": true,
