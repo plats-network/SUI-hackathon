@@ -21,6 +21,7 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use \GuzzleHttp\Client;
 
 class Job extends Controller
 {
@@ -773,7 +774,8 @@ class Job extends Controller
                 'message' =>  $validator->messages()->first()
             ], 400);
         }
-        $client = new \GuzzleHttp\Client();
+        
+        $client = new Client();
 
         $response = $client->post('https://prover-dev.mystenlabs.com/v1', [
             'headers' => [
@@ -782,6 +784,14 @@ class Job extends Controller
             'json' => $data,
         ]);
 
-        return $response->getBody();
+        try {
+            return $response->getBody();
+        } catch (\Exception $e) {
+            return response()->json([
+                'data' => [
+                    'message' => 'Error: ' . $e->getMessage()
+                ]
+            ], 500);
+        }
     }
 }
