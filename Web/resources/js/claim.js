@@ -252,11 +252,11 @@ $('.btn-claim-id').click(async function () {
         // console.log(body);
 
         const res = await axios.post("/update_nft_status", body);
-        alert(`Claim NFT is success. Please see on https://suiscan.xyz/${digest}`);
+        alert(`Claim NFT is success. Please see on https://suiscan.xyz/testnet/tx/${digest}`);
         $('.loading').hide();
         // $('.claim-success').show();
         $('.claim-success').css('display', 'block');
-        $('.sol-link').attr('href', `https://suiscan.xyz/${digest}`);
+        $('.sol-link').attr('href', `https://suiscan.xyz/testnet/tx/${digest}`);
         $('.sol-link').show();
         $('.btn-claim-id').hide();
         $('.claim-btn').hide();
