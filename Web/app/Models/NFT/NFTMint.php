@@ -31,7 +31,9 @@ class NFTMint extends Model
         'metadata',
         'booth_id',
         'task_id',
-        'session_id'
+        'session_id',
+        'nft_category',
+        'nft_res'
     ];
 }
 

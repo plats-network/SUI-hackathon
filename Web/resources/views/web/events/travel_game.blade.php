@@ -152,6 +152,11 @@
                         <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>
 
                     @endif
+
+                    @if($nftMint)
+                        <input id="address_nft_min" value="{{ $nftMint->address_nft }}" type="hidden">
+                    @endif
+                    
                     <a class="link-primary" style="display: none; color:blue" id="button-claim-link" target="_blank" href="https://suiscan.xyz/testnet/tx/G7xVJjyBZzAKLv9xa2WZR9tuVF3ksdneRfntd89o4u9E">SUI Explorer</a>
                 </div>
                 <ul class="nav nav-tabs">

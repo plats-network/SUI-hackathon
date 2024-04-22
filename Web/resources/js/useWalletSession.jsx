@@ -79,19 +79,24 @@ export default function App() {
         tx.moveCall({
             target: `${packageId}::client::mint_batch_sessions`,
             arguments: [
-                
+
+                // tx.pure(collection_id),
+
                 tx.pure(newData.nameSession),
                 // description: vector<vector<u8>>,
                 tx.pure(newData.descriptionSession),
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileSession),
 
+                tx.object(collection_id),
+
                 //tx.pure(data.nameSession),
                 //tx.pure(data.descriptionSession),
                 //tx.pure(data.fileSession),
-                tx.object(collection_id),
             ],
             typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
+
+            // typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
         $('.loading').show();
         try {
@@ -102,62 +107,19 @@ export default function App() {
                 },
             });
             
-            // // console.log('signAndExecuteTransactionBlock',result);
-            let mnemonic_client = 'genius exit shallow wealth boring layer rotate model calm behind immune maze';
-            // let collection_id = '0x2587305d59dbcc09406e  1ef0147053fff3019a64aca312108adac2913785a6d0';
-            // let package_id = '0x5ff08c4a46f0e68e9677f6be420b6adf9f0fc90355f978ea235173fffc061a5c';
-            const keypair = Ed25519Keypair.deriveKeypair(mnemonic_client);
-            // const client = new SuiClient({
-            //     url: getFullnodeUrl('testnet'),
-            // });
-            // let addressClient = keypair.getPublicKey().toSuiAddress();
-            
-            // const allObjects = await client.getOwnedObjects({
-            //     owner: addressClient,
-            //     options: {
-            //         showType: true,
-            //         showDisplay: true,
-            //         showContent: true,
-            //     }
-            // });
-            
-            // //console.log("objectIDs", allObjects.data[0]);
-            // const objectIDs = (allObjects?.data || [])
-            //     .filter((item) => item.data.objectId == collection_id)
-            //     .map((anObj) => anObj.data.objectId);
-            
-            // const allObjRes = await client.multiGetObjects({
-            //     ids: objectIDs,
-            //     options: {
-            //         showContent: true,
-            //         showDisplay: true,
-            //         showType: true,
-            //     },
-            // });
-            // console.log('allObjRes',allObjRes);
-            // const nftList = allObjRes.filter(obj => obj.data).map(obj => ({
-            //     objectId: obj.data.objectId,
-            //     data: obj.data.content.fields,
-            
-            // }));
-            // //get ticket
-            
-            // const tickets = nftList.map((data) => data.data.tickets);
-            // console.log('tickets:', tickets);
-
-            if(!result.confirmedLocalExecution){
+            if(result.confirmedLocalExecution != true){
                 alert('nft minted Session fails!');
                 return;
             }
             console.log(result);
-            
+            console.log(data);
 
             // đoạn này là user claim
             let sessionIds =  result.objectChanges.filter((o) =>
                     o.type === "created" &&
                     o.objectType.includes("::ticket_collection::NFTSession")
             ).map(item => item.objectId);
-            console.log('sessionIds',sessionIds);
+            // console.log('sessionIds',sessionIds);
             //user login jdk
             // const user = "0x70f94573c6cd732304f2c0fd9d80cf7d6206e4609c5c4b259972e90885fc3acb";
             // tx.transferObjects([tx.object(sessionIds)] , user);
@@ -192,7 +154,7 @@ export default function App() {
          } catch (error) {
 
             $('.loading').hide();
-
+            console.log('error',error);
             alert('nft minted Session fails!');
 
         }
