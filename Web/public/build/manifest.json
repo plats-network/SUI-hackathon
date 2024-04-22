@@ -1,13 +1,4 @@
 {
-  "_ModalWallet-49113aa2.js": {
-    "file": "assets/ModalWallet-49113aa2.js",
-    "imports": [
-      "_jsx-runtime-f0a4e50a.js",
-      "resources/js/deposit.jsx",
-      "_contract-metadata-d6fcb743.js",
-      "_axios-654eef56.js"
-    ]
-  },
   "_TransactionBlock-1c20389c.js": {
     "file": "assets/TransactionBlock-1c20389c.js",
     "imports": [
@@ -52,18 +43,24 @@
       "_index-f0e4c749.js"
     ]
   },
-  "_client-e2c5a096.js": {
-    "file": "assets/client-e2c5a096.js",
+  "_client-de8e0e9e.js": {
+    "file": "assets/client-de8e0e9e.js",
     "imports": [
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "_blake2b-da165642.js",
       "_TransactionBlock-1c20389c.js",
       "__md-6b5b0bc3.js",
       "_sha512-96a0a0bb.js"
     ]
   },
-  "_contract-metadata-d6fcb743.js": {
-    "file": "assets/contract-metadata-d6fcb743.js"
+  "_contract-metadata-f627774a.js": {
+    "file": "assets/contract-metadata-f627774a.js",
+    "imports": [
+      "_jsx-runtime-f0a4e50a.js",
+      "_bn-a0a0c8e1.js",
+      "_util-90240aa2.js",
+      "_index-46580b30.js"
+    ]
   },
   "_encoding-e26e765b.js": {
     "file": "assets/encoding-e26e765b.js",
@@ -71,28 +68,28 @@
       "_bn-a0a0c8e1.js"
     ]
   },
-  "_hash-046412e8.js": {
-    "file": "assets/hash-046412e8.js",
+  "_hash-e95e3307.js": {
+    "file": "assets/hash-e95e3307.js",
     "imports": [
       "_bn-a0a0c8e1.js",
-      "_util-fc318f65.js"
+      "_util-90240aa2.js"
     ]
   },
-  "_index-54e210ce.js": {
-    "file": "assets/index-54e210ce.js",
-    "imports": [
-      "_bn-a0a0c8e1.js",
-      "_util-fc318f65.js",
-      "_hash-046412e8.js"
-    ]
-  },
-  "_index-8910585f.js": {
-    "file": "assets/index-8910585f.js",
+  "_index-2c16d259.js": {
+    "file": "assets/index-2c16d259.js",
     "imports": [
       "_bn-a0a0c8e1.js",
       "_index.browser.esm-a5c61464.js",
       "_sha256-a86b6b42.js",
-      "_util-fc318f65.js"
+      "_util-90240aa2.js"
+    ]
+  },
+  "_index-46580b30.js": {
+    "file": "assets/index-46580b30.js",
+    "imports": [
+      "_bn-a0a0c8e1.js",
+      "_util-90240aa2.js",
+      "_hash-e95e3307.js"
     ]
   },
   "_index-aaeb3140.js": {
@@ -130,12 +127,12 @@
       "_bn-a0a0c8e1.js"
     ]
   },
-  "_nacl-fast-855db264.js": {
-    "file": "assets/nacl-fast-855db264.js",
+  "_nacl-fast-654591d8.js": {
+    "file": "assets/nacl-fast-654591d8.js",
     "imports": [
       "_bn-a0a0c8e1.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-54e210ce.js"
+      "_index-46580b30.js"
     ]
   },
   "_secp256k1-ef9d875c.js": {
@@ -156,8 +153,8 @@
       "__md-6b5b0bc3.js"
     ]
   },
-  "_util-fc318f65.js": {
-    "file": "assets/util-fc318f65.js",
+  "_util-90240aa2.js": {
+    "file": "assets/util-90240aa2.js",
     "imports": [
       "_bn-a0a0c8e1.js"
     ]
@@ -171,14 +168,15 @@
     "src": "node_modules/@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png"
   },
   "resources/js/ModalWallet.jsx": {
-    "file": "assets/ModalWallet-64970bc2.js",
+    "file": "assets/ModalWallet-a86f9bd7.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
-      "resources/js/deposit.jsx",
+      "_contract-metadata-f627774a.js",
+      "_axios-654eef56.js",
       "_bn-a0a0c8e1.js",
-      "_util-fc318f65.js",
-      "_index-54e210ce.js",
-      "_hash-046412e8.js"
+      "_util-90240aa2.js",
+      "_index-46580b30.js",
+      "_hash-e95e3307.js"
     ],
     "isEntry": true,
     "src": "resources/js/ModalWallet.jsx"
@@ -195,19 +193,19 @@
     "css": [
       "assets/admin-e0ec9739.css"
     ],
-    "file": "assets/admin-9ee25844.js",
+    "file": "assets/admin-8060ddfe.js",
     "imports": [
       "_bn-a0a0c8e1.js",
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "_encoding-e26e765b.js",
-      "_util-fc318f65.js",
+      "_util-90240aa2.js",
       "_sha256-a86b6b42.js",
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
-      "_index-54e210ce.js",
+      "_index-46580b30.js",
       "__commonjs-dynamic-modules-302442b1.js",
       "_index-f0e4c749.js",
-      "_hash-046412e8.js"
+      "_hash-e95e3307.js"
     ],
     "isEntry": true,
     "src": "resources/js/admin.js"
@@ -218,10 +216,11 @@
     "src": "resources/js/admin/pages/pass-addon.init.js"
   },
   "resources/js/app/layout.tsx": {
-    "file": "assets/layout-e1105687.js",
+    "file": "assets/layout-63bd09c1.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_index.browser.esm-a5c61464.js",
+      "resources/js/app/provider.jsx",
       "_bn-a0a0c8e1.js",
       "_sha512-96a0a0bb.js",
       "__md-6b5b0bc3.js",
@@ -232,11 +231,10 @@
     "src": "resources/js/app/layout.tsx"
   },
   "resources/js/app/provider.jsx": {
-    "file": "assets/provider-365905fd.js",
+    "file": "assets/provider-e1105687.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_index.browser.esm-a5c61464.js",
-      "resources/js/app/layout.tsx",
       "_bn-a0a0c8e1.js",
       "_sha512-96a0a0bb.js",
       "__md-6b5b0bc3.js",
@@ -247,91 +245,89 @@
     "src": "resources/js/app/provider.jsx"
   },
   "resources/js/claim-session.js": {
-    "file": "assets/claim-session-374d7087.js",
+    "file": "assets/claim-session-8f5b452e.js",
     "imports": [
       "_index-aaeb3140.js",
-      "_index-8910585f.js",
+      "_index-2c16d259.js",
       "_index.browser.esm-a5c61464.js",
       "_abi-75b191bb.js",
       "_bn-a0a0c8e1.js",
       "_address-0d8354a8.js",
       "_TransactionBlock-1c20389c.js",
-      "_client-e2c5a096.js",
+      "_client-de8e0e9e.js",
       "_sha256-a86b6b42.js",
-      "_util-fc318f65.js",
+      "_util-90240aa2.js",
       "_sha512-96a0a0bb.js",
       "__md-6b5b0bc3.js",
       "_secp256k1-ef9d875c.js",
       "_encoding-e26e765b.js",
       "_blake2b-da165642.js",
       "_index-ea9ea726.js",
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-54e210ce.js",
-      "_hash-046412e8.js"
+      "_index-46580b30.js",
+      "_hash-e95e3307.js"
     ],
     "isEntry": true,
     "src": "resources/js/claim-session.js"
   },
   "resources/js/claim.js": {
-    "file": "assets/claim-254619d2.js",
+    "file": "assets/claim-b7c0bcd5.js",
     "imports": [
       "_TransactionBlock-1c20389c.js",
       "_index-aaeb3140.js",
-      "_index-8910585f.js",
+      "_index-2c16d259.js",
       "_index.browser.esm-a5c61464.js",
       "_abi-75b191bb.js",
       "_bn-a0a0c8e1.js",
       "_axios-654eef56.js",
-      "_client-e2c5a096.js",
+      "_client-de8e0e9e.js",
       "_blake2b-da165642.js",
       "_index-ea9ea726.js",
       "__md-6b5b0bc3.js",
       "_sha256-a86b6b42.js",
-      "_util-fc318f65.js",
+      "_util-90240aa2.js",
       "_sha512-96a0a0bb.js",
       "_secp256k1-ef9d875c.js",
       "_encoding-e26e765b.js",
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-54e210ce.js",
-      "_hash-046412e8.js"
+      "_index-46580b30.js",
+      "_hash-e95e3307.js"
     ],
     "isEntry": true,
     "src": "resources/js/claim.js"
   },
   "resources/js/connect-wallet-admin.jsx": {
-    "file": "assets/connect-wallet-admin-0542d8ea.js",
+    "file": "assets/connect-wallet-admin-4a88a0b3.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
-      "_ModalWallet-49113aa2.js",
-      "resources/js/deposit.jsx",
+      "resources/js/ModalWallet.jsx",
+      "_contract-metadata-f627774a.js",
       "_bn-a0a0c8e1.js",
       "_index-f0e4c749.js",
-      "_contract-metadata-d6fcb743.js",
       "_axios-654eef56.js",
-      "_util-fc318f65.js",
-      "_index-54e210ce.js",
-      "_hash-046412e8.js"
+      "_util-90240aa2.js",
+      "_index-46580b30.js",
+      "_hash-e95e3307.js"
     ],
     "isEntry": true,
     "src": "resources/js/connect-wallet-admin.jsx"
   },
   "resources/js/connect-wallet.jsx": {
-    "file": "assets/connect-wallet-09591949.js",
+    "file": "assets/connect-wallet-b1b99920.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
-      "_ModalWallet-49113aa2.js",
-      "resources/js/deposit.jsx",
+      "resources/js/ModalWallet.jsx",
+      "_contract-metadata-f627774a.js",
       "_bn-a0a0c8e1.js",
       "_index-f0e4c749.js",
-      "_contract-metadata-d6fcb743.js",
       "_axios-654eef56.js",
-      "_util-fc318f65.js",
-      "_index-54e210ce.js",
-      "_hash-046412e8.js"
+      "_util-90240aa2.js",
+      "_index-46580b30.js",
+      "_hash-e95e3307.js"
     ],
     "isEntry": true,
     "src": "resources/js/connect-wallet.jsx"
@@ -340,7 +336,7 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/connect_suit_booth-cc58ee3a.js",
+    "file": "assets/connect_suit_booth-fc6826e8.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
@@ -351,11 +347,11 @@
       "_blake2b-da165642.js",
       "_index-ea9ea726.js",
       "__md-6b5b0bc3.js",
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-54e210ce.js",
-      "_util-fc318f65.js",
-      "_hash-046412e8.js",
+      "_index-46580b30.js",
+      "_util-90240aa2.js",
+      "_hash-e95e3307.js",
       "_secp256k1-ef9d875c.js"
     ],
     "isEntry": true,
@@ -365,7 +361,7 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/connect_suit_session-f68c8c09.js",
+    "file": "assets/connect_suit_session-61d0e3da.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
@@ -376,40 +372,41 @@
       "_blake2b-da165642.js",
       "_index-ea9ea726.js",
       "__md-6b5b0bc3.js",
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-54e210ce.js",
-      "_util-fc318f65.js",
-      "_hash-046412e8.js",
+      "_index-46580b30.js",
+      "_util-90240aa2.js",
+      "_hash-e95e3307.js",
       "_secp256k1-ef9d875c.js"
     ],
     "isEntry": true,
     "src": "resources/js/connect_suit_session.jsx"
   },
   "resources/js/deposit-wallet.jsx": {
-    "file": "assets/deposit-wallet-00700900.js",
+    "file": "assets/deposit-wallet-171bb541.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_client-888b02c5.js",
+      "_contract-metadata-f627774a.js",
       "resources/js/deposit.jsx",
-      "_contract-metadata-d6fcb743.js",
       "_bn-a0a0c8e1.js",
       "_index-f0e4c749.js",
-      "_util-fc318f65.js",
-      "_index-54e210ce.js",
-      "_hash-046412e8.js"
+      "_util-90240aa2.js",
+      "_index-46580b30.js",
+      "_hash-e95e3307.js"
     ],
     "isEntry": true,
     "src": "resources/js/deposit-wallet.jsx"
   },
   "resources/js/deposit.jsx": {
-    "file": "assets/deposit-210ec6c8.js",
+    "file": "assets/deposit-2396013c.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
+      "_contract-metadata-f627774a.js",
       "_bn-a0a0c8e1.js",
-      "_util-fc318f65.js",
-      "_index-54e210ce.js",
-      "_hash-046412e8.js"
+      "_util-90240aa2.js",
+      "_index-46580b30.js",
+      "_hash-e95e3307.js"
     ],
     "isEntry": true,
     "src": "resources/js/deposit.jsx"
@@ -423,7 +420,7 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/formNft-c410b641.js",
+    "file": "assets/formNft-e9bde94f.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_index-f0e4c749.js",
@@ -434,11 +431,11 @@
       "_blake2b-da165642.js",
       "_index-ea9ea726.js",
       "__md-6b5b0bc3.js",
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-54e210ce.js",
-      "_util-fc318f65.js",
-      "_hash-046412e8.js",
+      "_index-46580b30.js",
+      "_util-90240aa2.js",
+      "_hash-e95e3307.js",
       "_secp256k1-ef9d875c.js"
     ],
     "isEntry": true,
@@ -450,18 +447,18 @@
     "src": "resources/js/game.js"
   },
   "resources/js/mint.js": {
-    "file": "assets/mint-c3c60ce8.js",
+    "file": "assets/mint-e97b70ca.js",
     "imports": [
-      "_index-8910585f.js",
+      "_index-2c16d259.js",
       "_index.browser.esm-a5c61464.js",
       "_abi-75b191bb.js",
       "_bn-a0a0c8e1.js",
       "__commonjs-dynamic-modules-302442b1.js",
       "_index-ea9ea726.js",
-      "_hash-046412e8.js",
+      "_hash-e95e3307.js",
       "_axios-654eef56.js",
       "_sha256-a86b6b42.js",
-      "_util-fc318f65.js",
+      "_util-90240aa2.js",
       "_sha512-96a0a0bb.js",
       "__md-6b5b0bc3.js",
       "_secp256k1-ef9d875c.js",
@@ -474,7 +471,7 @@
     "css": [
       "assets/style-9e09e422.css"
     ],
-    "file": "assets/mintNftSession-eec80d9a.js",
+    "file": "assets/mintNftSession-b080bab0.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "resources/js/session.jsx",
@@ -482,11 +479,11 @@
       "_blake2b-da165642.js",
       "_index-ea9ea726.js",
       "__md-6b5b0bc3.js",
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-54e210ce.js",
-      "_util-fc318f65.js",
-      "_hash-046412e8.js",
+      "_index-46580b30.js",
+      "_util-90240aa2.js",
+      "_hash-e95e3307.js",
       "_secp256k1-ef9d875c.js",
       "_index-f0e4c749.js"
     ],
@@ -494,14 +491,14 @@
     "src": "resources/js/mintNftSession.jsx"
   },
   "resources/js/profile-nft.js": {
-    "file": "assets/profile-nft-7d970301.js",
+    "file": "assets/profile-nft-d5fa9a6f.js",
     "imports": [
       "_index-aaeb3140.js",
-      "_index-8910585f.js",
+      "_index-2c16d259.js",
       "_index.browser.esm-a5c61464.js",
       "_bn-a0a0c8e1.js",
       "_sha256-a86b6b42.js",
-      "_util-fc318f65.js",
+      "_util-90240aa2.js",
       "_sha512-96a0a0bb.js",
       "__md-6b5b0bc3.js",
       "_secp256k1-ef9d875c.js",
@@ -511,20 +508,20 @@
     "src": "resources/js/profile-nft.js"
   },
   "resources/js/session.jsx": {
-    "file": "assets/session-3b76baa8.js",
+    "file": "assets/session-3e2df008.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
       "_blake2b-da165642.js",
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "__md-6b5b0bc3.js",
       "_secp256k1-ef9d875c.js",
       "_index-f0e4c749.js",
       "_bn-a0a0c8e1.js",
       "_index-ea9ea726.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-54e210ce.js",
-      "_util-fc318f65.js",
-      "_hash-046412e8.js"
+      "_index-46580b30.js",
+      "_util-90240aa2.js",
+      "_hash-e95e3307.js"
     ],
     "isEntry": true,
     "src": "resources/js/session.jsx"
@@ -535,17 +532,17 @@
     "src": "resources/js/testReactjs.jsx"
   },
   "resources/js/views/solana.jsx": {
-    "file": "assets/solana-50ad8a85.js",
+    "file": "assets/solana-b925cfde.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
-      "_index-8910585f.js",
+      "_index-2c16d259.js",
       "_index.browser.esm-a5c61464.js",
       "_client-888b02c5.js",
       "_index-ea9ea726.js",
       "_bn-a0a0c8e1.js",
       "_index-f0e4c749.js",
       "_sha256-a86b6b42.js",
-      "_util-fc318f65.js",
+      "_util-90240aa2.js",
       "_sha512-96a0a0bb.js",
       "__md-6b5b0bc3.js",
       "_secp256k1-ef9d875c.js",
@@ -555,19 +552,19 @@
     "src": "resources/js/views/solana.jsx"
   },
   "resources/js/zklogin.js": {
-    "file": "assets/zklogin-ca9ed8aa.js",
+    "file": "assets/zklogin-84a5ad01.js",
     "imports": [
       "_address-0d8354a8.js",
       "_blake2b-da165642.js",
       "__md-6b5b0bc3.js",
-      "_client-e2c5a096.js",
+      "_client-de8e0e9e.js",
       "_index-ea9ea726.js",
       "_bn-a0a0c8e1.js",
-      "_nacl-fast-855db264.js",
+      "_nacl-fast-654591d8.js",
       "__commonjs-dynamic-modules-302442b1.js",
-      "_index-54e210ce.js",
-      "_util-fc318f65.js",
-      "_hash-046412e8.js",
+      "_index-46580b30.js",
+      "_util-90240aa2.js",
+      "_hash-e95e3307.js",
       "_TransactionBlock-1c20389c.js",
       "_sha512-96a0a0bb.js"
     ],
@@ -575,7 +572,7 @@
     "src": "resources/js/zklogin.js"
   },
   "resources/sass/admin.scss": {
-    "file": "assets/admin-255f5594.css",
+    "file": "assets/admin-f4b53757.css",
     "isEntry": true,
     "src": "resources/sass/admin.scss"
   },
@@ -584,7 +581,7 @@
     "src": "resources/sass/admin/fonts/boxicons.eot"
   },
   "resources/sass/admin/fonts/boxicons.svg": {
-    "file": "assets/boxicons-68bcd86d.svg",
+    "file": "assets/boxicons-809f57f0.svg",
     "src": "resources/sass/admin/fonts/boxicons.svg"
   },
   "resources/sass/admin/fonts/boxicons.ttf": {
@@ -604,7 +601,7 @@
     "src": "resources/sass/admin/fonts/fa-brands-400.eot"
   },
   "resources/sass/admin/fonts/fa-brands-400.svg": {
-    "file": "assets/fa-brands-400-980a7736.svg",
+    "file": "assets/fa-brands-400-02340ba1.svg",
     "src": "resources/sass/admin/fonts/fa-brands-400.svg"
   },
   "resources/sass/admin/fonts/fa-brands-400.ttf": {
@@ -624,7 +621,7 @@
     "src": "resources/sass/admin/fonts/fa-regular-400.eot"
   },
   "resources/sass/admin/fonts/fa-regular-400.svg": {
-    "file": "assets/fa-regular-400-9a5dd62f.svg",
+    "file": "assets/fa-regular-400-865fd23d.svg",
     "src": "resources/sass/admin/fonts/fa-regular-400.svg"
   },
   "resources/sass/admin/fonts/fa-regular-400.ttf": {
@@ -644,7 +641,7 @@
     "src": "resources/sass/admin/fonts/fa-solid-900.eot"
   },
   "resources/sass/admin/fonts/fa-solid-900.svg": {
-    "file": "assets/fa-solid-900-96b9988d.svg",
+    "file": "assets/fa-solid-900-e7685398.svg",
     "src": "resources/sass/admin/fonts/fa-solid-900.svg"
   },
   "resources/sass/admin/fonts/fa-solid-900.ttf": {
