@@ -440,7 +440,6 @@ class Home extends Controller
                 'status' => 1,
                 'type' => 1,
             ])->first();
-
             if (\auth()->user()) {
                 $check = UserNft::with('nftMint')
                     ->where([
