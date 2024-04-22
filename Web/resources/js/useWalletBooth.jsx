@@ -2,6 +2,7 @@ import { ConnectButton, useWallet, addressEllipsis } from "@suiet/wallet-kit";
 import "@suiet/wallet-kit/style.css"; // don't forget to import default stylesheet
 import React, { useEffect,useState } from 'react';
 import {TransactionBlock} from "@mysten/sui.js/transactions";
+// import TimerComponent from 'timerComponent';
 
 export default function App() {
     const wallet = useWallet();
@@ -71,6 +72,7 @@ export default function App() {
         const tx = new TransactionBlock();
         let packageId = $('meta[name="package_id"]').attr('content');
         let collection_id = $('meta[name="collection_id"]').attr('content');
+        
         tx.moveCall({
             target: `${packageId}::client::mint_batch_booths`,
             arguments: [

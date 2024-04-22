@@ -13,7 +13,9 @@
     <meta name='mnemonic_client' content="{{ env('MNEMONIC_CLIENT')}}">
     <meta name='package_id' content="{{ env('PACKAGE_ID')}}">
     <meta name='collection_id' content="{{ env('COLLECTION_ID')}}">
-    <meta name='nft_hash_id' content="{{ $nft_hash_id }}">
+    <meta name='nft_hash_id' content="{{ $nft_hash_id ?? '' }}">
+    <meta name='event_id' content="{{ env('EVENT_OBJECT_ID')}}">
+    
 @endsection
 
 @section('name_page')

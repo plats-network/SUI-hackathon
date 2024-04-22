@@ -718,4 +718,70 @@ class Job extends Controller
             ]
         ], 200);
     }
+
+    // Save sponsor
+    // method: POST
+    // URL: /zkp/get
+    public function zkp(Request $request){
+        $data = $request->only(['jwt','extendedEphemeralPublicKey','jwtRandomness','maxEpoch','salt','keyClaimName']);
+
+        $validator = [
+        
+            'jwt'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'extendedEphemeralPublicKey'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'jwtRandomness'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'maxEpoch'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'salt'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'keyClaimName'=>[
+                'required',
+                'min:1',
+                'string'
+            ]
+        ];
+
+        $messages = [
+
+        ];
+
+        $validator = Validator::make($data, $validator,$messages);
+
+        // validate data
+        if ($validator->fails()) {
+
+            return response()->json([
+                'status' => false,
+                'message' =>  $validator->messages()->first()
+            ], 400);
+        }
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->post('https://prover-dev.mystenlabs.com/v1', [
+            'headers' => [
+            'Content-Type' => 'application/json',
+            ],
+            'json' => $data,
+        ]);
+
+        return $response->getBody();
+    }
 }

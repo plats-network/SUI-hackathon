@@ -2,6 +2,7 @@ import { ConnectButton, useWallet, addressEllipsis } from "@suiet/wallet-kit";
 import "@suiet/wallet-kit/style.css"; // don't forget to import default stylesheet
 import React, { useEffect, useState } from 'react';
 import {TransactionBlock} from "@mysten/sui.js/transactions";
+// import TimerComponent from 'timerComponent';
 
 import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
 import {getFullnodeUrl, SuiClient} from '@mysten/sui.js/client';
@@ -75,12 +76,19 @@ export default function App() {
         console.log('wallet',wallet);
         const tx = new TransactionBlock();
         let packageId = $('meta[name="package_id"]').attr('content');
-        let collection_id = $('meta[name="collection_id"]').attr('content');
+        // let collection_id = $('meta[name="collection_id"]').attr('content');
+        let collection_id = $('meta[name="event_id"]').attr('content');
+
+        let event_id = $('meta[name="nft_hash_id"]').attr('content');
+
+        
         tx.moveCall({
             target: `${packageId}::client::mint_batch_sessions`,
             arguments: [
 
-                // tx.pure(collection_id),
+                tx.pure(collection_id),
+                
+                tx.pure(event_id),
 
                 tx.pure(newData.nameSession),
                 // description: vector<vector<u8>>,
@@ -88,13 +96,13 @@ export default function App() {
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileSession),
 
-                tx.object(collection_id),
+                // tx.object(collection_id),
 
                 //tx.pure(data.nameSession),
                 //tx.pure(data.descriptionSession),
                 //tx.pure(data.fileSession),
             ],
-            typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
+            // typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
 
             // typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });

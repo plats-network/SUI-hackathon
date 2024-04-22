@@ -48,6 +48,12 @@ console.log(import.meta.env.VITE_REDIRECT_URI);
 
     // Lưu urlcallback vào localStorage
     localStorage.setItem("urlcallback", window.location.href);
+    localStorage.setItem("ephemeralKeyPair",JSON.stringify(ephemeralKeyPair));
+    localStorage.setItem("randomness",randomness);
+    localStorage.setItem("maxEpoch",maxEpoch);
+    
+    
+    console.log('ephemeralKeyPair',ephemeralKeyPair);
 
     // Chuyển hướng đến loginURL
     window.location.href = loginURL;
@@ -55,6 +61,7 @@ console.log(import.meta.env.VITE_REDIRECT_URI);
     console.log(loginURL);
 
 });
+
 
 $(document).ready(function() {
     // Đặt các lệnh JavaScript của bạn ở đây
@@ -70,12 +77,13 @@ async function getTokenSocial(){
 
     if(!jwt) return;
     //tạo salt ngẫu nhiên hiện tại đang fix cứng, phải đợi bên t2(zklogin) duyệt sal qua token
-    const salt = saltRandomString(42);
+    const salt = saltRandomString(16);
     const zkLoginUserAddress =  jwtToAddress(jwt, '778508701119817782538534025112866953167371');
     localStorage.setItem('zkLoginUserAddress', zkLoginUserAddress)
+    localStorage.setItem("jwtUser",jwt);
 
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+        url: getFullnodeUrl('devnet'),
     });
     const accountBalances = await client.getBalance({owner: zkLoginUserAddress});
     console.log('accountBalances',accountBalances);
