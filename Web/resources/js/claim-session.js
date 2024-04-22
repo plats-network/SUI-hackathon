@@ -11,7 +11,7 @@ import {
     MINT_SIZE
 } from "@solana/spl-token";
 import { generateNonce, generateRandomness,jwtToAddress } from '@mysten/zklogin';
-import {TransactionBlock} from "@mysten/sui.js/transactions";
+import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { getFullnodeUrl, SuiClient }  from '@mysten/sui.js/client';
 import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
 import { GasStationClient, createSuiClient, buildGaslessTransactionBytes } from "@shinami/clients";
@@ -20,6 +20,7 @@ import { jwtDecode } from 'jwt-decode';
 import axios from "axios";
 import {toBigIntBE} from "bigint-buffer";
 import {fromB64} from "@mysten/bcs";
+import { log } from 'console';
 
 const rpcUrl = 'https://api.devnet.solana.com';
 
@@ -82,7 +83,8 @@ $('#button-claim').click(async function () {
     let jwtUser = localStorage.getItem('jwtUser');
     let ranDomness = localStorage.getItem('randomness');
     let maxEpoch = localStorage.getItem('maxEpoch');
-    let salt = '2bdc54607a3f62';
+    let salt = localStorage.getItem('salt');
+
     
     console.log('keypair',keypair);
     
@@ -93,14 +95,14 @@ $('#button-claim').click(async function () {
     });
 
     const txb = new TransactionBlock();
-
+    
     txb.moveCall({
         target: `${packageId}::ticket_collection::claim_session`,
         arguments: [
             txb.object(event_object_id),
             // sessionID
             // $("nft_hash_id").val(),
-            txb.pure("0x2cd2650eaed079bd094b8624199208424f6c5114a3df77a8c82da80460a65458")
+            txb.pure("0x20be40b235cbefcc4c9f970252a6ea46f95dd31138d81be8b9009bd6f0cc9275")
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTSession`]
     });
@@ -116,6 +118,9 @@ $('#button-claim').click(async function () {
     const jwtPayload = jwtDecode(jwtUser);
 
     const addressSeed  = genAddressSeed(BigInt(salt), "sub", jwtPayload.sub, jwtPayload.aud).toString();
+    
+    console.log(addressSeed);
+
     // ==================================
     console.log('keypair.publicKey',keypair.keypair.publicKey);
 

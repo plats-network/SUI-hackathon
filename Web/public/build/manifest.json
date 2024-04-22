@@ -95,8 +95,8 @@
       "__md-5eb5ac83.js"
     ]
   },
-  "_index-cde03c98.js": {
-    "file": "assets/index-cde03c98.js",
+  "_index-c8dd072a.js": {
+    "file": "assets/index-c8dd072a.js",
     "imports": [
       "_bn-a0a0c8e1.js",
       "_index.browser.esm-82bec2c1.js",
@@ -262,10 +262,10 @@
     "src": "resources/js/app/provider.jsx"
   },
   "resources/js/claim-session.js": {
-    "file": "assets/claim-session-513e5e29.js",
+    "file": "assets/claim-session-f52a11da.js",
     "imports": [
       "_index-aaeb3140.js",
-      "_index-cde03c98.js",
+      "_index-c8dd072a.js",
       "_index.browser.esm-82bec2c1.js",
       "_abi-75b191bb.js",
       "_bn-a0a0c8e1.js",
@@ -273,10 +273,10 @@
       "_index-ea9ea726.js",
       "_TransactionBlock-56054d2a.js",
       "_axios-654eef56.js",
+      "_util-fc318f65.js",
       "_client-d48901d8.js",
       "_events-f79199d1.js",
       "_sha256-a86b6b42.js",
-      "_util-fc318f65.js",
       "_sha512-d6693c92.js",
       "__md-5eb5ac83.js",
       "_secp256k1-a06cb75b.js",
@@ -287,11 +287,11 @@
     "src": "resources/js/claim-session.js"
   },
   "resources/js/claim.js": {
-    "file": "assets/claim-fc18934a.js",
+    "file": "assets/claim-9122a7aa.js",
     "imports": [
       "_TransactionBlock-56054d2a.js",
       "_index-aaeb3140.js",
-      "_index-cde03c98.js",
+      "_index-c8dd072a.js",
       "_index.browser.esm-82bec2c1.js",
       "_abi-75b191bb.js",
       "_bn-a0a0c8e1.js",
@@ -472,9 +472,9 @@
     "src": "resources/js/game.js"
   },
   "resources/js/mint.js": {
-    "file": "assets/mint-56b5ce69.js",
+    "file": "assets/mint-4220650b.js",
     "imports": [
-      "_index-cde03c98.js",
+      "_index-c8dd072a.js",
       "_index.browser.esm-82bec2c1.js",
       "_abi-75b191bb.js",
       "_bn-a0a0c8e1.js",
@@ -517,10 +517,10 @@
     "src": "resources/js/mintNftSession.jsx"
   },
   "resources/js/profile-nft.js": {
-    "file": "assets/profile-nft-f364994b.js",
+    "file": "assets/profile-nft-818a45f6.js",
     "imports": [
       "_index-aaeb3140.js",
-      "_index-cde03c98.js",
+      "_index-c8dd072a.js",
       "_index.browser.esm-82bec2c1.js",
       "_bn-a0a0c8e1.js",
       "_sha256-a86b6b42.js",
@@ -559,10 +559,10 @@
     "src": "resources/js/testReactjs.jsx"
   },
   "resources/js/views/solana.jsx": {
-    "file": "assets/solana-57c9ab68.js",
+    "file": "assets/solana-68ec76bd.js",
     "imports": [
       "_jsx-runtime-f0a4e50a.js",
-      "_index-cde03c98.js",
+      "_index-c8dd072a.js",
       "_index.browser.esm-82bec2c1.js",
       "_client-888b02c5.js",
       "_index-ea9ea726.js",
@@ -579,7 +579,7 @@
     "src": "resources/js/views/solana.jsx"
   },
   "resources/js/zklogin.js": {
-    "file": "assets/zklogin-1c5a2463.js",
+    "file": "assets/zklogin-430b3f8f.js",
     "imports": [
       "_index-b65d164b.js",
       "__md-5eb5ac83.js",
