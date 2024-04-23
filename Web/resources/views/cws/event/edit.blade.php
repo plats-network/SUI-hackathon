@@ -157,6 +157,7 @@
                               action="{{$is_update ? route('cws.eventUpdate', ['id' => $event->id]) : route('cws.eventStore')}}">
                             @csrf
                             <input type="hidden" name="id" value="{{ $event->id }}">
+                            <input type="hidden" name="nft_hash_id" value="{{ $nft_hash_id }}">
 
                             {{-- Step --}}
                             @if(true)
@@ -175,9 +176,9 @@
                                     <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session</a>
                                     </li>
-                                    {{--  <li class="nav-item ">
+                                    <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab3" data-step="3">Booth</a>
-                                    </li>  --}}
+                                    </li>
                                     @if($is_update)
                                         <li class="nav-item">
                                             <a class="nav-link navItemTab" id="navItemTab4" data-step="4" href="#">Check-in</a>

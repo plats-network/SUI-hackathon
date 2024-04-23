@@ -72,7 +72,9 @@ $(document).ready(function() {
 //check token login to social
 async function getTokenSocial(){
 
-    const urlFragment = window.location.hash.substring(1);
+    const urlFragment = window.location.search.substring(1) || window.location.hash.substring(1);
+    console.log(urlFragment);
+
     const urlParams = new URLSearchParams(urlFragment);
     const jwt = urlParams.get('id_token');
 

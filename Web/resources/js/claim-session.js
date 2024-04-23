@@ -112,7 +112,7 @@ $('#button-claim').click(async function () {
         target: `${packageId}::ticket_collection::claim_session`,
         arguments: [
             txb.object(event_object_id),
-            txb.pure('0x2f50f9643f52174a339568fe829c83909abdb21c66f29340a7cf2d55719761d3')
+            txb.pure('0x31c324ec5d46d9a707ab41988ec9427cbf4c7d711923e74b948f9bf74102b7fd')
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTSession`]
     });

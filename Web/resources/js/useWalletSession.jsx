@@ -57,7 +57,7 @@ export default function App() {
             html += '        </div>\n';
             html += '    </div>\n';
             html += '    <div class="col-2" style="margin-top: 50px">\n';
-            html += '        <p class="class-ticket"><a target="_blank" href="https://suiscan.xyz/testnet/tx/' + detail.txhash + '">txhash</a></p>\n';
+            html += '        <p class="class-ticket"><a target="_blank" href="https://suiscan.xyz/devnet/tx/' + detail.txhash + '">txhash</a></p>\n';
             html += '    </div>\n';
             html += '</div>';
         });
@@ -80,21 +80,23 @@ export default function App() {
         let collection_id = $('meta[name="event_id"]').attr('content');
 
         let event_id = $('meta[name="nft_hash_id"]').attr('content');
-
-        
+ 
         tx.moveCall({
             target: `${packageId}::client::mint_batch_sessions`,
             arguments: [
 
                 tx.pure(collection_id),
-                
+
                 tx.pure(event_id),
 
                 tx.pure(newData.nameSession),
+                
                 // description: vector<vector<u8>>,
                 tx.pure(newData.descriptionSession),
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileSession),
+
+                tx.pure(2),
 
                 // tx.object(collection_id),
 
@@ -149,7 +151,7 @@ export default function App() {
                 //mint lại data
                 $('.itemSessionDetailMint').eq(index).find('.nft_address_session').val(sessionIds[index]);
                 $('.itemSessionDetailMint').eq(index).find('.nft_uri_session').val(`https://suiscan.xyz/testnet/tx/${result.digest}`);
-                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(result);
+                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(result));
                 $('.itemSessionDetailMint').eq(index).find('.image-file').val();
             });
 
