@@ -774,7 +774,7 @@ class Job extends Controller
             ], 400);
         }
         $client = new Client();
-    
+
         $response = $client->post('https://prover-dev.mystenlabs.com/v1', [
             'headers' => [
             'Content-Type' => 'application/json',

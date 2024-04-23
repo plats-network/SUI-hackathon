@@ -1,7 +1,7 @@
 **/.phpunit.cache
 /Web/node_modules
 /Web/public/hot
-/Web/public/build/*
+/Web/public/build
 /Web/public/storage
 /Web/storage/*.key
 /Web/vendor
