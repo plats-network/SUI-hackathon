@@ -104,7 +104,6 @@ $('#button-claim').click(async function () {
     const txb = new TransactionBlock();
     
     //https://cws-suivent.plats.test/dE
-    const object_id   = '0x2f50f9643f52174a339568fe829c83909abdb21c66f29340a7cf2d55719761d3';
     
     txb.setSender(zkLoginUserAddress);
     txb.setGasBudget(5000000);
@@ -112,7 +111,7 @@ $('#button-claim').click(async function () {
         target: `${packageId}::ticket_collection::claim_session`,
         arguments: [
             txb.object(event_object_id),
-            txb.pure('0x31c324ec5d46d9a707ab41988ec9427cbf4c7d711923e74b948f9bf74102b7fd')
+            txb.pure(address_nft_min)
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTSession`]
     });
@@ -167,13 +166,36 @@ $('#button-claim').click(async function () {
         userSignature:signature,
     });
 
-    const result = await client.executeTransactionBlock({
-        transactionBlock: bytes,
-        signature: zkLoginSignature,
-    });
+    $('.loading').hide();
 
-    console.log('result',result);
-    console.log('zkLoginSignature',zkLoginSignature);
+  
+    try {
+        
+        const result = await client.executeTransactionBlock({
+            transactionBlock: bytes,
+            signature: zkLoginSignature,
+        });
+        let digest = result.digest;
+        console.log('result :',result, 'digest :',digest);
+        console.log('zkLoginSignature',zkLoginSignature);
+
+        const body = {
+            nft_id: $("#nft_id").val(),
+            digest: digest,
+        }
+
+        const res = await axios.post("/update_nft_status", body);
+        alert(`Claim NFT is success. Please see on https://suiscan.xyz/devnet/tx/${digest}`);
+        $('#button-claim').hide()
+        $('#button-claim-link').attr('href', 'https://suiscan.xyz/devnet/tx/${digest}');
+        $('#button-claim-link').show();
+        $('.loading').hide();
+
+    } catch (error) {
+        alert(error.message);
+        $('.loading').hide();
+
+    }
    
     return;
 
@@ -184,7 +206,7 @@ $('#button-claim').click(async function () {
      
 
         $('#button-claim').hide()
-        // $('#button-claim-link').attr('href', 'https://suiscan.xyz/testnet/tx/'+resultUserClaim.digest);
+        // $('#button-claim-link').attr('href', 'https://suiscan.xyz/devnet/tx/'+resultUserClaim.digest);
         $('#button-claim-link').show();
         alert('user clainm success');
         

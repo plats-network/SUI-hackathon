@@ -120,7 +120,7 @@ class NFTController extends Controller
     public function updateNftClaim(Request $request)
     {
         $nft = NFT\NFTMint::find($request->nft_id);
-
+        
         if (auth()->user() == null) {
             // check login and auth
             $existingUser = User::where('email', $request->email)->first();
