@@ -102,7 +102,7 @@
     color: blue;
     margin-top: 20px;
     display: block;
-" class="link-primary" target="_blank" href="https://suiscan.xyz/testnet/tx/{{$checkMint->digest ?? ''}}">
+" class="link-primary" target="_blank" href="https://suiscan.xyz/devnet/tx/{{$checkMint->digest ?? ''}}">
                                         Suiet Explorer Link
                                     </a>
                                 @else
@@ -121,7 +121,7 @@ border: none;
 display:none;
 background: none;
 color: blue;
-" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/testnet/tx/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
+" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/devnet/tx/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
                                             Suiet Explorer Link
                                         </a>
                                     @endif

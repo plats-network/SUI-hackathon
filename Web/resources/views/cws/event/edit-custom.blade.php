@@ -432,7 +432,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-2" style="margin-top: 50px">
-                                                            <p class="class-ticket"><a href="https://suiscan.xyz/testnet/tx/{{$digest}}">TxHash</a></p>
+                                                            <p class="class-ticket"><a href="https://suiscan.xyz/devnet/tx/{{$digest}}">TxHash</a></p>
                                                         </div>
                                                     </div>
                                                 @endif
