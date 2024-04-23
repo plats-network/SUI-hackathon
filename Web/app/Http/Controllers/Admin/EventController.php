@@ -59,7 +59,7 @@ class EventController extends Controller
         // code
     }
     public function dashboard(Request $request){
-        
+
         $limit = $request->get('limit') ?? 10;
         $events = $this->taskService->search([
             'limit' => $limit,
@@ -665,9 +665,12 @@ class EventController extends Controller
         $userCheckIn = $this->listUsers($id); //List user check in event
 
         //$urlAnswers = route('quiz-name.answers', $eventId);
-        $urlAnswersFull = route('web.events.show', ['id' => $eventId, 'check_in' => true]);
+//        $urlAnswersFull = route('web.events.show', ['id' => $eventId, 'check_in' => true]);
+        $urlAnswersFull = 'https://' .config('plats.event').'/events/'.$eventId.'?check_in=1';
         //Shorten url
-        $urlAnswers = Url::shortenUrl($urlAnswersFull);
+//        $urlAnswers = Url::shortenUrl($urlAnswersFull);
+        $urlAnswers = $urlAnswersFull;
+//        dd($urlAnswers);
 
         $qrCode = QrCode::format('png')->size(250)->generate($urlAnswers);
 
