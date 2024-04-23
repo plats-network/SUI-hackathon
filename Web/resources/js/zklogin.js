@@ -51,9 +51,9 @@ console.log(import.meta.env.VITE_REDIRECT_URI);
     localStorage.setItem("ephemeralKeyPair",JSON.stringify(ephemeralKeyPair));
     localStorage.setItem("randomness",randomness);
     localStorage.setItem("maxEpoch",maxEpoch);
-    localStorage.setItem("ephemeraPrivateKey",JSON.stringify(ephemeralKeyPair.getSecretKey()));
+    localStorage.setItem("ephemeraPrivateKey",ephemeralKeyPair.getSecretKey());
 
-    
+
     console.log('ephemeralKeyPair',ephemeralKeyPair);
 
     // Chuyển hướng đến loginURL
