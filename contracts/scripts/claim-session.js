@@ -12,11 +12,11 @@ if (!process.env.PACKAGE_ID) {
 async function claim() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_USER);
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+        url: getFullnodeUrl('devnet'),
     });
     const tx = new TransactionBlock();
     let packageId = process.env.PACKAGE_ID;
-    let collectionId = process.env.EVENT_ID;
+    let collectionId = process.env.EVENT_OBJECT_ID;
 
     // claim ticket by user
     tx.moveCall({
@@ -24,7 +24,7 @@ async function claim() {
         arguments: [
             tx.object(collectionId),
             // sessionID
-            tx.pure("0x9c5462e68b577843a0434190a4711999e58cd63cf653b2e96f90bfa02be45b6e")
+            tx.pure("0x9d766c4e58f1a399437125886edd81deb7eaf9d085a1c9c8c42edf2bd8da6329")
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTSession`]
     });

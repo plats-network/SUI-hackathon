@@ -8,6 +8,7 @@ module sui_nft::ticket_collection {
     use sui::event;
     use sui_nft::utils::{Self};
     use sui::bag::{Bag, Self};
+    use std::debug;
     use sui::dynamic_object_field as ofield;
     friend sui_nft::client;
     friend sui_nft::admin;
@@ -70,6 +71,8 @@ module sui_nft::ticket_collection {
 
         /// Event Id 
         event_id: String,
+
+        token_id: u64,
 
     }
 
@@ -252,7 +255,7 @@ module sui_nft::ticket_collection {
         ctx: &mut TxContext  
     
     ): ID{
-        let session = mint_session_single(name,  description, image_url, event_id, ctx);
+        let session = mint_session_single(name,  description, image_url, event_id, 0, ctx);
         let session_id = *object::uid_as_inner(&session.id);
         let claimed = EventSessionClaimed {id: object::new(ctx)};
         ofield::add(&mut claimed.id, true,  session);
@@ -265,23 +268,32 @@ module sui_nft::ticket_collection {
         descriptions: vector<vector<u8>>,
         urls: vector<vector<u8>>,
         event_id: vector<u8>,
+        max_supply: u64,
         ctx: &mut TxContext    
     ): vector<ID>{
         let sessions = vector::empty();
         let i = 0; 
+
         // todo
         let len = vector::length(&names);
+        debug::print(&len);
+        debug::print(&max_supply);
 
         while (i < len){
+            let j = 0;
             let name = vector::borrow(&names, i );
             let description = vector::borrow(&descriptions, i);
             let url = vector::borrow(&urls, i);
-            let session = mint_session_single(*name,  *description, *url, event_id,  ctx);
-            let session_id = *object::uid_as_inner(&session.id);
-            let claimed = EventSessionClaimed {id: object::new(ctx)};
-            ofield::add(&mut claimed.id, true,  session);
-            bag::add(&mut event_ticket.sessions, session_id, claimed);
-            vector::push_back(&mut sessions, session_id);
+            while (j < max_supply) {
+                let session = mint_session_single(*name,  *description, *url, event_id,j,  ctx);
+                let session_id = *object::uid_as_inner(&session.id);
+                let claimed = EventSessionClaimed {id: object::new(ctx)};
+                ofield::add(&mut claimed.id, true,  session);
+                bag::add(&mut event_ticket.sessions, session_id, claimed);
+                vector::push_back(&mut sessions, session_id);   
+                j = j+1;
+            };
+
             i = i +1;
         };
 
@@ -407,6 +419,7 @@ module sui_nft::ticket_collection {
         description: vector<u8>,
         image_url: vector<u8>,
         event_id: vector<u8>,
+        token_id: u64,
         ctx: &mut TxContext
     ): NFTSession {
         let nft = NFTSession {
@@ -415,6 +428,7 @@ module sui_nft::ticket_collection {
             description: string::utf8(description),
             image_url: string::utf8(image_url),
             event_id: string::utf8(event_id),
+            token_id
         };
 
         nft
@@ -617,6 +631,8 @@ module sui_nft::ticket_collection {
 
         {
 
+            let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+
             let names = vector::empty();
             let descriptions = vector::empty();
             let urls = vector::empty();
@@ -630,9 +646,10 @@ module sui_nft::ticket_collection {
 
 
 
-            let sessions: vector<ID> = mint_sessions(names, descriptions, urls, event_id_1,  ctx(scenario));
+            let sessions: vector<ID> = mint_sessions(&mut event_ticket, names, descriptions, urls, event_id_1, 2,   ctx(scenario));
             debug::print(&utf8(b"CHECK MINT BATCH SESSIONS"));
             debug::print(&sessions);
+            test_scenario::return_shared<EventTicket>(event_ticket);
             //test_scenario::return_to_sender(scenario, sessions);
         };
 

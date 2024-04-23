@@ -10,7 +10,7 @@ async function claimGasless() {
     // 2. Copy your Testnet Gas Station and Node Service key value
     const GAS_AND_NODE_TESTNET_ACCESS_KEY = process.env.ACCESS_KEY;
     let packageId = process.env.PACKAGE_ID;
-    let collectionId = process.env.EVENT_ID;
+    let collectionId = process.env.EVENT_OBJECT_ID;
 
     // 3. Set up your Gas Station and Node Service clients
     const nodeClient = createSuiClient(GAS_AND_NODE_TESTNET_ACCESS_KEY);

@@ -16,7 +16,7 @@ async function claim() {
     });
     const tx = new TransactionBlock();
     let packageId = process.env.PACKAGE_ID;
-    let collectionId = process.env.EVENT_ID;
+    let collectionId = process.env.EVENT_OBJECT_ID;
 
     // claim ticket by user
     tx.moveCall({

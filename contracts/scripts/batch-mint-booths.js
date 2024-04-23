@@ -15,7 +15,7 @@ async function mintBooths() {
         url: getFullnodeUrl('testnet'),
     });
     const tx = new TransactionBlock();
-    const collectionId= process.env.EVENT_ID;
+    const collectionId= process.env.EVENT_OBJECT_ID;
     tx.moveCall({
         target: `${process.env.PACKAGE_ID}::client::mint_batch_booths`,
         arguments: [

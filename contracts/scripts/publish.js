@@ -14,7 +14,7 @@ if (!process.env.MNEMONIC_PUBLISHER) {
 const moveDir = path.resolve(scriptsPath, '..');
 const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_PUBLISHER);
 const client = new SuiClient({
-    url: getFullnodeUrl('testnet'),
+    url: getFullnodeUrl('devnet'),
 });
 
 const { modules, dependencies } = JSON.parse(

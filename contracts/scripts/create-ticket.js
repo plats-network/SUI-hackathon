@@ -19,7 +19,7 @@ const CoinType = "0x2::sui::SUI";
 async function createTicket() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_PUBLISHER);
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+        url: getFullnodeUrl('devnet'),
     });
     const tx = new TransactionBlock();
 

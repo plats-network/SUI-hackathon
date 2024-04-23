@@ -59,10 +59,11 @@ module sui_nft::client {
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
         urls: vector<vector<u8>>,
+        max_supply: u64,
         ctx: &mut TxContext
     ): vector<ID> {
         
-        let sessions = collection::mint_sessions(event_ticket, names, descriptions, urls, event_id,  ctx);
+        let sessions = collection::mint_sessions(event_ticket, names, descriptions, urls, event_id, max_supply,  ctx);
         sessions
 
     }

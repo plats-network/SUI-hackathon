@@ -12,10 +12,10 @@ if (!process.env.PACKAGE_ID) {
 async function mintSessions() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+        url: getFullnodeUrl('devnet'),
     });
     const tx = new TransactionBlock();
-    const collectionId = process.env.EVENT_ID;
+    const collectionId = process.env.EVENT_OBJECT_ID;
     tx.moveCall({
         target: `${process.env.PACKAGE_ID}::client::mint_batch_sessions`,
         arguments: [
@@ -29,6 +29,8 @@ async function mintSessions() {
             tx.pure(["This is session 1", "This is session 2"]),
             // url: vector<vector<u8>>,
             tx.pure(["https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos", "https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"]),
+            // max supply 
+            tx.pure(2),
         ],
         //typeArguments: [`${process.env.PACKAGE_ID}::ticket_collection::NFTTicket`]
     });

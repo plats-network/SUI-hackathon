@@ -17,7 +17,7 @@ async function mint() {
     const tx = new TransactionBlock();
     //let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
     let packageId = process.env.PACKAGE_ID;
-    let collectionId = process.env.EVENT_ID;
+    let collectionId = process.env.EVENT_OBJECT_ID;
     tx.moveCall({
         target: `${packageId}::client::mint_batch_tickets`,
         arguments: [
