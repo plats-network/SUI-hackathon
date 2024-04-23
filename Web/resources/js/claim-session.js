@@ -11,11 +11,17 @@ import {
     MINT_SIZE
 } from "@solana/spl-token";
 import { generateNonce, generateRandomness,jwtToAddress } from '@mysten/zklogin';
-import {TransactionBlock} from "@mysten/sui.js/transactions";
+import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { getFullnodeUrl, SuiClient }  from '@mysten/sui.js/client';
 import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
-
+import { GasStationClient, createSuiClient, buildGaslessTransactionBytes } from "@shinami/clients";
+import { genAddressSeed, getZkLoginSignature,getExtendedEphemeralPublicKey } from "@mysten/zklogin";
+import { jwtDecode } from 'jwt-decode';
 import axios from "axios";
+import {toBigIntBE} from "bigint-buffer";
+import {fromB64} from "@mysten/bcs";
+import { log } from 'console';
+import { SerializedSignature, decodeSuiPrivateKey } from '@mysten/sui.js/cryptography';
 
 const rpcUrl = 'https://api.devnet.solana.com';
 
@@ -50,9 +56,24 @@ $('#button-claim-test').click(async function(){
     const accountBalances = await client.getBalance({owner: zkLoginUserAddress});
 });
 
+function keypairFromSecretKey(privateKeyBase64){
+    const keyPair = decodeSuiPrivateKey(privateKeyBase64);
+    return Ed25519Keypair.fromSecretKey(keyPair.secretKey);
+}
+
 $('#button-claim').click(async function () {
     //$('.loading').show();
     //user login jdk
+
+    const GAS_AND_NODE_TESTNET_ACCESS_KEY = "sui_testnet_7543d1af9a8d035b0de83f45907b0fe3";
+    
+    // 3. Set up your Gas Station and Node Service clients
+    const nodeClient = createSuiClient(GAS_AND_NODE_TESTNET_ACCESS_KEY);
+    const gasStationClient = new GasStationClient(GAS_AND_NODE_TESTNET_ACCESS_KEY);
+
+    
+
+
     const address_nft_min = $("#address_nft_min").val();
     console.log('address_nft_min',address_nft_min);
     const zkLoginUserAddress = localStorage.getItem("zkLoginUserAddress");
@@ -61,29 +82,109 @@ $('#button-claim').click(async function () {
         return;
     }
 
-    const tx = new TransactionBlock();
+    let event_object_id = $('meta[name="event_id"]').attr('content');
+    let packageId = $('meta[name="package_id"]').attr('content');
+
+    let keypair = JSON.parse(localStorage.getItem('ephemeralKeyPair'));
+    let jwtUser = localStorage.getItem('jwtUser');
+    let ranDomness = localStorage.getItem('randomness');
+    let maxEpoch = localStorage.getItem('maxEpoch');
+    let salt = localStorage.getItem('salt');
+    let ephemeralPrivateKey = localStorage.getItem('ephemeraPrivateKey');
+
+    
+    console.log('keypair',keypair);
+    
+        
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+    
+        url: getFullnodeUrl('devnet'),
     });
-    tx.transferObjects([tx.object(address_nft_min)] , zkLoginUserAddress);
 
+    const txb = new TransactionBlock();
+    
+    //https://cws-suivent.plats.test/dE
+    const object_id   = '0x2f50f9643f52174a339568fe829c83909abdb21c66f29340a7cf2d55719761d3';
+    
+    txb.setSender(zkLoginUserAddress);
+    txb.setGasBudget(5000000);
+    txb.moveCall({
+        target: `${packageId}::ticket_collection::claim_session`,
+        arguments: [
+            txb.object(event_object_id),
+            txb.pure('0x2f50f9643f52174a339568fe829c83909abdb21c66f29340a7cf2d55719761d3')
+        ],
+        typeArguments: [`${packageId}::ticket_collection::NFTSession`]
+    });
+    
+    const ephemeralKeyPairs = keypairFromSecretKey(ephemeralPrivateKey);
 
-    //console.log('signAndExecuteTransactionBlock',result);
-    let mnemonic_client = 'genius exit shallow wealth boring layer rotate model calm behind immune maze';
-    // let collection_id = '0x2587305d59dbcc09406e  1ef0147053fff3019a64aca312108adac2913785a6d0';
-    // let package_id = '0x5ff08c4a46f0e68e9677f6be420b6adf9f0fc90355f978ea235173fffc061a5c';
-    const keypair = Ed25519Keypair.deriveKeypair(mnemonic_client);
+    console.log('Pair',ephemeralKeyPairs);
+
+    // const convertKeypair = {
+    //     "keypair": {
+    //         "publicKey": Object.values(keypair.keypair.publicKey),
+    //         "secretKey": Object.values(keypair.keypair.secretKey),
+    //     }
+    // };
+
+    // console.log('convertKeypair',convertKeypair);
+    
+    // const ephemeralKeyPair = new Ed25519Keypair();
+    // console.log('ephemeralKeyPair',ephemeralKeyPair);
+    // return;
+    // // ==================================
+    const { bytes, signature } = await txb.sign({
+        client,
+        signer: ephemeralKeyPairs, // This must be the same ephemeral key pair used in the ZKP request
+    });
+
+    const jwtPayload = jwtDecode(jwtUser);
+
+    const addressSeed  = genAddressSeed(BigInt(salt), "sub", jwtPayload.sub, jwtPayload.aud).toString();
+    
+    console.log(addressSeed);
+
+    const zkpPayload = {
+        jwt: jwtUser,
+        extendedEphemeralPublicKey: toBigIntBE(
+            Buffer.from(ephemeralKeyPairs.keypair.publicKey),
+        ).toString(),
+        jwtRandomness: ranDomness,
+        maxEpoch: maxEpoch,
+        salt: salt,
+        keyClaimName: "sub"
+    };
+    console.log('zkpPayload',zkpPayload);
+    
+    const proofResponse = await axios.post("/zkp/post", zkpPayload);
+    const zkLoginSignature  = getZkLoginSignature({
+        inputs: {
+            ...proofResponse.data,
+            addressSeed
+        },
+        maxEpoch:maxEpoch,
+        userSignature:signature,
+    });
+
+    const result = await client.executeTransactionBlock({
+        transactionBlock: bytes,
+        signature: zkLoginSignature,
+    });
+
+    console.log('result',result);
+    console.log('zkLoginSignature',zkLoginSignature);
+   
+    return;
+
     try {
         
-        const resultUserClaim = await client.signAndExecuteTransactionBlock({
-            signer: keypair,
-            transactionBlock: tx,
-        });
-        console.log(resultUserClaim);    
-        console.log(`Sessions id :`,address_nft_min);
-        console.log('resultUserClaim',resultUserClaim);
+    
+      
+     
+
         $('#button-claim').hide()
-        $('#button-claim-link').attr('href', 'https://suiscan.xyz/testnet/tx/'+resultUserClaim.digest);
+        // $('#button-claim-link').attr('href', 'https://suiscan.xyz/testnet/tx/'+resultUserClaim.digest);
         $('#button-claim-link').show();
         alert('user clainm success');
         

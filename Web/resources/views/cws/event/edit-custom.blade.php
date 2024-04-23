@@ -412,7 +412,7 @@
                                                     <div class="row mb-3">
                                                         <div class="col-4">
                                                             <label for="image-file">
-                                                                <img class="img-preview img-preview-nft" src="{{ $countNFTData[0]->nft_uri ?? 'https://static.vecteezy.com/system/resources/previews/007/567/154/original/select-image-icon-vector.jpg' }}">
+                                                                <img class="img-preview img-preview-nft" src="{{ !empty($countNFTData[0]->nft_uri) ? $countNFTData[0]->nft_uri : asset('/imgs/no-image.png') }}">
                                                             </label>
                                                         </div>
                                                         <div class="col-3">
@@ -432,7 +432,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-2" style="margin-top: 50px">
-                                                            <p class="class-ticket"><a href="https://suiscan.xyz/testnet/tx/{{$digest}}">TxHash</a></p>
+                                                            <p class="class-ticket"><a href="https://suiscan.xyz/devnet/tx/{{$digest}}">TxHash</a></p>
                                                         </div>
                                                     </div>
                                                 @endif

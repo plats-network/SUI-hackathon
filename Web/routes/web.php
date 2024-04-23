@@ -104,6 +104,10 @@ Route::middleware(['user_event'])->group(function ($r) {
     //user claim session và booth
     $r->post('claim/event', [Job::class, 'index'])->name('web.claim');
 
+    //Get zk proof response to web3
+    $r->post('/zkp/post', [Job::class, 'zkp'])->name('web.zkp');
+
+
 });
 
 // Các route không yêu cầu middleware

@@ -12,7 +12,7 @@ function createMintNftTxnBlock(data) {
     // note that this is a devnet contract address
     const contractAddress = import.meta.env.VITE_PACKAGE_ID;
     const contractModule = "client";
-    const contractMethod = "mint_batch";
+    const contractMethod = "mint_batch_tickets";
 
 
     const nftName = data.nft_name;
@@ -21,13 +21,15 @@ function createMintNftTxnBlock(data) {
     const nftDescription = data.nft_symbol;
     const nftImgUrl = data.image_file ?? "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
     const nftCollectionId = import.meta.env.VITE_COLLECTION_ID;
+    const event_hash_id = $('meta[name="nft_hash_id"]').attr('content');
     console.log('contractAddress :', contractAddress, 'nftCollectionId :', nftCollectionId);
-
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,
         arguments: [
             // collection object id
-            txb.object(nftCollectionId),
+            txb.pure(nftCollectionId),
+            // event_id
+            txb.pure(event_hash_id),
             // name: vector<u8>,
             txb.pure(nftName),
             // description: vector<u8>,
@@ -39,7 +41,7 @@ function createMintNftTxnBlock(data) {
             // max_supply: u64,
             txb.pure(nftAmount),
         ],
-        typeArguments: [`${contractAddress}::ticket_collection::NFTTicket`]
+        // typeArguments: [`${contractAddress}::ticket_collection::NFTTicket`]
 
     });
 
@@ -49,8 +51,7 @@ function createMintNftTxnBlock(data) {
 export default function mintNft({nftData, _setMinted, nftMinted, setNftData, setItems, items}) {
     const wallet = useWallet();
     const [nftInputs, setNftInputs] = useState([]);
-    const mnemonic_client = $('#mnemonic_client').val();
-    const collection_id = $('#collection_id').val();
+    const mnemonic_client = import.meta.env.VITE_MNEMONIC_CLIENT;
     const [isLoading, setIsLoading] = useState(false);
     const datas = JSON.parse(JSON.stringify(nftData));
     const itemCopy = JSON.parse(JSON.stringify(items));
@@ -84,10 +85,7 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
                 console.log('ticketIds :', ticketIds);
 
 
-
                 // Add a new NftInput for each successful mint
-                // let res = [];
-                // let ticketIds = ['0x5432c747a8b536adbc2152958833e50d4aa8727fdfbd531be21960be1b06d565'];
                 for (let j = 0; j < Number(nftData[i].nft_amount); j++) {
                     setNftInputs(prevInputs => [...prevInputs, {
                         ...nftData[i],

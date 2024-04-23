@@ -21,6 +21,7 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use \GuzzleHttp\Client;
 
 class Job extends Controller
 {
@@ -144,7 +145,7 @@ class Job extends Controller
                     'code' => $event->code
                 ])->with('error', "Job locked!");
             } else {
-                
+
                 notify()->success('Scan QR code success');
                 return $this->getJob($request,$event->code);
                 // return redirect()->route('job.getJob', [
@@ -166,10 +167,10 @@ class Job extends Controller
     // method: GET
     // url: http://event.plats.test/quiz/tuiLOSvRxDUZk2cNTMu5LoA8s4VXxoO4fXe
     public function getJob(Request $request, $code) {
-        
+
         try {
             $detail = $this->eventDetail->whereCode($code)->first();
-            
+
             // check data
             if (empty($detail)) {
 
@@ -187,7 +188,7 @@ class Job extends Controller
             }
 
             $taskId = $taskEvent->task_id;
-    
+
             // check data
             if (empty($taskId)) {
 
@@ -196,7 +197,7 @@ class Job extends Controller
             }
 
             $task = $this->task->find($taskId);
-        
+
             // check data
             if (empty($task)) {
 
@@ -228,7 +229,7 @@ class Job extends Controller
                 ->where('task_event_detail_id', $detail->id)
                 ->whereUserId($user->id)
                 ->exists();
-             
+
             if (!$checkEventJob) {
 
                 if (!$detail->status) {
@@ -534,7 +535,7 @@ class Job extends Controller
             array_splice($groupSessions[$item['travel_game_id']], 6, 0, [$tempArray[0]]);
             array_splice($groupSessions[$item['travel_game_id']], 7, 0, [$tempArray[1]]);
         }
-        
+
         $checkNftMint = UserNft::where([
             'booth_id'=> $booth->id,
             'session_id' => $session->id,
@@ -568,9 +569,9 @@ class Job extends Controller
                 $qrCode = base64_encode(QrCode::format('png')->size(250)->generate(route('nft.claimAction', $nft->id)));
             }
         }
-        
+
         $nftMint =  NFTMint::where('session_id',$session->id ?? '')->first();
-        
+
         $data = [
             'event' => $event,
             'totalCompleted' => $totalCompleted,
@@ -717,5 +718,79 @@ class Job extends Controller
                 'message' => 'Successful'
             ]
         ], 200);
+    }
+
+    // Save sponsor
+    // method: POST
+    // URL: /zkp/get
+    public function zkp(Request $request){
+        $data = $request->only(['jwt','extendedEphemeralPublicKey','jwtRandomness','maxEpoch','salt','keyClaimName']);
+        $validator = [
+
+            'jwt'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'extendedEphemeralPublicKey'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'jwtRandomness'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'maxEpoch'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'salt'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'keyClaimName'=>[
+                'required',
+                'min:1',
+                'string'
+            ]
+        ];
+
+        $messages = [
+
+        ];
+
+        $validator = Validator::make($data, $validator,$messages);
+
+        // validate data
+        if ($validator->fails()) {
+
+            return response()->json([
+                'status' => false,
+                'message' =>  $validator->messages()->first()
+            ], 400);
+        }
+
+        $client = new Client();
+
+        $response = $client->post('https://prover-dev.mystenlabs.com/v1', [
+            'headers' => [
+            'Content-Type' => 'application/json',
+            ],
+            'json' => $data,
+        ]);
+
+        try {
+            return $response->getBody();
+        } catch (\Exception $e) {
+            return response()->json([
+                'data' => [
+                    'message' => 'Error: ' . $e->getMessage()
+                ]
+            ], 500);
+        }
     }
 }

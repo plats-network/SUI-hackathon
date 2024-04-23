@@ -26,7 +26,7 @@ const NftItemMinted = ({nftData}) => {
             </div>
             <div className="col-2" style={{marginTop: "50px"}}>
                 <p className="class-ticket"><a
-                    href={`https://suiscan.xyz/testnet/tx/${JSON.parse(nftData.res).digest}`}>TxHash</a></p>
+                    href={`https://suiscan.xyz/devnet/tx/${JSON.parse(nftData.res).digest}`}>TxHash</a></p>
             </div>
         </div>
     );

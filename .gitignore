@@ -6,6 +6,7 @@
 /Web/storage/*.key
 /Web/vendor
 /Web/.env
+/Web/.env.1
 /Mobile/.env
 /Web.env.backup
 /Web.env.production
