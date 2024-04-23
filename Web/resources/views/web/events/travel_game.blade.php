@@ -192,7 +192,7 @@
                                 <p>
                                     <strong>Missions: Scan the QR to receive a Lucky Draw Code.</strong>
                                 </p>
-                                <p><strong>Lucky Code:</strong> <span class="fs-25">{{$codes ? $codes : '---'}}</span>
+                                <p><strong>Lucky Code:</strong> <span class="fs-25">{{$codes ? $codes : '435'}}</span>
                                 </p>
 
                                 <p><strong>Joined: <span style="color:green">{{$totalCompleted}}</span> / 8
