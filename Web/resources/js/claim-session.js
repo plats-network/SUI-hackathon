@@ -166,16 +166,36 @@ $('#button-claim').click(async function () {
         userSignature:signature,
     });
 
-    const result = await client.executeTransactionBlock({
-        transactionBlock: bytes,
-        signature: zkLoginSignature,
-    });
+    $('.loading').hide();
 
-    $('#button-claim-link').attr('href', 'https://suiscan.xyz/devnet/tx/'+result.digest);
-    $('#button-claim-link').show();
+  
+    try {
+        
+        const result = await client.executeTransactionBlock({
+            transactionBlock: bytes,
+            signature: zkLoginSignature,
+        });
+        let digest = result.digest;
+        console.log('result :',result, 'digest :',digest);
+        console.log('zkLoginSignature',zkLoginSignature);
 
-    console.log('result',result);
-    console.log('zkLoginSignature',zkLoginSignature);
+        const body = {
+            nft_id: $("#nft_id").val(),
+            digest: digest,
+        }
+
+        const res = await axios.post("/update_nft_status", body);
+        alert(`Claim NFT is success. Please see on https://suiscan.xyz/devnet/tx/${digest}`);
+        $('#button-claim').hide()
+        $('#button-claim-link').attr('href', 'https://suiscan.xyz/devnet/tx/${digest}');
+        $('#button-claim-link').show();
+        $('.loading').hide();
+
+    } catch (error) {
+        alert(error.message);
+        $('.loading').hide();
+
+    }
    
     return;
 
