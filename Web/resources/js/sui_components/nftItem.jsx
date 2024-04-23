@@ -1,5 +1,4 @@
 import React from 'react';
-import {width} from "../admin/pages/chartjs";
 
 function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
     return (
