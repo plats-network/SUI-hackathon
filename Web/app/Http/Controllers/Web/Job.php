@@ -774,9 +774,8 @@ class Job extends Controller
                 'message' =>  $validator->messages()->first()
             ], 400);
         }
-        
         $client = new Client();
-
+    
         $response = $client->post('https://prover-dev.mystenlabs.com/v1', [
             'headers' => [
             'Content-Type' => 'application/json',
@@ -786,11 +785,10 @@ class Job extends Controller
 
         try {
             return $response->getBody();
+
         } catch (\Exception $e) {
             return response()->json([
-                'data' => [
-                    'message' => 'Error: ' . $e->getMessage()
-                ]
+                'message' => 'Error: ' . $e->getMessage()->first()
             ], 500);
         }
     }

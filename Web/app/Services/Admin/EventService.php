@@ -182,8 +182,8 @@ class EventService extends BaseService
             $data['type'] = EVENT;
             $data['code'] = genCodeTask();
             $data['order'] = $data['order'] ?? 1;
+            $data['nft_hash_id'] = $data['nft_hash_id'] ?? '';
             $data['reward'] = $data['reward'] ?? 0;
-
             $dataBaseTask = $this->taskRepository->create($data);
 
             //Save NFT Info 06.12.2023
@@ -194,7 +194,6 @@ class EventService extends BaseService
                 if (isset($data['thumbnail_nft']) && $data['thumbnail_nft']) {
                     $image_url = $data['thumbnail_nft']['path'];
                 }
-
 
                 $nftItem = NFT::create([
                     'task_id' => $dataBaseTask->id,
@@ -357,6 +356,7 @@ class EventService extends BaseService
         $index = 0;
         
         if (isset($sessions['id']) && $sessions['id']) {
+            
             $event = TaskEvent::where('id', $sessions['id'])->first();
             if (!$event) {
                 return true;

@@ -61,6 +61,7 @@ class Task extends Model
         'reward', // SL phan thuong
         'reward_type', // Loai phan thuong
         'code', // Hash
+        'nft_hash_id'
     ];
 
     /**
