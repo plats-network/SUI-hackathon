@@ -51,7 +51,7 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
                            onChange={onInputChange}/>
                 </div>
                 <div className={'mt-20 d-flex justify-end'}>
-                    <button type="button" className="btn btn-danger" onClick={onDelete}>
+                    <button type="button" className="btn btn-danger" onClick={onDelete} style={{width: "100%"}}>
                         Delete
                     </button>
                 </div>
