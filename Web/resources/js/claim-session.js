@@ -104,7 +104,6 @@ $('#button-claim').click(async function () {
     const txb = new TransactionBlock();
     
     //https://cws-suivent.plats.test/dE
-    const object_id   = '0x2f50f9643f52174a339568fe829c83909abdb21c66f29340a7cf2d55719761d3';
     
     txb.setSender(zkLoginUserAddress);
     txb.setGasBudget(5000000);
@@ -112,7 +111,7 @@ $('#button-claim').click(async function () {
         target: `${packageId}::ticket_collection::claim_session`,
         arguments: [
             txb.object(event_object_id),
-            txb.pure('0x31c324ec5d46d9a707ab41988ec9427cbf4c7d711923e74b948f9bf74102b7fd')
+            txb.pure(address_nft_min)
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTSession`]
     });
@@ -172,6 +171,9 @@ $('#button-claim').click(async function () {
         signature: zkLoginSignature,
     });
 
+    $('#button-claim-link').attr('href', 'https://suiscan.xyz/devnet/tx/'+result.digest);
+    $('#button-claim-link').show();
+
     console.log('result',result);
     console.log('zkLoginSignature',zkLoginSignature);
    
@@ -184,7 +186,7 @@ $('#button-claim').click(async function () {
      
 
         $('#button-claim').hide()
-        // $('#button-claim-link').attr('href', 'https://suiscan.xyz/testnet/tx/'+resultUserClaim.digest);
+        // $('#button-claim-link').attr('href', 'https://suiscan.xyz/devnet/tx/'+resultUserClaim.digest);
         $('#button-claim-link').show();
         alert('user clainm success');
         
