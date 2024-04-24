@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <title>Action Hub Control Panel</title>
-    <meta name="description" content=""/>
     @include('web._layout.head')
 </head>
 <body>

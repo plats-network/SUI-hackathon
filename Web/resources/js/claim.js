@@ -36,7 +36,8 @@ const solConnect = new window.SolanaConnect();
 var walletOr = '';
 var pub = '';
 var TOKEN_METADATA_PROGRAM_ID = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
-const connection = new Connection(web3.clusterApiUrl("devnet"));
+const connection = new Connection(web3.clusterApiUrl(typenetwork));
+let typenetwork = $('meta[name="type_network"]').attr('content');
 const PROGRAM_ID = new PublicKey("D5GK8Kye78gjuDMMjRnkWH5a6KfNEXzex5mekXL3HLR2");
 let provider = new AnchorProvider(connection, solConnect.getWallet(), {commitment: "confirmed"})
 let program = new Program(idl, PROGRAM_ID, provider);
@@ -87,7 +88,7 @@ $('.btn-claim-id').click(async function () {
     console.log('Pair',ephemeralKeyPairs);
     const client = new SuiClient({
 
-        url: getFullnodeUrl('devnet'),
+        url: getFullnodeUrl(typenetwork),
     });
     const { bytes, signature } = await txb.sign({
         client,
@@ -138,10 +139,10 @@ $('.btn-claim-id').click(async function () {
         }
 
         const res = await axios.post("/update_nft_status", body);
-        alert(`Claim NFT is success. Please see on https://suiscan.xyz/devnet/tx/${digest}`);
+        alert(`Claim NFT is success. Please see on https://suiscan.xyz/${typenetwork}/tx/${digest}`);
         $('.loading').hide();
         $('.claim-success').css('display', 'block');
-        $('.sol-link').attr('href', `https://suiscan.xyz/devnet/tx/${digest}`);
+        $('.sol-link').attr('href', `https://suiscan.xyz/${typenetwork}/tx/${digest}`);
         $('.sol-link').show();
         $('.btn-claim-id').hide();
         $('.claim-btn').hide();
