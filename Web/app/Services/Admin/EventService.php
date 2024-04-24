@@ -490,7 +490,7 @@ class EventService extends BaseService
                     if(isset($item['nft-address']) && !empty($item['nft-address'])){
                         
                         $arrNFTMint = [
-                            'task_id' => $sessionTask->id,
+                            'task_id' => $task->id,
                             'session_id' => $sessionTask->id,
                             'nft_uri' => $item['nft-uri'] ?? '',
                             'address_nft' => $item['nft-address'] ?? '',

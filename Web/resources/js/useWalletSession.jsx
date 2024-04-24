@@ -96,7 +96,7 @@ export default function App() {
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileSession),
 
-                tx.pure(2),
+                tx.pure(1),
 
                 // tx.object(collection_id),
 

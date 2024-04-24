@@ -62,7 +62,7 @@ function keypairFromSecretKey(privateKeyBase64){
 }
 
 $('#button-claim').click(async function () {
-    //$('.loading').show();
+    $('.loading').show();
     //user login jdk
 
     const GAS_AND_NODE_TESTNET_ACCESS_KEY = "sui_testnet_7543d1af9a8d035b0de83f45907b0fe3";
@@ -166,9 +166,6 @@ $('#button-claim').click(async function () {
         userSignature:signature,
     });
 
-    $('.loading').hide();
-
-  
     try {
         
         const result = await client.executeTransactionBlock({
@@ -185,9 +182,10 @@ $('#button-claim').click(async function () {
         }
 
         const res = await axios.post("/update_nft_status", body);
+        
         alert(`Claim NFT is success. Please see on https://suiscan.xyz/devnet/tx/${digest}`);
         $('#button-claim').hide()
-        $('#button-claim-link').attr('href', 'https://suiscan.xyz/devnet/tx/${digest}');
+        $('#button-claim-link').attr('href', `https://suiscan.xyz/devnet/tx/${digest}`);
         $('#button-claim-link').show();
         $('.loading').hide();
 
