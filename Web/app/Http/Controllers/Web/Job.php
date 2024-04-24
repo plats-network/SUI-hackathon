@@ -112,7 +112,7 @@ class Job extends Controller
                 notify()->error('Không tồn tại');;
                 return redirect()->route('web.home');
             }
-
+          
             if(!$user) {
                 session()->put('guest', [
                     'id' => $code,
@@ -122,7 +122,7 @@ class Job extends Controller
 
                 return redirect()->route('web.formLoginGuest');
             }
-
+        
             if ($task) {
                 $checkUserEvent = $this->userEvent
                     ->whereTaskId($task->id)
@@ -136,7 +136,7 @@ class Job extends Controller
 //                    ]);
 //                }
             }
-
+         
             //không có mã qr hợp lệ
             if ($event && !$event->status) {
 
@@ -145,14 +145,14 @@ class Job extends Controller
                     'code' => $event->code
                 ])->with('error', "Job locked!");
             } else {
-
+                
                 notify()->success('Scan QR code success');
                 return $this->getJob($request,$event->code);
                 // return redirect()->route('job.getJob', [
                 //     'code' => $event->code
                 // ]);
             }
-
+            
             return redirect()->route('job.getTravelGame', [
                 'id' => $task->code,
                 'task_id' => $task->code
@@ -167,7 +167,7 @@ class Job extends Controller
     // method: GET
     // url: http://event.plats.test/quiz/tuiLOSvRxDUZk2cNTMu5LoA8s4VXxoO4fXe
     public function getJob(Request $request, $code) {
-
+        
         try {
             $detail = $this->eventDetail->whereCode($code)->first();
 
@@ -224,7 +224,7 @@ class Job extends Controller
                     'hash_code' => Str::random(35)
                 ]);
             }
-
+       
             $checkEventJob = $this->joinEvent
                 ->where('task_event_detail_id', $detail->id)
                 ->whereUserId($user->id)
@@ -285,17 +285,17 @@ class Job extends Controller
             if ($taskEvent->type == 0) {
                 notify()->success('Scan QR code success');
             }
-
+          
             // notify()->success('Scan QR code success');
             if ($countJobOne <= 1) {
-
+                
                 return $this->getTravelGame($request,$taskId);
 
             }
 
             // Gen code
             $this->taskService->genCodeByUser($user->id, $taskId, $travelSessionIds, $travelBootsIds, $session->id, $booth->id);
-
+            
             // notify()->success('Scan QR code success');
             return redirect()->route('web.jobEvent', [
                 'id' => $task->code,
@@ -324,12 +324,12 @@ class Job extends Controller
      * author: suoi
      */
     public function getTravelGame(Request $request, $taskId)
-    {
+    {   
+       
         try {
             $event = $this->task->find($taskId);
             //$checkUserGetCode = $this->checkUserGetCode($request, $taskId);
-            //d($checkUserGetCode);
-
+          
             $travelSessions = [];
             $session = $this->taskEvent->whereTaskId($taskId)->whereType(TASK_SESSION)->first();
             $travelSessionIds = $this->eventDetail
@@ -410,7 +410,7 @@ class Job extends Controller
                     'flag' =>$isDoneTask ?? ''
                 ];
             }
-
+         
             $groupSessions = [];
             $groupBooths = [];
             foreach ($sessionDatas as $item) {
@@ -436,7 +436,7 @@ class Job extends Controller
                     'number_code' => $maxSession + 1,
                     'color_code' => randColor()
                 ]);*/
-
+                
                 //Check user code not exists
                 $checkCode = $this->userCode
                     ->whereUserId($user->id)
@@ -541,38 +541,46 @@ class Job extends Controller
             'session_id' => $session->id,
             'user_id' => \auth()->user()->id,
         ])->first();
-
+            
         $qrCode = '';
         if ($checkNftMint) {
             $qrCode = base64_encode(QrCode::format('png')->size(250)->generate(route('nft.claimAction', $checkNftMint->id)));
         } else {
+            
             // get nft claim
             $nft = NFTMint::where('status', NFTMint::ACTIVE)->whereIn(
                 'type', [2, 3]
             )->first();
 
-
+                
             if ($nft) {
+               
                 $nft->status = NFTMint::SENDING;
                 $nft->save();
-
+              
                 // create user mint
                 // save nft
-                $userNft = new UserNft();
-                $userNft->user_id = \auth()->user()->id;
-                $userNft->nft_mint_id = $nft->id;
-                $userNft->type = $nft->booth_id;
-                $userNft->booth_id = $booth->id;
-                $userNft->session_id = $session->id;
-                $userNft->save();
-
+                // $userNft = new UserNft();
+                // $userNft->user_id = \auth()->user()->id;
+                // $userNft->nft_mint_id = $nft->id;
+                // $userNft->type = $nft->booth_id;
+                // $userNft->booth_id = $booth->id;
+                // $userNft->session_id = $session->id;
+                // $userNft->save();
+             
                 $qrCode = base64_encode(QrCode::format('png')->size(250)->generate(route('nft.claimAction', $nft->id)));
             }
+            //d($checkUserGetCode);
+            
         }
-
+     
         $nftMint =  NFTMint::where('session_id',$session->id ?? '')->first();
-
-        $data = [
+        
+        $nftUserMint =  UserNft::where([
+                'session_id'=>$session->id ?? '',
+                'user_id'=>auth()->user()->id,
+        ])->first();
+         $data = [
             'event' => $event,
             'totalCompleted' => $totalCompleted,
             'session_id' => $session->id,
@@ -585,7 +593,8 @@ class Job extends Controller
             'qrCode' => $qrCode,
             'checkNftMint' => $checkNftMint,
             'groupSessions' => ($groupSessions),
-            'nftMint'=>$nftMint
+            'nftMint'=>$nftMint,
+            'nftUserMint'=>$nftUserMint
         ];
         return view('web.events.travel_game', $data);
     }

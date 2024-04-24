@@ -132,38 +132,23 @@
                 </div>
 
                 <div class="row justify-content-center">
-                    @php
-                        $nft = \App\Models\NFT\NFTMint::where([
-                            'status' => 1,
-                            'type' => 2,
-                        ])->first();
-                        if ($nft) {
-                                $userNft = new \App\Models\NFT\UserNft();
-                                $userNft->user_id = \auth()->user()->id;
-                                $userNft->nft_mint_id = $nft->id;
-                                $userNft->type = $nft->type;
-                                $userNft->session_id = $nft->session_id;
-                                $userNft->task_id = $nft->task_id;
-                                $userNft->save();
-                        }
-                    @endphp
-
-                    @if ($nft && $nft->status < 3)
-                        <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
-                        <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">
-                        <input id="seed" value="{{ $nft->seed }}" type="hidden">
+                     
+                    {{--  @if(!$nftUserMint)  --}}
+                        <input id="address_organizer" value="{{ $nftMint->address_organizer ?? '' }}" type="hidden">
+                        <input id="address_nft" value="{{ $nftMint->address_nft ?? '0x6c7d265aacc74b8f4e5a8839a979f3a91e35b83e2e84fe849f0b297a9bd1356a' }}" type="hidden">
+                        <input id="seed" value="{{ $nftMint->seed ?? '' }}" type="hidden">
                         <input id="user_address" value="{{ auth()->user()->wallet_address }}" type="hidden">
-                        <input id="nft_id" value="{{ $nft->id }}" type="hidden">
-                        <input id="email_login" value="{{ auth()->user()->email }}" type="hidden">
-                        <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>
+                        <input id="nft_id" value="{{ $nftMint->id ?? '' }}" type="hidden">
+                        <input id="email_login" value="{{ auth()->user()->email ?? '' }}" type="hidden">
 
-                    @endif
+                        <input id="address_nft_min" value="{{ $nftMint->address_nft ?? '0x6c7d265aacc74b8f4e5a8839a979f3a91e35b83e2e84fe849f0b297a9bd1356a' }}" type="hidden">
+                    {{--  @endif  --}}
 
-                    @if($nftMint)
-                        <input id="address_nft_min" value="{{ $nftMint->address_nft }}" type="hidden">
-                    @endif
+                    <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>
 
-                    <a class="link-primary" style="display: none; color:blue" id="button-claim-link" target="_blank" href="https://suiscan.xyz/testnet/tx/G7xVJjyBZzAKLv9xa2WZR9tuVF3ksdneRfntd89o4u9E">SUI Explorer</a>
+                    {{--  @if($nftUserMint)  --}}
+                        <a class="link-primary btn btn-primary btn btn-primary btn--order" style="display: none" id="button-claim-link" target="_blank" href="">SUI Explorer</a>
+                    {{--  @endif  --}}
                 </div>
                 <ul class="nav nav-tabs">
                     <li><a data-toggle="tab" href="#sesion">Sessions Game</a></li>
