@@ -5,6 +5,7 @@
     <meta name='collection_id' content="{{ env('COLLECTION_ID')}}">
     <meta name='nft_hash_id' content="{{ $nft_hash_id ?? '' }}">
     <meta name='event_id' content="{{ env('EVENT_OBJECT_ID')}}">
+    <meta name='type_network' content="{{ env('TYPE_NETWORK')}}">
 </head>
 @section('content')
     @vite('resources/js/claim-session.js')

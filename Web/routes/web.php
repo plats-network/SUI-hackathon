@@ -105,7 +105,8 @@ Route::middleware(['user_event'])->group(function ($r) {
     $r->post('claim/event', [Job::class, 'index'])->name('web.claim');
 
     //Get zk proof response to web3
-    $r->post('/zkp/post', [Job::class, 'zkp'])->name('web.zkp');
+    $r->post('/zkpdevnet/post', [Job::class, 'zkpDevNet'])->name('web.zkpdevnet');
+    $r->post('/zkptestnet/post', [Job::class, 'zkpTestNet'])->name('web.zkptestnet');
 
 
 });
