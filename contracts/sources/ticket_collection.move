@@ -164,7 +164,8 @@ module sui_nft::ticket_collection {
                 id
             );
         } else {
-            abort ENotInClients
+            //abort ENotInClients
+            return;
         };
     }
 
