@@ -6,6 +6,8 @@
     <meta name='nft_hash_id' content="{{ $nft_hash_id ?? '' }}">
     <meta name='event_id' content="{{ env('EVENT_OBJECT_ID')}}">
     <meta name='type_network' content="{{ env('TYPE_NETWORK')}}">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
 </head>
 @section('content')
     @vite('resources/js/claim-session.js')
@@ -133,23 +135,28 @@
                 </div>
 
                 <div class="row justify-content-center">
-                     
-                    {{--  @if(!$nftUserMint)  --}}
-                        <input id="address_organizer" value="{{ $nftMint->address_organizer ?? '' }}" type="hidden">
-                        <input id="address_nft" value="{{ $nftMint->address_nft ?? '0x6c7d265aacc74b8f4e5a8839a979f3a91e35b83e2e84fe849f0b297a9bd1356a' }}" type="hidden">
-                        <input id="seed" value="{{ $nftMint->seed ?? '' }}" type="hidden">
+                    
+                    {{--  nếu user này đã claim rồi thì hiển thị link claim của họ  --}}
+                    @if(!empty($nftUserClaimSession))
+                        <input id="user_claim" value="true" type="hidden">
+                        <a class="link-primary btn btn-primary btn btn-primary btn--order" id="button-claim-link" target="_blank" href="https://suiscan.xyz/{{  env("TYPE_NETWORK");  }}/tx/{{ $nftUserClaimSession->digest }}">SUI Explorer</a>
+                    
+                    @else
+                        <input id="address_organizer" value="{{ $sessionMintWeb3->address_organizer ?? '' }}" type="hidden">
+                        <input id="address_nft" value="{{ $sessionMintWeb3->address_nft ?? '' }}" type="hidden">
+                        <input id="seed" value="{{ $sessionMintWeb3->seed ?? '' }}" type="hidden">
                         <input id="user_address" value="{{ auth()->user()->wallet_address }}" type="hidden">
-                        <input id="nft_id" value="{{ $nftMint->id ?? '' }}" type="hidden">
+                        <input id="nft_id" value="{{ $sessionMintWeb3->id ?? '' }}" type="hidden">
+                        <input id="session_id" value="{{ $sessionMintWeb3->session_id ?? '' }}" type="hidden">
+                        <input id="task_id" value="{{ $sessionMintWeb3->task_id ?? '' }}" type="hidden">
+                        <input id="booth_id" value="{{ $sessionMintWeb3->booth_id ?? '' }}" type="hidden">
                         <input id="email_login" value="{{ auth()->user()->email ?? '' }}" type="hidden">
-
-                        <input id="address_nft_min" value="{{ $nftMint->address_nft ?? '0x6c7d265aacc74b8f4e5a8839a979f3a91e35b83e2e84fe849f0b297a9bd1356a' }}" type="hidden">
-                    {{--  @endif  --}}
-
-                    <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>
-
-                    {{--  @if($nftUserMint)  --}}
-                        <a class="link-primary btn btn-primary btn btn-primary btn--order" style="display: none" id="button-claim-link" target="_blank" href="">SUI Explorer</a>
-                    {{--  @endif  --}}
+                        <input id="address_nft_min" value="{{ $sessionMintWeb3->address_nft ?? '' }}" type="hidden">
+                        {{--  <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>  --}}
+                        {{--  <button id="button-claim-test" type="button" class="btn btn-primary btn--order">Claim test</button>  --}}
+                        
+                    @endif
+                    
                 </div>
                 <ul class="nav nav-tabs">
                     <li><a data-toggle="tab" href="#sesion">Sessions Game</a></li>
@@ -157,6 +164,7 @@
 
                 <div class="tab-content">
                     <div id="sesion" class="tab-pane fade in active">
+                       
                         @foreach($travelSessions as $k => $session)
 
                             @php

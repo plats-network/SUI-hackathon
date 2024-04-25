@@ -17,7 +17,8 @@ class UserNft extends Model
         'type',
         'booth_id',
         'session_id',
-        'task_id'
+        'task_id',
+        'digest'
     ];
 
     public function nftMint()

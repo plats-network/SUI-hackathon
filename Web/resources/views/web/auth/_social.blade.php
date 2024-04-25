@@ -12,6 +12,7 @@
 </style>
 <head>
     <meta name='redirect_uri' content="{{ env('REDIRECT_URI')}}">
+    <meta name='type_network' content="{{ env('TYPE_NETWORK')}}">
 </head>
 <!--  <div class="social-sign row">
  <a href="{{ url('/login/facebook') }}" class="loginBtn loginBtn--facebook">

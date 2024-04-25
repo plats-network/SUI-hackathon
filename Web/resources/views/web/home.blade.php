@@ -1,6 +1,8 @@
 @extends('web.layouts.event_app')
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name='type_network' content="{{ env('TYPE_NETWORK')}}">
+
 </head>
 @section('content')
     @include('web.layouts.event')
