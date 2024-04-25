@@ -8,6 +8,7 @@ import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
 import {getFullnodeUrl, SuiClient} from '@mysten/sui.js/client';
 
 export default function App() {
+
     const wallet = useWallet();
  
     const [sessionData, setSessionData] = useState([]);
@@ -21,12 +22,12 @@ export default function App() {
             const nameSession = $(this).find('.name_session').val() ?? 'name_session';
             const descriptionSession = $(this).find('.description_session').val() ?? 'description_session';
             const fileSession = $(this).find('.image-file').attr('link-img') ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
-            const mintftSession = $(this).find('.mintft_session').val();
+            const mintftSession = $(this).find('.mintft_session').val() ?? 'mintft_session';
             const sessionObj = {
                 nameSession: nameSession,
                 descriptionSession: descriptionSession,
                 fileSession: fileSession,
-                mintftSession:mintftSession
+                mintftSession: mintftSession
             };  
             newSessionData.push(sessionObj);
         });
@@ -75,7 +76,13 @@ export default function App() {
         console.log('newData',newData);
         console.log('wallet',wallet);
         const tx = new TransactionBlock();
+        
+        let typenetwork = $('meta[name="type_network"]').attr('content');
+
+        console.log(typenetwork);
+
         let packageId = $('meta[name="package_id"]').attr('content');
+
         // let collection_id = $('meta[name="collection_id"]').attr('content');
         let collection_id = $('meta[name="event_id"]').attr('content');
 
@@ -96,7 +103,7 @@ export default function App() {
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileSession),
 
-                tx.pure(2),
+                tx.pure(1),
 
                 // tx.object(collection_id),
 
@@ -150,7 +157,7 @@ export default function App() {
 
                 //mint lại data
                 $('.itemSessionDetailMint').eq(index).find('.nft_address_session').val(sessionIds[index]);
-                $('.itemSessionDetailMint').eq(index).find('.nft_uri_session').val(`https://suiscan.xyz/testnet/tx/${result.digest}`);
+                $('.itemSessionDetailMint').eq(index).find('.nft_uri_session').val(`https://suiscan.xyz/${typenetwork}/tx/${result.digest}`);
                 $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(result));
                 $('.itemSessionDetailMint').eq(index).find('.image-file').val();
             });

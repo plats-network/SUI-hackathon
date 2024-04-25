@@ -105,15 +105,18 @@ Route::middleware(['user_event'])->group(function ($r) {
     $r->post('claim/event', [Job::class, 'index'])->name('web.claim');
 
     //Get zk proof response to web3
-    $r->post('/zkp/post', [Job::class, 'zkp'])->name('web.zkp');
+    $r->post('/zkpdevnet/post', [Job::class, 'zkpDevNet'])->name('web.zkpdevnet');
+    $r->post('/zkptestnet/post', [Job::class, 'zkpTestNet'])->name('web.zkptestnet');
 
 
 });
 
 // Các route không yêu cầu middleware
 Route::get('event/{id}', [Home::class, 'show'])->name('web.events.show');
+
 // mint nft
 Route::post('update_nft_status', [\App\Http\Controllers\Admin\NFTController::class, 'updateNftClaim'])->name('api.updateStatusNftClaim');
+Route::post('update_session_booth_nft_status', [\App\Http\Controllers\Admin\NFTController::class, 'updateSessionBoothClaim'])->name('api.updateSessionBoothClaim');
 
 Route::get('/', [Home::class, 'index'])->name('web.home');
 Route::get('event-lists', [Home::class, 'events'])->name('web.events');

@@ -25,7 +25,7 @@ function saltRandomString(length) {
 
 // đăng nhập google
 $(".Google").click(async function(){
-console.log(import.meta.env.VITE_REDIRECT_URI);
+
     //chuyển sang google để đăng nhập
     const { epoch, epochDurationMs, epochStartTimestampMs } = await getSystemState();
     const maxEpoch = Number(epoch) + 10;
@@ -65,6 +65,7 @@ console.log(import.meta.env.VITE_REDIRECT_URI);
 
 
 $(document).ready(function() {
+
     // Đặt các lệnh JavaScript của bạn ở đây
     getTokenSocial();
 });

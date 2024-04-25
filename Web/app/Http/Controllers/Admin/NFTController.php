@@ -117,6 +117,7 @@ class NFTController extends Controller
         return null;
     }
 
+
     public function updateNftClaim(Request $request)
     {
         $nft = NFT\NFTMint::find($request->nft_id);
@@ -139,6 +140,51 @@ class NFTController extends Controller
             }
         }
         if (!empty($nft)) {
+
+            // update nft
+            $nft->status = 3;
+            $nft->save();
+
+            $userNft = new UserNft();
+            $userNft->user_id = \auth()->user()->id;
+            $userNft->nft_mint_id = $nft->id;
+            $userNft->type = $nft->type;
+            $userNft->booth_id = $nft->booth_id;
+            $userNft->task_id = $nft->task_id;
+            $userNft->digest = $request->digest ?? '';
+            $userNft->save();
+//            $nft = NFT\NFTMint::find($request->nft_id);
+//            $nft->status = 3;
+//            $nft->save();
+        }
+        return [
+            "code" => 200
+        ];
+    }
+
+    public function updateSessionBoothClaim(Request $request)
+    {
+        $nft = NFT\NFTMint::find($request->nft_id);
+        
+        if (auth()->user() == null) {
+            // check login and auth
+            $existingUser = User::where('email', $request->email)->first();
+            if ($existingUser) {
+                Auth::login($existingUser);
+            } else {
+                $newUser = new User();
+                $newUser->name = $request->email;
+                $newUser->email = $request->email;
+//                $newUser->wallet_address = $request->address;
+                $newUser->email_verified_at = now();
+                $newUser->status = USER_ACTIVE;
+                $newUser->save();
+
+                Auth::login($newUser);
+            }
+        }
+        if (!empty($nft)) {
+
             // update nft
             $nft->status = 3;
             $nft->save();

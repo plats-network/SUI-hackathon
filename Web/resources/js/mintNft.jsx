@@ -15,6 +15,7 @@ function createMintNftTxnBlock(data) {
     const contractMethod = "mint_batch_tickets";
 
 
+
     const nftName = data.nft_name;
     const nftAmount = data.nft_amount;
     const nftCategory = data.nft_category;
@@ -22,6 +23,14 @@ function createMintNftTxnBlock(data) {
     const nftImgUrl = data.image_file ?? "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
     const nftCollectionId = import.meta.env.VITE_COLLECTION_ID;
     const event_hash_id = $('meta[name="nft_hash_id"]').attr('content');
+
+    console.log('nftName',nftName);
+    console.log('event_hash_id',event_hash_id);
+    console.log('nftDescription',nftDescription);
+    console.log('nftImgUrl',nftImgUrl);
+    console.log('nftCategory',nftCategory);
+    console.log('nftAmount',nftAmount);
+
     console.log('contractAddress :', contractAddress, 'nftCollectionId :', nftCollectionId);
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,

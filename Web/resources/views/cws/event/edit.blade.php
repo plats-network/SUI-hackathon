@@ -6,6 +6,7 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.1.1/dist/select2-bootstrap-5-theme.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     {{--Editor--}}
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.min.css"/>
@@ -15,6 +16,7 @@
     <meta name='collection_id' content="{{ env('COLLECTION_ID')}}">
     <meta name='nft_hash_id' content="{{ $nft_hash_id ?? '' }}">
     <meta name='event_id' content="{{ env('EVENT_OBJECT_ID')}}">
+    <meta name='type_network' content="{{ env('TYPE_NETWORK')}}">
 
 @endsection
 

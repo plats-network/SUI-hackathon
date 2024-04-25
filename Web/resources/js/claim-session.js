@@ -36,7 +36,9 @@ const solConnect = new window.SolanaConnect();
 var walletOr = '';
 var pub = '';
 var TOKEN_METADATA_PROGRAM_ID = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
-const connection = new Connection(web3.clusterApiUrl("devnet"));
+let type_network = $('meta[name="type_network"]').attr('content');
+
+const connection = new Connection(web3.clusterApiUrl(type_network));
 const PROGRAM_ID = new PublicKey("D5GK8Kye78gjuDMMjRnkWH5a6KfNEXzex5mekXL3HLR2");
 let provider = new AnchorProvider(connection, solConnect.getWallet(), {commitment: "confirmed"})
 let program = new Program(idl, PROGRAM_ID, provider);
@@ -50,7 +52,7 @@ $('#button-claim-test').click(async function(){
     const zkLoginUserAddress =  jwtToAddress(jwt, salt);
 
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+        url: getFullnodeUrl(type_network),
     });
 
     const accountBalances = await client.getBalance({owner: zkLoginUserAddress});
@@ -62,7 +64,7 @@ function keypairFromSecretKey(privateKeyBase64){
 }
 
 $('#button-claim').click(async function () {
-    //$('.loading').show();
+    $('.loading').show();
     //user login jdk
 
     const GAS_AND_NODE_TESTNET_ACCESS_KEY = "sui_testnet_7543d1af9a8d035b0de83f45907b0fe3";
@@ -98,7 +100,7 @@ $('#button-claim').click(async function () {
         
     const client = new SuiClient({
     
-        url: getFullnodeUrl('devnet'),
+        url: getFullnodeUrl(type_network),
     });
 
     const txb = new TransactionBlock();
@@ -142,7 +144,7 @@ $('#button-claim').click(async function () {
 
     const addressSeed  = genAddressSeed(BigInt(salt), "sub", jwtPayload.sub, jwtPayload.aud).toString();
     
-    console.log(addressSeed);
+    console.log('addressSeed',addressSeed);
 
     const zkpPayload = {
         jwt: jwtUser,
@@ -156,7 +158,9 @@ $('#button-claim').click(async function () {
     };
     console.log('zkpPayload',zkpPayload);
     
-    const proofResponse = await axios.post("/zkp/post", zkpPayload);
+    //nếu là mạng testnet
+    const proofResponse = await axios.post(type_network == 'testnet' ? "/zkptestnet/post" : "/zkpdevnet/post", zkpPayload);
+
     const zkLoginSignature  = getZkLoginSignature({
         inputs: {
             ...proofResponse.data,
@@ -166,9 +170,6 @@ $('#button-claim').click(async function () {
         userSignature:signature,
     });
 
-    $('.loading').hide();
-
-  
     try {
         
         const result = await client.executeTransactionBlock({
@@ -185,9 +186,10 @@ $('#button-claim').click(async function () {
         }
 
         const res = await axios.post("/update_nft_status", body);
-        alert(`Claim NFT is success. Please see on https://suiscan.xyz/devnet/tx/${digest}`);
+        
+        alert(`Claim NFT is success. Please see on https://suiscan.xyz/${type_network}/tx/${digest}`);
         $('#button-claim').hide()
-        $('#button-claim-link').attr('href', 'https://suiscan.xyz/devnet/tx/${digest}');
+        $('#button-claim-link').attr('href', `https://suiscan.xyz/${type_network}/tx/${digest}`);
         $('#button-claim-link').show();
         $('.loading').hide();
 
