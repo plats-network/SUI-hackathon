@@ -24,10 +24,11 @@ module sui_nft::ticket_collection {
         image_url: String,
         /// Event ID
         event_id: String,
-        //claimed: bool,
         catogory: String,
         // token ID 
         token_id: u64,
+        // user claimed nft ticket 
+        claimed: bool,
 
     }
 
@@ -55,9 +56,10 @@ module sui_nft::ticket_collection {
         description: String,
         /// URL for the token
         image_url: String,
-
         /// Event Id 
         event_id: String,
+        /// user claimed booth 
+        claimed: bool,
     }
 
     struct NFTSession has key, store {
@@ -68,11 +70,12 @@ module sui_nft::ticket_collection {
         description: String,
         /// URL for the token
         image_url: String,
-
         /// Event Id 
         event_id: String,
 
         token_id: u64,
+        /// User claimed session
+        claimed: bool, 
 
     }
 
@@ -97,6 +100,7 @@ module sui_nft::ticket_collection {
     const ENotOwner: u64 = 0;
     const ENotInClients: u64 = 1;
     const ENotClient: u64 = 2;
+    const EAlreadyClaimed: u64 = 3;
 
     // OTW
     struct TICKET_COLLECTION has drop {}
@@ -200,10 +204,13 @@ module sui_nft::ticket_collection {
     // Internal claim ticket function 
     fun internal_claim_ticket<T: key + store>(
         event_ticket: &mut EventTicket,
-        ticket_id: ID
+        ticket: &mut NFTTicket
     ): T {
-        let EventTicketClaimed {id} = bag::remove(&mut event_ticket.tickets, ticket_id);
+        assert!(ticket.claimed == true, EAlreadyClaimed);
+        let EventTicketClaimed {id} = bag::remove(&mut event_ticket.tickets, ticket.id);
         // todo with payment
+        ticket.claimed = true;
+
 
         let ticket = ofield::remove(&mut id, true);
         object::delete(id);
@@ -213,11 +220,11 @@ module sui_nft::ticket_collection {
     // Claim ticket by user
     public entry fun claim_ticket<T: key + store>(
         event_ticket: &mut EventTicket,
-        ticket_id: ID,
+        ticket: &mut NFTTicket,
         ctx: &mut TxContext
     ) {
         transfer::public_transfer(
-            internal_claim_ticket<T>(event_ticket, ticket_id),
+            internal_claim_ticket<T>(event_ticket, ticket),
             tx_context::sender(ctx)
         )
     }
@@ -303,11 +310,12 @@ module sui_nft::ticket_collection {
     // Internal claim session function 
     fun internal_claim_session<T: key + store>(
         event_ticket: &mut EventTicket,
-        session_id: ID
+        session: &mut NFTSession
     ): T {
-        let EventSessionClaimed {id} = bag::remove(&mut event_ticket.sessions, session_id);
+        assert!(session.claimed == true, EAlreadyClaimed);
+        let EventSessionClaimed {id} = bag::remove(&mut event_ticket.sessions, session.id);
         // todo with payment
-
+        session.claimed = true;
         let session = ofield::remove(&mut id, true);
         object::delete(id);
         session
@@ -379,7 +387,8 @@ module sui_nft::ticket_collection {
             image_url: string::utf8(image_url),
             event_id: string::utf8(event_id),
             catogory: string::utf8(catogory),
-            token_id
+            token_id,
+            claimed: false
         };
 
 
@@ -409,6 +418,7 @@ module sui_nft::ticket_collection {
             description: string::utf8(description),
             image_url: string::utf8(image_url),
             event_id: string::utf8(event_id),
+            claimed: false
         };
 
         nft
@@ -428,7 +438,8 @@ module sui_nft::ticket_collection {
             description: string::utf8(description),
             image_url: string::utf8(image_url),
             event_id: string::utf8(event_id),
-            token_id
+            token_id,
+            claimed: false
         };
 
         nft
