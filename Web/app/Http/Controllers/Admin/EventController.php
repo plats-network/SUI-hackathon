@@ -572,9 +572,11 @@ class EventController extends Controller
         /** @var Task $task */
         $task = Task::with('taskSocials', 'taskLocations', 'taskEventSocials', 'taskGenerateLinks', 'taskEventDiscords')->find($id);
 
+        //TODO: dung 1
+        //các bảng này không có dữ liệu
         $taskGroup = TaskGroup::where('task_id', $id)->pluck('group_id');
-
         $taskGallery = TaskGallery::where('task_id', $id)->pluck('url_image');
+        //end 1
 
         $booths = TaskEvent::where('task_id', $id)
             ->with('detail')->where('type', 1)
@@ -760,9 +762,10 @@ class EventController extends Controller
     {
         $users = [];
         try {
-            $userIds = $this->eventUserTicket->select('user_id')->whereTaskId($id);
+            $userIds = $this->eventUserTicket->select('user_id')->whereTaskId($id)->get();
 
             $userIds = $userIds->pluck('user_id')->toArray();
+
             $userIds = array_unique($userIds);
             $users = $this->userService->search([
                 'limit' => 100,
