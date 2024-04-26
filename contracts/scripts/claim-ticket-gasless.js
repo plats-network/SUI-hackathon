@@ -25,7 +25,7 @@ async function claimGasless() {
             // event object id 
             tx.object(collectionId),
             // ticket id 
-            tx.pure("0xddf2b46c379b7bfc103dbee47056e97d1aca101576b2a832efdbbd9d5b1f9f89")
+            tx.pure("0x49257a670a4ddd534f99504d6f9da6d948159c77c28d7b007046690cd7ded14e")
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });

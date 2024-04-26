@@ -65,8 +65,6 @@ module sui_nft::ticket_collection {
         image_url: String,
         /// Event Id 
         event_id: String,
-        // locked nft booth
-        locked: bool,
     }
 
     struct NFTSession has key, store {
@@ -81,8 +79,7 @@ module sui_nft::ticket_collection {
         event_id: String,
 
         token_id: u64,
-        // locked nft session
-        locked: bool,
+
 
     }
 
@@ -121,8 +118,7 @@ module sui_nft::ticket_collection {
     }
 
     // create a new shared EventTicket
-    public fun create_event(pub: &Publisher, client:address,   ctx: &mut TxContext) {
-        assert_authority(pub);
+    public fun create_event(client:address, ctx: &mut TxContext) {
         let id = object::new(ctx);
         let tickets = bag::new(ctx);
         let sessions  = bag::new(ctx);
@@ -139,7 +135,6 @@ module sui_nft::ticket_collection {
                 clients,
                 locked: false,
                 owner: client 
-
             }
         )
     
@@ -273,6 +268,7 @@ module sui_nft::ticket_collection {
         assert_client(event_ticket, sender);
         let tickets = vector::empty();
         let i = 0; 
+        
         while (i < max_supply){
             let nft = mint_to_sender(name,  description, url, event_id, catogory, i,  ctx);
             let nft_id = *object::uid_as_inner(&nft.id);
@@ -298,7 +294,7 @@ module sui_nft::ticket_collection {
         assert_client(event_ticket, sender);
         let session = mint_session_single(name,  description, image_url, event_id, 0, ctx);
         let session_id = *object::uid_as_inner(&session.id);
-        let claimed = EventSessionClaimed {id: object::new(ctx)};
+        let claimed = EventSessionClaimed {id: object::new(ctx) };
         ofield::add(&mut claimed.id, true,  session);
         bag::add(&mut event_ticket.sessions, session_id, claimed);
         session_id
@@ -328,7 +324,7 @@ module sui_nft::ticket_collection {
             while (j < max_supply) {
                 let session = mint_session_single(*name,  *description, *url, event_id,j,  ctx);
                 let session_id = *object::uid_as_inner(&session.id);
-                let claimed = EventSessionClaimed {id: object::new(ctx)};
+                let claimed = EventSessionClaimed {id: object::new(ctx) };
                 ofield::add(&mut claimed.id, true,  session);
                 bag::add(&mut event_ticket.sessions, session_id, claimed);
                 vector::push_back(&mut sessions, session_id);   
@@ -491,7 +487,6 @@ module sui_nft::ticket_collection {
             description: string::utf8(description),
             image_url: string::utf8(image_url),
             event_id: string::utf8(event_id),
-            locked: false,
         };
 
         nft
@@ -512,7 +507,6 @@ module sui_nft::ticket_collection {
             image_url: string::utf8(image_url),
             event_id: string::utf8(event_id),
             token_id,
-            locked: false 
         };
 
         nft

@@ -22,7 +22,7 @@ async function createTicket() {
     tx.moveCall({
         target: `${packageId}::ticket_collection::create_event`,
         arguments: [
-            tx.pure(process.env.PUBLISHER_ID),
+            //tx.pure(process.env.PUBLISHER_ID),
             // địa chỉ của organizer để có thể tạo nft ticket, lock event, session 
             tx.pure("0xb9941d47ba2a5583b89d8399a646251cb9bc8ad0004ec70c5bb8088f6f5356b7")
         ],
