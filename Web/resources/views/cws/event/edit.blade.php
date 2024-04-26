@@ -179,9 +179,9 @@
                                     <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session</a>
                                     </li>
-                                    <li class="nav-item ">
+                                    {{--  <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab3" data-step="3">Booth</a>
-                                    </li>
+                                    </li>  --}}
                                     @if($is_update)
                                         <li class="nav-item">
                                             <a class="nav-link navItemTab" id="navItemTab4" data-step="4" href="#">Check-in</a>
