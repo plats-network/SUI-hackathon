@@ -36,6 +36,7 @@ class UserCode extends Model
         'name_prize', // Tên giải
         'is_vip', // 0: normal, 1: vip
         'type', // 0: session, 1: booth
+        'task_event_details_id' // session, booth
     ];
 
 

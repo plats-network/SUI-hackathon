@@ -15,6 +15,15 @@ export default function App() {
 
     const handleClick = async () => {
 
+        const totalNftTicket = $('input[name^="nft-ticket-name-"]').length;
+        
+        console.log('totalNftTicket',totalNftTicket);
+        
+        if(totalNftTicket <= 0){
+            alert('please mint nft ticket first!')
+            return;
+        }
+
         const newSessionData = [];
         
         $('.itemSessionDetailMint').each(function (index) {
@@ -27,7 +36,8 @@ export default function App() {
                 nameSession: nameSession,
                 descriptionSession: descriptionSession,
                 fileSession: fileSession,
-                mintftSession: mintftSession
+                mintftSession: mintftSession,
+                totalNftTicket: totalNftTicket
             };  
             newSessionData.push(sessionObj);
         });
@@ -71,11 +81,13 @@ export default function App() {
         let newData = {
             nameSession: data.map(item => item.nameSession),
             descriptionSession: data.map(item => item.descriptionSession),
-            fileSession: data.map(item => item.fileSession)
+            fileSession: data.map(item => item.fileSession),
+            totalNftTicket: data.map(item => item.totalNftTicket)
         };
         console.log('newData',newData);
         console.log('wallet',wallet);
-        const tx = new TransactionBlock();
+
+        let tx = new TransactionBlock();
         
         let typenetwork = $('meta[name="type_network"]').attr('content');
 
@@ -103,7 +115,7 @@ export default function App() {
                 // url: vector<vector<u8>>,
                 tx.pure(newData.fileSession),
 
-                tx.pure(1),
+                tx.pure(newData.totalNftTicket[0] ?? 1),
 
                 // tx.object(collection_id),
 

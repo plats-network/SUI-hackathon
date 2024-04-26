@@ -162,34 +162,34 @@
                     <li><a data-toggle="tab" href="#sesion">Sessions Game</a></li>
                 </ul>
 
-                <div class="tab-content">
+                <div class="tab-content mt-2">
                     <div id="sesion" class="tab-pane fade in active">
                        
                         @foreach($travelSessions as $k => $session)
-
+                      
                             @php
-                                $codes = $userCode->where('user_id', $userId)
-                                    ->where('travel_game_id', $session->id)
-                                    ->where('task_event_id', $session_id)
-                                    ->where('type', 0)
-                                    ->pluck('number_code')
-                                    ->implode(',');
-                                $sTests = [];
+                                //$codes = $userCode->where('user_id', $userId)
+                                    //->where('travel_game_id', $session->id)
+                                    //->where('task_event_id', $session_id)
+                                    //->where('type', 0)
+                                    //->pluck('number_code')
+                                    //->implode(',');
+                                //$sTests = [];
 //                                dd($codes);
                                 if ($session->note) {
                                     $sTests = explode('-', $session->note);
                                 }
                             @endphp
-
                             <div class="item">
                                 <h3 class="text-center">{{$session->name}}</h3>
                                 <p>
                                     <strong>Missions: Scan the QR to receive a Lucky Draw Code.</strong>
                                 </p>
-                                <p><strong>Lucky Code:</strong> <span class="fs-25">{{$codes ? $codes : '435'}}</span>
+                                
+                                <p><strong>Lucky Code:</strong> <span class="fs-25">{{ $listLuckyCode ? $listLuckyCode : '1'}}</span>
                                 </p>
 
-                                <p><strong>Joined: <span style="color:green">{{$totalCompleted}}</span> / 8
+                                <p><strong>Joined: <span style="color:green">{{$totalCompleted}}</span> / {{  count($sessions['detail']) }}
                                         sessions</strong></p>
                                 @if(false)
                                     <p><strong>Prize drawing time:</strong> {{dateFormat($session->prize_at)}}</p>
