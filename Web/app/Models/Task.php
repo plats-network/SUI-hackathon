@@ -143,7 +143,7 @@ class Task extends Model
 
     public function taskEvents()
     {
-        return $this->hasMany(TaskEvent::class)->with('detail');
+        return $this->hasMany(TaskEvent::class);
     }
 
     //Session

@@ -156,6 +156,9 @@
             border-color: #0867ec;
             color: #ffffff;
         }
+        .button-claim{
+            display: none;
+        }
 
         @media all {
             .btn-primary table td:hover {
@@ -318,7 +321,7 @@
                             <p>Event: {{$event_name}}</p>
                             <p>Location: {{$event_location}}</p>
 
-                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary button-claim">
                                 <tbody>
                                 <tr>
                                     <td align="left">

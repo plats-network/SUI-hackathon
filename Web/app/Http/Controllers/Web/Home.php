@@ -292,30 +292,27 @@ class Home extends Controller
                     'download_link' => 'https://platsevent.web.app/claim-nft?id=' . $event->id,
                 );
 
-
                 Mail::to($user)->send(new \App\Mail\ThankYouCheckInNFT($user, $options));
-
                 //Mail::to($user)->send(new OrderCreated());
-                $recipientEmail = $user->email;
-                $userName = $user->name;
-                $senderName = 'Plats Event';
-                $nftModel = NFT::query()->where('task_id', $id)->first();
-                $nftName = '';
-                $nftDescription = '';
-                $nftUrl = '';
-                if ($nftModel) {
-                    $nftName = $nftModel->name;
-                    $nftDescription = $nftModel->description;
-                    $nftUrl = $nftModel->url;
-                }
+//                $recipientEmail = $user->email;
+//                $userName = $user->name;
+//                $senderName = 'Plats Event';
+//                $nftModel = NFT::query()->where('task_id', $id)->first();
+//                $nftName = '';
+//                $nftDescription = '';
+//                $nftUrl = '';
+//                if ($nftModel) {
+//                    $nftName = $nftModel->name;
+//                    $nftDescription = $nftModel->description;
+//                    $nftUrl = $nftModel->url;
+//                }
 
 
                 //Mail::to($recipientEmail)->send(new NFTNotification($userName, $senderName, $nftName, $nftDescription, $nftUrl));
 
             }
-            $sponsor = $this->sponsor->whereTaskId($id)->first();
-            $checkSponsor = session()->get('sponsor-' . optional($user)->id);
-
+//            $sponsor = $this->sponsor->whereTaskId($id)->first();
+//            $checkSponsor = session()->get('sponsor-' . optional($user)->id);
             if ($request->session()->has('sponsor-' . optional($user)->id)) {
                 $request->session()->forget('sponsor-' . optional($user)->id);
             }
@@ -370,30 +367,25 @@ class Home extends Controller
                     'sucess_checkin' => 1
                 ]);
             }
+
             // lay session
             $travelSessions = [];
-            $session = $this->eventModel->whereTaskId($id)->whereType(TASK_SESSION)->first();
-            $countEventDetail = TaskEventDetail::where('task_event_id', $session->id)->count();
+            $session = $this->eventModel->with('detail')->whereTaskId($id)->whereType(TASK_SESSION)->first();
+            $countEventDetail = $session->detail->count();
 
-            $travelSessionIds = $this->eventDetail
-                ->select('travel_game_id')
-                ->distinct()
-                ->whereTaskEventId($session->id)
-                ->pluck('travel_game_id')
-                ->toArray();
-            $travelSessions = $this->travelGame
-                ->whereIn('id', $travelSessionIds)
-                ->orderBy('created_at', 'desc')
-                ->get();
+//            dang khong dung travel game
+//            $travelSessionIds = $this->eventDetail
+//                ->select('travel_game_id')
+//                ->distinct()
+//                ->whereTaskEventId($session->id)
+//                ->pluck('travel_game_id')
+//                ->toArray();
+//            $travelSessions = $this->travelGame
+//                ->whereIn('id', $travelSessionIds)
+//                ->orderBy('created_at', 'desc')
+//                ->get();
 
-
-            $eventSession = $this->eventModel->whereTaskId($id)->whereType(TASK_SESSION)->first();
-
-            $sessions = $this->eventDetail->whereTaskEventId($eventSession->id)
-                //->orderBy('sort', 'asc')
-                ->orderBy('created_at', 'asc')
-                ->get();
-
+            $sessions = $session->detail;
 
             $totalCompleted = 0;
 
@@ -405,24 +397,22 @@ class Home extends Controller
             }
 
             //lay booth
-            $travelBoots = [];
-            $booth = $this->eventModel->whereTaskId($id)->whereType(TASK_BOOTH)->first();
-            $countEventDetailBooth = TaskEventDetail::where('task_event_id', $booth->id)->count();
-            $travelBootsIds = $this->eventDetail
-                ->select('travel_game_id')
-                ->distinct()
-                ->whereTaskEventId($booth->id)
-                ->pluck('travel_game_id')
-                ->toArray();
+            $travelBooths = [];
+            $booth = $this->eventModel->with('detail')->whereTaskId($id)->whereType(TASK_BOOTH)->first();
+            $countEventDetailBooth = $booth->detail->count();
 
-            $travelBooths = $this->travelGame->whereIn('id', $travelBootsIds)->get();
 
-            $eventBooths = $this->eventModel->whereTaskId($id)->whereType(TASK_BOOTH)->first();
+//            $travelBootsIds = $this->eventDetail
+//                ->select('travel_game_id')
+//                ->distinct()
+//                ->whereTaskEventId($booth->id)
+//                ->pluck('travel_game_id')
+//                ->toArray();
+//
+//            $travelBooths = $this->travelGame->whereIn('id', $travelBootsIds)->get();
 
-            $booths = $this->eventDetail->whereTaskEventId($eventBooths->id)
-                //->orderBy('sort', 'asc')
-                ->orderBy('created_at', 'asc')
-                ->get();
+
+            $booths = $booth->detail;
 //dd($travelBooths, $booths);
             $totalCompletedBooth = 0;
 
@@ -462,7 +452,7 @@ class Home extends Controller
         return view('web.events.show', [
             'event' => $event ?? [],
             'user' => $user ?? [],
-            'sponsor' => $sponsor ?? [],
+//            'sponsor' => $sponsor ?? [],
             'download_ticket' => $download_ticket ?? [],
             'url_download_ticket' => $url_download_ticket ?? [],
             'show_message' => $show_message ?? [],
@@ -470,7 +460,7 @@ class Home extends Controller
             'travelBooths' => $travelBooths ?? [],
             'task_id' => $id ?? '',
             'session_id' => $session->id ?? '',
-            'session' => $session ?? [] ,
+            'session' => $session ?? [],
             'booth' => $booth ?? [],
             'totalCompleted' => $totalCompleted ?? [],
             'countEventDetail' => $countEventDetail ?? [],

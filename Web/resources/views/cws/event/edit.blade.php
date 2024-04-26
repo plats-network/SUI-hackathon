@@ -10,7 +10,8 @@
     {{--Editor--}}
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.min.css"/>
     <meta name='mnemonic_client' content="{{ env('MNEMONIC_CLIENT')}}">
     <meta name='package_id' content="{{ env('PACKAGE_ID')}}">
     <meta name='collection_id' content="{{ env('COLLECTION_ID')}}">
@@ -378,10 +379,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <input type="hidden" id="wallet_address"
+                                   value="{{!empty(auth()->user()->wallet_address) ? auth()->user()->wallet_address : ''}}">
                             <div id="tabwizard1" class="wizard-tab" style="display: none;">
-                                <div id="nft_get">
-
-                                </div>
+                                <div id="nft_get"></div>
                             </div>
                             <!-- Sessiom -->
                             @include('cws.event.forms._session', [
@@ -1694,10 +1695,10 @@
             } else {
                 var x = document.getElementsByClassName("wizard-tab");
                 let currentTab = Number($('#currentTab').val());
-                console.log('tab',currentTab);
+                console.log('tab', currentTab);
                 if (currentTab == 2) {
                     $('.min-save-btn').html('Public');
-                }else {
+                } else {
                     $('.min-save-btn').html('Save');
                 }
                 x[currentTab].style.display = "none";
@@ -1791,7 +1792,7 @@
             let step = $(this).attr('data-step');
             if (step == 3) {
                 $('.min-save-btn').html('Public');
-            }else {
+            } else {
                 $('.min-save-btn').html('Save');
             }
             var id = $(this).attr('data-step');
