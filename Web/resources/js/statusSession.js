@@ -1,4 +1,5 @@
 $('.job').on('click', function (e) {
+    console.log(11111);
     var id = $(this).data('id'),
         event_id = $(this).data('detail-id'),
         _token = $('meta[name="csrf-token"]').attr('content');
