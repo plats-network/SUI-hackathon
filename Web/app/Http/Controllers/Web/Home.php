@@ -30,6 +30,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Magic;
 use MagicAdmin\Exception\DIDTokenException;
 use MagicAdmin\Exception\RequestException;
+use Illuminate\Support\Facades\Validator;
 
 class Home extends Controller
 {
@@ -720,7 +721,11 @@ class Home extends Controller
             $sessions = $this->eventDetail->whereTaskEventId($eventSession->id)->orderBy('sort', 'asc')->get();
             $booths = $this->eventDetail->whereTaskEventId($eventBooth->id)->orderBy('sort', 'asc')->get();
 
-            return redirect(route('job.getTravelGame', ['task_id' => $task->id]));
+            return redirect(route('job.getTravelGame', [
+                    'task_id' => $task->id,
+                    'code_task_event_details' => $request->code_task_event_details
+
+                ]));
 
 
             foreach ($sessions as $session) {

@@ -5,9 +5,10 @@ import { Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
 import { jwtDecode } from 'jwt-decode';
 
 // Assume SuiClient and Ed25519Keypair are imported or defined elsewhere.
-const FULLNODE_URL = 'https://fullnode.devnet.sui.io';
-const suiClient = new SuiClient({ url: FULLNODE_URL });
-
+let type_network = $('meta[name="type_network"]').attr('content');
+const suiClient = new SuiClient({
+    url: getFullnodeUrl(type_network),
+});
 async function getSystemState() {
     const { epoch, epochDurationMs, epochStartTimestampMs } = await suiClient.getLatestSuiSystemState();
     return { epoch, epochDurationMs, epochStartTimestampMs };
@@ -33,12 +34,13 @@ $(".Google").click(async function(){
     console.log(ephemeralKeyPair);
     const randomness = generateRandomness();
     const nonce = generateNonce(ephemeralKeyPair.getPublicKey(), maxEpoch, randomness);
+
     // Tạo một đối tượng URLSearchParams với các tham số cần thiết
     var params = new URLSearchParams({
         client_id: '290554041285-g77ars54m9vc2hvugv1oekhtd54ell9p.apps.googleusercontent.com',
         nonce: nonce,
-        redirect_uri: 'http://localhost:8000',
-        // redirect_uri: $('meta[name="redirect_uri"]').attr('content'),
+        // redirect_uri: 'http://localhost:8000',
+        redirect_uri: $('meta[name="redirect_uri"]').attr('content'),
         response_type: 'id_token',
         scope: 'openid',
     });
@@ -53,8 +55,7 @@ $(".Google").click(async function(){
     localStorage.setItem("maxEpoch",maxEpoch);
     localStorage.setItem("ephemeraPrivateKey",ephemeralKeyPair.getSecretKey());
 
-
-    console.log('ephemeralKeyPair',ephemeralKeyPair);
+    console.log('ephemeralKeyPair',ephemeralKeyPair.toSuiAddress());
 
     // Chuyển hướng đến loginURL
     window.location.href = loginURL;
@@ -88,10 +89,8 @@ async function getTokenSocial(){
     localStorage.setItem('salt', salt)
     localStorage.setItem("jwtUser",jwt);
 
-    const client = new SuiClient({
-        url: getFullnodeUrl('devnet'),
-    });
-    const accountBalances = await client.getBalance({owner: zkLoginUserAddress});
+
+    const accountBalances = await suiClient.getBalance({owner: zkLoginUserAddress});
     console.log('accountBalances',accountBalances);
 
     const jwtPayload = jwtDecode(jwt);

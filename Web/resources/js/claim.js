@@ -15,7 +15,7 @@ import {SerializedSignature, decodeSuiPrivateKey} from '@mysten/sui.js/cryptogra
 const package_id = $('#package_id').val();
 const collection_id = $('#collection_id').val();
 let typenetwork = $('meta[name="type_network"]').attr('content');
-console.log(typenetwork);
+console.log('typenetwork',typenetwork);
 function keypairFromSecretKey(privateKeyBase64) {
     const keyPair = decodeSuiPrivateKey(privateKeyBase64);
     return Ed25519Keypair.fromSecretKey(keyPair.secretKey);

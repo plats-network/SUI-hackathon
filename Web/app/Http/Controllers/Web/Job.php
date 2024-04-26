@@ -88,7 +88,9 @@ class Job extends Controller
             $user = Auth::user();
             $code = $request->input('id');
             $event = $this->eventDetail->whereCode($code)->first();
-
+            if(empty($event)){
+                abort(404);
+            }
             $taskEvent = $this->taskEvent->find($event->task_event_id);
             $task = $this->task->find($taskEvent->task_id);
 
@@ -98,7 +100,7 @@ class Job extends Controller
                 ->whereUserId($user->id)
                 ->whereIn('task_event_id', $eventIds)
                 ->count();
-
+            
             if ($countJobOne >= 1) {
                 if ($event->nft_link) {
                     session()->put('nft-'.$user->id, [
@@ -107,12 +109,13 @@ class Job extends Controller
                     ]);
                 }
             }
+            
             // End Check NFT
             if (!$event) {
                 notify()->error('Không tồn tại');;
                 return redirect()->route('web.home');
             }
-
+          
             if(!$user) {
                 session()->put('guest', [
                     'id' => $code,
@@ -122,7 +125,7 @@ class Job extends Controller
 
                 return redirect()->route('web.formLoginGuest');
             }
-
+        
             if ($task) {
                 $checkUserEvent = $this->userEvent
                     ->whereTaskId($task->id)
@@ -136,7 +139,7 @@ class Job extends Controller
 //                    ]);
 //                }
             }
-
+         
             //không có mã qr hợp lệ
             if ($event && !$event->status) {
 
@@ -145,17 +148,18 @@ class Job extends Controller
                     'code' => $event->code
                 ])->with('error', "Job locked!");
             } else {
-
+                
                 notify()->success('Scan QR code success');
                 return $this->getJob($request,$event->code);
                 // return redirect()->route('job.getJob', [
                 //     'code' => $event->code
                 // ]);
             }
-
+           
             return redirect()->route('job.getTravelGame', [
                 'id' => $task->code,
-                'task_id' => $task->code
+                'task_id' => $task->code,
+                'code_task_event_details'=>$task->code
             ]);
         //} catch (\Exception $e) {
             //notify()->error('Có lỗi xảy ra');
@@ -169,6 +173,7 @@ class Job extends Controller
     public function getJob(Request $request, $code) {
 
         try {
+
             $detail = $this->eventDetail->whereCode($code)->first();
 
             // check data
@@ -224,7 +229,7 @@ class Job extends Controller
                     'hash_code' => Str::random(35)
                 ]);
             }
-
+       
             $checkEventJob = $this->joinEvent
                 ->where('task_event_detail_id', $detail->id)
                 ->whereUserId($user->id)
@@ -238,7 +243,8 @@ class Job extends Controller
 
                     return redirect()->route('web.jobEvent', [
                         'id' => $task->code,
-                        'type' => $taskEvent->type
+                        'type' => $taskEvent->type,
+                        'code_task_event_details'=>$code
                     ]);
 
                 } else {
@@ -285,10 +291,10 @@ class Job extends Controller
             if ($taskEvent->type == 0) {
                 notify()->success('Scan QR code success');
             }
-
+          
             // notify()->success('Scan QR code success');
             if ($countJobOne <= 1) {
-
+                
                 return $this->getTravelGame($request,$taskId);
 
             }
@@ -299,7 +305,8 @@ class Job extends Controller
             // notify()->success('Scan QR code success');
             return redirect()->route('web.jobEvent', [
                 'id' => $task->code,
-                'type' => $taskEvent->type
+                'type' => $taskEvent->type,
+                'code_task_event_details'=>$code
             ]);
 
 
@@ -324,12 +331,11 @@ class Job extends Controller
      * author: suoi
      */
     public function getTravelGame(Request $request, $taskId)
-    {
-
+    {   
         try {
             $event = $this->task->find($taskId);
             //$checkUserGetCode = $this->checkUserGetCode($request, $taskId);
-
+          
             $travelSessions = [];
             $session = $this->taskEvent->whereTaskId($taskId)->whereType(TASK_SESSION)->first();
             $travelSessionIds = $this->eventDetail
@@ -349,7 +355,7 @@ class Job extends Controller
                 ->toArray();
 
             $travelSessions = $this->travelGame
-//                ->whereIn('id', $travelSessionIds)
+               ->whereIn('id', $travelSessionIds)
                 ->orderBy('created_at', 'desc')
                 ->get();
 //dd($travelSessions);
@@ -410,7 +416,7 @@ class Job extends Controller
                     'flag' =>$isDoneTask ?? ''
                 ];
             }
-
+         
             $groupSessions = [];
             $groupBooths = [];
             foreach ($sessionDatas as $item) {
@@ -418,7 +424,6 @@ class Job extends Controller
             }
             //Create code if $totalCompleted >=6
             $maxSession = 1;
-
             if ($totalCompleted >= $maxSession) {
                 //$this->taskService->genCodeByUser($user->id, $taskId, $travelSessionIds, $travelBootsIds, $session->id, $booth->id);
 
@@ -436,21 +441,23 @@ class Job extends Controller
                     'number_code' => $maxSession + 1,
                     'color_code' => randColor()
                 ]);*/
-
+                
                 //Check user code not exists
                 $checkCode = $this->userCode
                     ->whereUserId($user->id)
                     ->whereTaskEventId($session->id)
-                    ->where('travel_game_id', $session->travel_game_id)
+                    // ->where('travel_game_id', $session->travel_game_id)
                     ->where('type', 0)
                     ->exists();
+                
                 if (!$checkCode) {
+                    
                     $max = $this->userCode
                         ->whereTaskEventId($session->id)
-                        ->where('travel_game_id', $session->travel_game_id)
+                        // ->where('travel_game_id', $session->travel_game_id)
                         ->max('number_code');
 
-                    $maxCode =  $max + 1;
+                     $maxCode =  $max + 1;
                     //Check if  $maxCode < 100 then add 100
                     if ($maxCode < 100) {
                         $maxCode = $maxCode;
@@ -541,23 +548,23 @@ class Job extends Controller
             'session_id' => $session->id,
             'user_id' => \auth()->user()->id,
         ])->first();
-
+            
         $qrCode = '';
         if ($checkNftMint) {
             $qrCode = base64_encode(QrCode::format('png')->size(250)->generate(route('nft.claimAction', $checkNftMint->id)));
         } else {
-
+            
             // get nft claim
             $nft = NFTMint::where('status', NFTMint::ACTIVE)->whereIn(
                 'type', [2, 3]
             )->first();
 
-
+                
             if ($nft) {
-
+               
                 $nft->status = NFTMint::SENDING;
                 $nft->save();
-
+              
                 // create user mint
                 // save nft
                 // $userNft = new UserNft();
@@ -567,20 +574,26 @@ class Job extends Controller
                 // $userNft->booth_id = $booth->id;
                 // $userNft->session_id = $session->id;
                 // $userNft->save();
-
+             
                 $qrCode = base64_encode(QrCode::format('png')->size(250)->generate(route('nft.claimAction', $nft->id)));
             }
             //d($checkUserGetCode);
-
+            
         }
-
+     
         $nftMint =  NFTMint::where('session_id',$session->id ?? '')->first();
-
-        $nftUserMint =  UserNft::where([
-                'session_id'=>$session->id ?? '',
+        
+        #sesssion đã được mint bên web3
+        $sessionMintweb3 = TaskEventDetail::join('nft_mints','nft_mints.session_id','=','task_event_details.id')->where(['task_event_details.code'=> $request['id'] ?? $request['code_task_event_details']])->first();
+        
+        #user đã claim nft session
+        $nftUserClaimSession =  UserNft::where([
+                'session_id'=>$sessionMintweb3->session_id ?? '',
+                'task_id'=>$sessionMintweb3->task_id ?? '',
                 'user_id'=>auth()->user()->id,
         ])->first();
-         $data = [
+
+        $data = [
             'event' => $event,
             'totalCompleted' => $totalCompleted,
             'session_id' => $session->id,
@@ -594,7 +607,9 @@ class Job extends Controller
             'checkNftMint' => $checkNftMint,
             'groupSessions' => ($groupSessions),
             'nftMint'=>$nftMint,
-            'nftUserMint'=>$nftUserMint
+            'nftUserClaimSession'=>$nftUserClaimSession,
+            'code_task_event_details'=>$request['code_task_event_details'],
+            'sessionMintWeb3'=>$sessionMintweb3
         ];
         return view('web.events.travel_game', $data);
     }
@@ -731,7 +746,7 @@ class Job extends Controller
 
     // Save sponsor
     // method: POST
-    // URL: /zkp/get
+    // URL: mạng devnet
     public function zkpDevNet(Request $request){
         $data = $request->only(['jwt','extendedEphemeralPublicKey','jwtRandomness','maxEpoch','salt','keyClaimName']);
         $validator = [
@@ -801,22 +816,30 @@ class Job extends Controller
         }
     }
 
+    // Save sponsor
+    // method: POST
+    // URL: mạng testnet
     public function zkpTestNet(Request $request){
 
-        $data = $request->only(['jwt','extendedEphemeralPublicKey','jwtRandomness','maxEpoch','salt','keyClaimName']);
+        $data = $request->only(['network','jwt','ephemeralPublicKey','randomness','maxEpoch']);
+        
         $validator = [
-
+            'network'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
             'jwt'=>[
                 'required',
                 'min:1',
                 'string',
             ],
-            'extendedEphemeralPublicKey'=>[
+            'ephemeralPublicKey'=>[
                 'required',
                 'min:1',
                 'string',
             ],
-            'jwtRandomness'=>[
+            'randomness'=>[
                 'required',
                 'min:1',
                 'string',
@@ -824,18 +847,8 @@ class Job extends Controller
             'maxEpoch'=>[
                 'required',
                 'min:1',
-                'numberic',
+                'integer',
             ],
-            'salt'=>[
-                'required',
-                'min:1',
-                'string',
-            ],
-            'keyClaimName'=>[
-                'required',
-                'min:1',
-                'string'
-            ]
         ];
 
         $messages = [
@@ -853,9 +866,10 @@ class Job extends Controller
             ], 400);
         }
         $client = new Client();
-
+        
         $response = $client->post('https://api.enoki.mystenlabs.com/v1/zklogin/zkp', [
             'headers' => [
+                'zklogin-jwt'=>$data['jwt'],
                 'Content-Type' => 'application/json',
                 'Authorization'=>'Bearer enoki_public_79ffd2b0612875980b6d0903cc504d60'
             ],
@@ -863,7 +877,17 @@ class Job extends Controller
         ]);
 
         try {
-            return $response->getBody();
+
+            $responseData =  json_decode($response->getBody(), true);
+
+            if(!isset($responseData['data']) && empty($responseData)){
+                
+                return response()->json([
+                    'message' => 'Error: responseData'
+                ], 500);
+            }
+
+            return $responseData['data'];
 
         } catch (\Exception $e) {
             return response()->json([
