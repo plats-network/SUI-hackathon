@@ -571,10 +571,14 @@ class EventController extends Controller
 
         /** @var Task $task */
         $task = Task::with('taskSocials', 'taskLocations', 'taskEventSocials', 'taskGenerateLinks', 'taskEventDiscords')->find($id);
-
+//        $task = Task::with('taskEvents.detail')->find($id);
+//        dd($task->taskEvents(), $task->taskEvents);
+        $session = $task->taskEvents()->firstWhere('type', 0);
+        //TODO: dung 1
+        //các bảng này không có dữ liệu
         $taskGroup = TaskGroup::where('task_id', $id)->pluck('group_id');
-
         $taskGallery = TaskGallery::where('task_id', $id)->pluck('url_image');
+        //end 1
 
         $booths = TaskEvent::where('task_id', $id)
             ->with('detail')->where('type', 1)
@@ -589,7 +593,6 @@ class EventController extends Controller
         $sessions = TaskEvent::where('task_id', $id)->with('detail')
             ->where('type', 0)
             ->first();
-
         if ($sessions) {
             foreach ($sessions['detail'] as $session) {
                 $session['totalUserJob']  = totalUserJob($session['id']);
@@ -666,7 +669,7 @@ class EventController extends Controller
 
         //$urlAnswers = route('quiz-name.answers', $eventId);
 //        $urlAnswersFull = route('web.events.show', ['id' => $eventId, 'check_in' => true]);
-        $urlAnswersFull = 'https://' .config('plats.event').'/events/'.$eventId.'?check_in=1';
+        $urlAnswersFull = 'https://' .config('plats.event').'/event/'.$eventId.'?check_in=1';
         //Shorten url
 //        $urlAnswers = Url::shortenUrl($urlAnswersFull);
         $urlAnswers = $urlAnswersFull;
@@ -760,9 +763,10 @@ class EventController extends Controller
     {
         $users = [];
         try {
-            $userIds = $this->eventUserTicket->select('user_id')->whereTaskId($id);
+            $userIds = $this->eventUserTicket->select('user_id')->whereTaskId($id)->get();
 
             $userIds = $userIds->pluck('user_id')->toArray();
+
             $userIds = array_unique($userIds);
             $users = $this->userService->search([
                 'limit' => 100,

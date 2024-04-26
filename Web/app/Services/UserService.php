@@ -100,8 +100,12 @@ class UserService extends BaseService
             });
             $this->cleanFilterBuilder('userIds');
         }
+        $this->builder->where(function ($q) {
+            $q->where('role', '!=', GUEST_ROLE);
+        });
 
         $this->builder->orderBy('created_at', 'desc');
+//dd($this->builder->toSql(), $this->builder->getBindings());
 
         return $this->endFilter();
     }
@@ -253,7 +257,7 @@ class UserService extends BaseService
 
             $user->password = $password;
             $user->save();
-            
+
         } catch (\Exception $e) {
             return null;
         }

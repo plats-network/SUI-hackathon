@@ -114,16 +114,16 @@
                                             {{dateFormat($user->updated_at)}}
                                         </td>
                                         <td>
-                                            {{-- <div class="dropdown">
+                                             <div class="dropdown">
                                                 <a class="text-muted dropdown-toggle font-size-18" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
                                                     <i class="mdi mdi-dots-horizontal"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Edit</a>
-                                                    <a class="dropdown-item" href="#">Print</a>
+                                                    <a class="dropdown-item" href="{{route('cws.users.edit', ['id'=>$user->id])}}">Edit</a>
+{{--                                                    <a class="dropdown-item" href="#">Print</a>--}}
                                                     <a class="dropdown-item" href="#">Delete</a>
                                                 </div>
-                                            </div> --}}
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -133,7 +133,7 @@
                             <div class="col-md-12 mt-3">
                                 <div id="paging" class="mb-5">
                                     {!! $users->links() !!}
-                                </div> 
+                                </div>
                             </div>
                         </div>
                     </div>

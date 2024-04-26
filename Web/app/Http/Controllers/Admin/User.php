@@ -23,10 +23,11 @@ use Illuminate\Support\Str;
 class User extends Controller
 {
     public function __construct(
-        private UserService $userService,
-        private UserModel $user,
+        private UserService     $userService,
+        private UserModel       $user,
         private EventUserTicket $eventUserTicket,
-    ) {
+    )
+    {
         // Code
     }
 
@@ -35,12 +36,53 @@ class User extends Controller
         $users = $this->userService->search([
             'limit' => $request->get('limit') ?? PAGE_SIZE
         ]);
-
         return view('cws.users.index', [
             'users' => $users
         ]);
     }
 
+    public function edit($id)
+    {
+        $user = $this->userService->find($id);
+        $roles = [
+            ADMIN_ROLE => 'Super Admin',
+            CLIENT_ROLE => 'Organizer',
+            USER_ROLE => 'User'
+        ];
+        return view('cws.users.edit', [
+            'user' => $user,
+            'roles' => $roles
+        ]);
+    }
+
+    public function update($id, Request $request)
+    {
+        $data = $request->only('wallet_address');
+        try {
+            $user = UserModel::find($id);
+            $user->update($data);
+            notify()->success('Update success');
+            return redirect()->route('cws.users');
+        } catch (\Exception $e) {
+            notify()->error('Update fail: ' . $e->getMessage());
+            return redirect()->route('cws.users');
+        }
+
+    }
+
+    public function updateWhitelist(Request $request)
+    {
+        $data = $request->all();
+        $user = UserModel::find($data['id']);
+        $row = [
+            'white_list' => $data['white_list'] === true ? 1 : 0,
+            'wallet_address' => $data['wallet_address'] ?? '',
+        ];
+        $user->update($row);
+        return response()->json([
+            'message' => 'success'
+        ], 200);
+    }
 
     public function saveUserByEvent(Request $request)
     {
@@ -119,7 +161,7 @@ class User extends Controller
                 'userIds' => $userIds
             ]);
         } catch (\Exception $e) {
-            
+
         }
 
         return view('cws.users.list', [

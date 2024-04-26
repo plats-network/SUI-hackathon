@@ -1,47 +1,18 @@
-import { Magic } from 'magic-sdk';
-import { SolanaExtension } from "@magic-ext/solana";
-import {AnchorProvider, BN, Program, setProvider, web3} from "@project-serum/anchor";
-import {Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, TransactionMessage} from "@solana/web3.js";
-import idl from './abi/abi.json'
+
 import { Buffer } from 'buffer';
-import {
-    createAssociatedTokenAccountInstruction,
-    createInitializeMintInstruction,
-    getAssociatedTokenAddress, getAssociatedTokenAddressSync,
-    MINT_SIZE
-} from "@solana/spl-token";
-import { generateNonce, generateRandomness,jwtToAddress } from '@mysten/zklogin';
+
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { getFullnodeUrl, SuiClient }  from '@mysten/sui.js/client';
 import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
-import { GasStationClient, createSuiClient, buildGaslessTransactionBytes } from "@shinami/clients";
 import { genAddressSeed, getZkLoginSignature,getExtendedEphemeralPublicKey } from "@mysten/zklogin";
 import { jwtDecode } from 'jwt-decode';
 import axios from "axios";
 import {toBigIntBE} from "bigint-buffer";
-import {fromB64} from "@mysten/bcs";
-import { log } from 'console';
 import { SerializedSignature, decodeSuiPrivateKey } from '@mysten/sui.js/cryptography';
 
-const rpcUrl = 'https://api.devnet.solana.com';
 
-const magic = new Magic("pk_live_F223EA517482BAF8", {
-    extensions: {
-        solana: new SolanaExtension({
-            rpcUrl
-        })
-    }
-});
-const solConnect = new window.SolanaConnect();
-var walletOr = '';
-var pub = '';
-var TOKEN_METADATA_PROGRAM_ID = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
-const connection = new Connection(web3.clusterApiUrl(typenetwork));
+
 let typenetwork = $('meta[name="type_network"]').attr('content');
-const PROGRAM_ID = new PublicKey("D5GK8Kye78gjuDMMjRnkWH5a6KfNEXzex5mekXL3HLR2");
-let provider = new AnchorProvider(connection, solConnect.getWallet(), {commitment: "confirmed"})
-let program = new Program(idl, PROGRAM_ID, provider);
-
 
 const package_id = $('#package_id').val();
 const collection_id = $('#collection_id').val();
@@ -113,7 +84,7 @@ $('.btn-claim-id').click(async function () {
     };
     console.log('zkpPayload',zkpPayload);
 
-    const proofResponse = await axios.post("/zkp/post", zkpPayload);
+    const proofResponse = await axios.post(`/zkp${typenetwork}/post`, zkpPayload);
     const zkLoginSignature  = getZkLoginSignature({
         inputs: {
             ...proofResponse.data,
