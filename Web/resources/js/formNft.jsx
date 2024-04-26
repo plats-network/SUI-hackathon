@@ -5,7 +5,6 @@ import axios from 'axios';
 import NftItem from './sui_components/nftItem';
 import MintNft1 from './mintNft';
 import NftItemMinted from "./sui_components/nftItemMinted";
-
 function NftForm() {
     const [nftMinted, setNftMinted] = useState([]);
     const [nftData, setNftData] = useState([

@@ -39,7 +39,7 @@ $(".Google").click(async function(){
     var params = new URLSearchParams({
         client_id: '290554041285-g77ars54m9vc2hvugv1oekhtd54ell9p.apps.googleusercontent.com',
         nonce: nonce,
-        // redirect_uri: 'https://suivent.plats.network',
+        // redirect_uri: 'http://localhost:8000',
         redirect_uri: $('meta[name="redirect_uri"]').attr('content'),
         response_type: 'id_token',
         scope: 'openid',
@@ -89,7 +89,7 @@ async function getTokenSocial(){
     localStorage.setItem('salt', salt)
     localStorage.setItem("jwtUser",jwt);
 
-   
+
     const accountBalances = await suiClient.getBalance({owner: zkLoginUserAddress});
     console.log('accountBalances',accountBalances);
 

@@ -48,6 +48,8 @@ class User extends Authenticatable implements JWTSubject
         'confirm_at',
         'status',
         'deleted_at',
+        'wallet_address',
+        'white_list',
     ];
 
     /**
