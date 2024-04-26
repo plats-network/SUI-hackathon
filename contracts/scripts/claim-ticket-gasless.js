@@ -22,8 +22,10 @@ async function claimGasless() {
     tx.moveCall({
         target: `${packageId}::ticket_collection::claim_ticket`,
         arguments: [
+            // event object id 
             tx.object(collectionId),
-            tx.pure("0xa5d58fe7a90d5e9693fd614166fe9b944b43daf0acc95fdd7c374a94f5c110a3")
+            // ticket id 
+            tx.pure("0xddf2b46c379b7bfc103dbee47056e97d1aca101576b2a832efdbbd9d5b1f9f89")
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
@@ -35,7 +37,7 @@ async function claimGasless() {
         transactionBlockKindBytes: toB64(transactionBlockKindBytes), 
         network: 'testnet',
 
-        //sender: '0x6e5273e9a1e52c32d9256301253dba2a3bbcebf808829b1b117e2b8593dc9bb9', 
+        sender: '0x6e5273e9a1e52c32d9256301253dba2a3bbcebf808829b1b117e2b8593dc9bb9', 
         allowedAddresses: ['0x6e5273e9a1e52c32d9256301253dba2a3bbcebf808829b1b117e2b8593dc9bb9'],
         allowedMoveCallTargets: [`${packageId}::ticket_collection::claim_ticket`]
     };

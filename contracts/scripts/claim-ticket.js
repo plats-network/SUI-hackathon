@@ -23,7 +23,8 @@ async function claim() {
         target: `${packageId}::ticket_collection::claim_ticket`,
         arguments: [
             tx.object(collectionId),
-            tx.pure("0xa5d58fe7a90d5e9693fd614166fe9b944b43daf0acc95fdd7c374a94f5c110a3")
+            // ticket id 
+            tx.pure("0xda305a353cc351c7c13362a70331787b2e08f67af49975af4df8fd7865ce56ad")
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
