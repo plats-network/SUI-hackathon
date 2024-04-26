@@ -12,7 +12,7 @@ if (!process.env.PACKAGE_ID) {
 async function mintSessions() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
     const client = new SuiClient({
-        url: getFullnodeUrl('devnet'),
+        url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
     const collectionId = process.env.EVENT_OBJECT_ID;

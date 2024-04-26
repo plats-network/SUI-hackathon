@@ -19,7 +19,7 @@ const CoinType = "0x2::sui::SUI";
 async function addClient() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_PUBLISHER);
     const client = new SuiClient({
-        url: getFullnodeUrl('devnet'),
+        url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
     let packageId = process.env.PACKAGE_ID;
@@ -34,7 +34,7 @@ async function addClient() {
             // clients address 
             tx.pure(["0xb9941d47ba2a5583b89d8399a646251cb9bc8ad0004ec70c5bb8088f6f5356b7", "0xcdeec99b1786a614d9ddcf016222fdc30c17ead921d80a0dcbead5c6e6a616b3"]),  
             // publisher id -> hiện tại giữ nguyên hey
-            tx.pure("0x8e8b2bf816ab77cb6985a0f7963aa9b7f9ec13638effe24aab78778902e5defb")
+            tx.pure(process.env.PUBLISHER_ID)
         ],
 
     });

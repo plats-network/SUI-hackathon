@@ -12,7 +12,7 @@ if (!process.env.PACKAGE_ID) {
 async function mint() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+        url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
     //let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
@@ -44,6 +44,7 @@ async function mint() {
         transactionBlock: tx,
         options: {
             showObjectChanges: true,
+            showEffects: true
         },
     });
 

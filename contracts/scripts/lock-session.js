@@ -10,8 +10,8 @@ if (!process.env.PACKAGE_ID) {
   }
 
 
-async function stopEvent() {
-    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_PUBLISHER);
+async function lockSession() {
+    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
     const client = new SuiClient({
         url: getFullnodeUrl(process.env.NETWORK),
     });
@@ -21,15 +21,14 @@ async function stopEvent() {
 
 
     tx.moveCall({
-        target: `${packageId}::admin::stop_event`,
+        target: `${packageId}::client::lock_session`,
         arguments: [
             // ticket event id 
             tx.object(collectionId),
-            // bật on = false , off = true 
-            
+            // session object id (nft session mình muốn lock)
+            tx.object(""),
+            // bật on = false , off = true        
             tx.pure(true),  
-            // publisher id -> hiện tại giữ nguyên hey
-            tx.pure(process.env.PUBLISHER_ID)
         ],
 
     });
@@ -45,9 +44,9 @@ async function stopEvent() {
         },
     });
 
-    console.log("stop event  tx", JSON.stringify(txs, null, 2));
+    console.log("lock session  tx", JSON.stringify(txs, null, 2));
 
 
 }
 
-stopEvent();
+lockSession();

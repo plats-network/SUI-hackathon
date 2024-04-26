@@ -10,25 +10,23 @@ if (!process.env.PACKAGE_ID) {
   }
 
 const packageId = process.env.PACKAGE_ID;
-const ticketCollectionType = `${packageId}::ticket_collection::TicketCollection`;
-const NFTTicketType = `${packageId}::ticket_nft::NFTTicket`;
-const NFTSessionType = `${packageId}::ticket_nft::NFTSession`;
-const NFTBoothType = `${packageId}::ticket_nft::NFTBooth`;
-const CoinType = "0x2::sui::SUI";
 
 async function createTicket() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_PUBLISHER);
     const client = new SuiClient({
-        url: getFullnodeUrl('devnet'),
+        url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
 
 
     tx.moveCall({
-        target: `${packageId}::ticket_collection::create_tickets`,
-        arguments: [],
+        target: `${packageId}::ticket_collection::create_event`,
+        arguments: [
+            tx.pure(process.env.PUBLISHER_ID),
+            // địa chỉ của organizer để có thể tạo nft ticket, lock event, session 
+            tx.pure("0xb9941d47ba2a5583b89d8399a646251cb9bc8ad0004ec70c5bb8088f6f5356b7")
+        ],
 
-        //typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
 
     const txs = await client.signAndExecuteTransactionBlock({

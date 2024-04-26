@@ -12,7 +12,7 @@ if (!process.env.PACKAGE_ID) {
 async function claim() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_USER);
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+        url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
     let packageId = process.env.PACKAGE_ID;
@@ -23,7 +23,7 @@ async function claim() {
         target: `${packageId}::ticket_collection::claim_ticket`,
         arguments: [
             tx.object(collectionId),
-            tx.pure("0x0a437d5408a3dc2007b4329370a2ae1c1a0acf668fb9827cdd5dd8464780861f")
+            tx.pure("0xa5d58fe7a90d5e9693fd614166fe9b944b43daf0acc95fdd7c374a94f5c110a3")
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });

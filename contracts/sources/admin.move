@@ -3,9 +3,6 @@ module sui_nft::admin {
     use sui::package::Publisher;
     use sui_nft::ticket_collection::{Self as collection, EventTicket};
 
-    entry fun stop_event(self: &mut EventTicket, stopped: bool, pub: &Publisher) {
-        collection::stop_event(self, stopped, pub);
-    }
 
 
     entry fun add_client(self: &mut EventTicket, addr: address, pub: &Publisher) {
