@@ -84,7 +84,7 @@ $('.btn-claim-id').click(async function () {
     };
     console.log('zkpPayload',zkpPayload);
 
-    const proofResponse = await axios.post("/zkp/post", zkpPayload);
+    const proofResponse = await axios.post(`/zkp${typenetwork}/post`, zkpPayload);
     const zkLoginSignature  = getZkLoginSignature({
         inputs: {
             ...proofResponse.data,
