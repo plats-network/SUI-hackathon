@@ -184,6 +184,7 @@ class EventService extends BaseService
             $data['order'] = $data['order'] ?? 1;
             $data['nft_hash_id'] = $data['nft_hash_id'] ?? '';
             $data['reward'] = $data['reward'] ?? 0;
+            $data['contract_event_id'] = $data['ticket_collection_id'] ?? 0;
             $dataBaseTask = $this->taskRepository->create($data);
 
             //Save NFT Info 06.12.2023

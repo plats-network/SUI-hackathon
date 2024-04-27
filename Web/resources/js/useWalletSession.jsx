@@ -96,36 +96,31 @@ export default function App() {
         let packageId = $('meta[name="package_id"]').attr('content');
 
         // let collection_id = $('meta[name="collection_id"]').attr('content');
-        let collection_id = $('meta[name="event_id"]').attr('content');
+        const contract_event_id = localStorage.getItem("contract_event_id");
 
         let event_id = $('meta[name="nft_hash_id"]').attr('content');
- 
+
+        let totalNftTicket = $('input[name^="nft-ticket-name-"]').length;
+        
+        console.log('totalNftTickets',totalNftTicket);
+
         tx.moveCall({
             target: `${packageId}::client::mint_batch_sessions`,
             arguments: [
 
-                tx.pure(collection_id),
+                tx.pure(contract_event_id),
 
                 tx.pure(event_id),
 
                 tx.pure(newData.nameSession),
                 
-                // description: vector<vector<u8>>,
                 tx.pure(newData.descriptionSession),
-                // url: vector<vector<u8>>,
+                
                 tx.pure(newData.fileSession),
 
                 tx.pure(newData.totalNftTicket[0] ?? 1),
-
-                // tx.object(collection_id),
-
-                //tx.pure(data.nameSession),
-                //tx.pure(data.descriptionSession),
-                //tx.pure(data.fileSession),
+              
             ],
-            // typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
-
-            // typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
         $('.loading').show();
         try {
@@ -201,15 +196,12 @@ export default function App() {
         <div className="App">
             <ConnectButton label={'Connect Wallet'} />
             <section>
+            
                 {wallet.status === "connected" && (
                     <>
-                        {wallet?.account && (
-                            <>
-                                <p>
-                                    <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
-                                </p>
-                            </>
-                        )}
+                        <p>
+                            <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
+                        </p>
                     </>
                 )}
             </section>

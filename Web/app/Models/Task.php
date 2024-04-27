@@ -61,7 +61,7 @@ class Task extends Model
         'is_paid', // 0: Free, 1: Paid
         'reward', // SL phan thuong
         'reward_type', // Loai phan thuong
-
+        'contract_event_id'
     ];
 
     /**

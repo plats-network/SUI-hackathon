@@ -177,7 +177,7 @@
                                         <a class="nav-link navItemTab " id="navItemTab1" data-step="1">NFT Ticket</a>
                                     </li>
                                     <li class="nav-item ">
-                                        <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session</a>
+                                        <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session & Booth</a>
                                     </li>
                                     {{--  <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab3" data-step="3">Booth</a>
@@ -1290,6 +1290,19 @@
 
             $(document).on('click', '.min-save-btn', function (event) {
                 console.log('Save');
+                let ticketCollectionId = localStorage.getItem("contract_event_id");
+                if(!ticketCollectionId){
+                    alert('Please create NFT before save');
+                }
+                console.log('ticketCollectionId',ticketCollectionId);
+                let inputCollectionId = document.createElement('input');
+                inputCollectionId.setAttribute('type', 'hidden');
+                inputCollectionId.setAttribute('name', 'ticket_collection_id');
+                inputCollectionId.setAttribute('value', ticketCollectionId);
+
+                let form = document.getElementById('post_form');
+                form.appendChild(inputCollectionId);
+
                 let idForm = '#post_form';
                 $(idForm).removeAttr('onsubmit');
                 $(idForm).submit();
