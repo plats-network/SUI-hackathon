@@ -21,12 +21,12 @@ async function lockSession() {
 
 
     tx.moveCall({
-        target: `${packageId}::client::lock_session`,
+        target: `${packageId}::client::batch_lock_sessions`,
         arguments: [
             // ticket event id 
             tx.object(collectionId),
-            // session object id (nft session mình muốn lock)
-            tx.object(""),
+            // tập hợp session object id - collection session 
+            tx.object(["0xda305a353cc351c7c13362a70331787b2e08f67af49975af4df8fd7865ce56ad", "0xda305a353cc351c7c13362a70331787b2e08f67af49975af4df8fd7865ce56ad"]),
             // bật on = false , off = true        
             tx.pure(true),  
         ],

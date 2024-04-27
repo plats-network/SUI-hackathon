@@ -8,43 +8,62 @@ module sui_nft::client {
 
     public entry fun lock_event(
         event_ticket: &mut EventTicket,
-        stopped: bool, 
+        locked: bool, 
         ctx: &mut TxContext
     
     ) {
-        collection::lock_event(event_ticket, stopped, ctx);
+        collection::lock_event(event_ticket, locked, ctx);
+    }
+    public entry fun lock_session(
+        event_ticket: &mut EventTicket,
+        session_id: ID, 
+        locked: bool, 
+        ctx: &mut TxContext
+    
+    ) {
+        collection::lock_session(event_ticket,session_id, locked, ctx);
+    }
+
+    public entry fun lock_booth(
+        event_ticket: &mut EventTicket,
+        booth_id: ID, 
+        locked: bool, 
+        ctx: &mut TxContext
+    
+    ) {
+        collection::lock_booth(event_ticket, booth_id,  locked, ctx);
     }
 
     // batch processes lock sessions 
-    // public entry fun batch_lock_sessions(
-    //     event_ticket: &mut EventTicket, 
-    //     sessions: vector<ID>, 
-    //     stopped: bool, 
-    //     ctx: &mut TxContext
-    //     ) {
-    //     let (i, len) = (0u64, vector::length(&sessions));
-    //     while (i < len) {
-    //         let session_id = vector::pop_back(&mut sessions);
-    //         collection::lock_session(event_ticket, session_id, stopped, ctx);
-    //         i = i + 1;
-    //     }
-    // }
+    public entry fun batch_lock_sessions(
+        event_ticket: &mut EventTicket, 
+        sessions: vector<ID>, 
+        locked: bool, 
+        ctx: &TxContext
+        ) {
+        let (i, len) = (0u64, vector::length(&sessions));
+        while (i < len) {
+            let session_id = vector::pop_back(&mut sessions);
+            collection::lock_session(event_ticket, session_id, locked, ctx);
+            i = i + 1;
+        }
+    }
 
 
     // batch processes lock booths 
-    // public entry fun batch_lock_booths(
-    //     event_ticket: &mut EventTicket, 
-    //     booths: vector<ID>, 
-    //     stopped: bool, 
-    //     ctx: &mut TxContext
-    //     ) {
-    //     let (i, len) = (0u64, vector::length(&booths));
-    //     while (i < len) {
-    //         let booth_id = vector::pop_back(&mut booths);
-    //         collection::lock_booth(event_ticket, booth_id, stopped, ctx);
-    //         i = i + 1;
-    //     }
-    // }
+    public entry fun batch_lock_booths(
+        event_ticket: &mut EventTicket, 
+        booths: vector<ID>, 
+        locked: bool, 
+        ctx: &TxContext
+        ) {
+        let (i, len) = (0u64, vector::length(&booths));
+        while (i < len) {
+            let booth_id = vector::pop_back(&mut booths);
+            collection::lock_booth(event_ticket, booth_id, locked, ctx);
+            i = i + 1;
+        }
+    }
 
 
 

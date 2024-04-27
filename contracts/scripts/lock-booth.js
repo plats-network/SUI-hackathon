@@ -21,12 +21,12 @@ async function lockBooth() {
 
 
     tx.moveCall({
-        target: `${packageId}::client::lock_booth`,
+        target: `${packageId}::client::batch_lock_booths`,
         arguments: [
             // ticket event id 
             tx.object(collectionId),
-            // booth object id (nft booth mình muốn lock)
-            tx.object(""),
+            // booths collection (tập hợp các nft booth object id  của 1 booth)
+            tx.pure(["0xda305a353cc351c7c13362a70331787b2e08f67af49975af4df8fd7865ce56ad","0xda305a353cc351c7c13362a70331787b2e08f67af49975af4df8fd7865ce56ad"]),
             // bật on = false , off = true        
             tx.pure(true),  
         ],
