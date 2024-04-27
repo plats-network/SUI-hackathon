@@ -12,7 +12,7 @@ if (!process.env.PACKAGE_ID) {
 const packageId = process.env.PACKAGE_ID;
 
 async function createTicket() {
-    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_PUBLISHER);
+    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
     const client = new SuiClient({
         url: getFullnodeUrl(process.env.NETWORK),
     });

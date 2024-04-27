@@ -24,7 +24,7 @@ async function claim() {
         arguments: [
             tx.object(collectionId),
             // session object id 
-            tx.object("0x9d766c4e58f1a399437125886edd81deb7eaf9d085a1c9c8c42edf2bd8da6329")
+            tx.pure("0x7e01bb84713e7ce59cd1474b4c1b7accd1a31bb2ef59067be54efe07406a818e")
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTSession`]
     });
