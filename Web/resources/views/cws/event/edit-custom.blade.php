@@ -147,7 +147,7 @@
                                         <a class="nav-link navItemTab " id="navItemTab1" data-step="1">NFT Ticket</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session</a>
+                                        <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session & Booth</a>
                                     </li>
                                     {{--  <li class="nav-item">
                                         <a class="nav-link navItemTab " id="navItemTab3" data-step="3">Booth</a>
