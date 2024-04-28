@@ -460,7 +460,8 @@
                             @include('cws.event.forms._session-preview', [
                                 'sessions' => $sessions,
                                 'isPreview' => $isPreview,
-                                'event' => $event
+                                'event' => $event,
+                                'countNFTSession'=>$countNFTSession
                             ])
 
                             <!-- Booth -->

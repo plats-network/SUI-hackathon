@@ -9,6 +9,7 @@
     //{{--  'resources/js/session.jsx',  --}}
     //{{--  'resources/js/formNft.jsx',
     //'resources/js/mintNftSession.jsx',  --}}
+    'resources/js/statusEvent.jsx',
     'resources/js/connect_suit_create_event.jsx'
 ])
 @section('content')
@@ -130,13 +131,15 @@
                                     </td>
                                     <td>{{rand(100,1000)}}</td>
                                     <td>
-                                        <input
-                                            type="checkbox"
-                                            id="switch_{{ $i+1 }}"
-                                            switch="none"
-                                            @if($event->status) checked @endif
-                                        >
-                                        <label class="event" data-id="{{$event->id}}" for="switch_{{ $i+1 }}" data-on-label="On" data-off-label="Off"></label>
+                                        <div 
+                                            class="statusEvent" 
+                                            data-eventid="{{ $event->id }}"
+                                            data-contracteventid="{{ $event->contract_event_id }}",
+                                            data-status="{{ $event->status }}"
+                                            data-switchid="switch_{{ $i+1 }}"
+                                            > 
+                                        </div>
+
                                     </td>
                                     <td style="width: 20%;">
                                         <ul class="list-inline mb-0">
@@ -236,6 +239,7 @@
             });
 
             $('.event').on('click', function (e) {
+                return;
                 var id = $(this).data('id');
                 var _token = $('meta[name="csrf-token"]').attr('content');
                 Swal.fire({
