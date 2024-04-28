@@ -103,6 +103,9 @@
         #button_connect_suit {
             margin-bottom: 20px;
         }
+        .btn-hiden-create{
+            display: none;
+        }
     </style>
     <div class="text-end">
         <div id="button_connect_suit" style="display: inline-block"></div>
@@ -773,7 +776,7 @@
                                     <button
                                         id="savebutton"
                                         type="submit"
-                                        class="min-save-btn btn btn-primary w-sm ms-auto">Create
+                                        class="min-save-btn btn-hiden-create btn btn-primary w-sm ms-auto">Create
                                     </button>
                                 </div>
 
@@ -1666,13 +1669,25 @@
         var currentTab = Number($('#currentTab').val());
         //arr index tab
         var arrTab = [0, 10, 20, 30, 40, 50];
+        var maxTab = 2;
+
         showTab(currentTab); // Display the current tab
 
         function showTab(n) {
+           
             console.log('showTab' ,n);
             // This function will display the specified tab of the form...
             var x = document.getElementsByClassName("wizard-tab");
             console.log(n);
+            if(n == maxTab){
+                $("#nextBtn").addClass('btn-hiden-create');
+                $('.min-save-btn').removeClass('btn-hiden-create');
+                $('.min-save-btn').html('Create Event');
+            }else{
+                $("#nextBtn").removeClass('btn-hiden-create');
+                $('.min-save-btn').addClass('btn-hiden-create');
+                $('.min-save-btn').html('Create Event');
+            }
             console.log(x);
             x[n].style.display = "block";
 
@@ -1699,33 +1714,36 @@
             //... and run a function that will display the correct step indicator:
             fixStepIndicator(n)
         }
-
+        
         function nextPrev(n) {
+
             console.log('next');
             //Todo check validate then next
             //Check if n = 1 and validate form before next
             if (validateForm(n) == false) {
                 return false;
-            } else {
-                var x = document.getElementsByClassName("wizard-tab");
-                let currentTab = Number($('#currentTab').val());
-                console.log('tab', currentTab);
-                if (currentTab == 2) {
-                    $('.min-save-btn').html('Public');
-                } else {
-                    $('.min-save-btn').html('Save');
-                }
-                x[currentTab].style.display = "none";
-                currentTab = currentTab + n;
-                $('#currentTab').val(currentTab);
-                if (currentTab >= x.length) {
-                    currentTab = currentTab - n;
-                    x[currentTab].style.display = "block";
-                }
-                showTab(currentTab)
             }
 
-
+            var x = document.getElementsByClassName("wizard-tab");
+            let currentTab = Number($('#currentTab').val());
+            console.log('tab', currentTab);
+            if (currentTab == maxTab) {
+                $('.min-save-btn').removeClass('btn-hiden-create');
+                $('.min-save-btn').html('Create Event');
+            }
+            if(currentTab < maxTab){
+                $('.min-save-btn').addClass('btn-hiden-create');
+                $('.min-save-btn').html('Create Event');
+            }
+            x[currentTab].style.display = "none";
+            currentTab = currentTab + n;
+            $('#currentTab').val(currentTab);
+            if (currentTab >= x.length) {
+                currentTab = currentTab - n;
+                x[currentTab].style.display = "block";
+            }
+            showTab(currentTab)
+              
         }
 
         //validateForm step

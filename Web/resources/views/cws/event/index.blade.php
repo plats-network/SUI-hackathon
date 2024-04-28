@@ -120,7 +120,11 @@
                                     </td>
                                     <td style="width: 20%;">
                                         <a
-                                            href="{{route('web.events.show', $event->id)}}"
+                                            href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => $tab,
+                                                'preview' => 1
+                                            ]) }}"
                                             title="{{$event->name}}"
                                             target="_blank">{{$event->name}}</a>
                                     </td>

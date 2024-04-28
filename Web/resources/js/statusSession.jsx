@@ -44,7 +44,19 @@ export default function StatusSession({payload}) {
                     showObjectChanges: true,
                 },
             });
-
+            eagle
+            oval
+            allow
+            frozen
+            fame
+            reopen
+            tree
+            rally
+            jungle
+            tissue
+            fence
+            pig
+            
             $.ajax({
                 url: '/event-job/' + payload.id,
                 type: 'GET',
