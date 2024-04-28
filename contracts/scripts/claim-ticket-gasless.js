@@ -2,6 +2,7 @@
 const { Ed25519Keypair } = require("@mysten/sui.js/keypairs/ed25519");
 const { TransactionBlock } = require("@mysten/sui.js/transactions");
 const { getFullnodeUrl, SuiClient } = require('@mysten/sui.js/client');
+const { decodeSuiPrivateKey } = require("@mysten/sui.js/cryptography");
 const { fromB64, toB64 } = require('@mysten/sui.js/utils');
 const fetch = require('node-fetch');
 const axios = require('axios');
@@ -9,7 +10,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 async function claimGasless() {
-    
+    let digest;
+    let transactionBlockBytes;
+
+    //with keypair
+    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_USER_NO_FUND);
     const client = new SuiClient({
         url: getFullnodeUrl(process.env.NETWORK),
     });
@@ -25,7 +30,7 @@ async function claimGasless() {
             // event object id 
             tx.object(collectionId),
             // ticket id 
-            tx.pure("0x49257a670a4ddd534f99504d6f9da6d948159c77c28d7b007046690cd7ded14e")
+            tx.pure("0x9a9692dc452774340bda2007d4cdaf8934b2cac13a5f2757bc42dda121b91caf")
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
@@ -34,25 +39,54 @@ async function claimGasless() {
 
     const endpoint = 'https://api.enoki.mystenlabs.com/v1/transaction-blocks/sponsor';
     const data = {
-        transactionBlockKindBytes: toB64(transactionBlockKindBytes), 
+        transactionBlockKindBytes: toB64(transactionBlockKindBytes),
         network: 'testnet',
-
-        sender: '0x6e5273e9a1e52c32d9256301253dba2a3bbcebf808829b1b117e2b8593dc9bb9', 
-        allowedAddresses: ['0x6e5273e9a1e52c32d9256301253dba2a3bbcebf808829b1b117e2b8593dc9bb9'],
+        // with keypair 
+        sender: '0x6e5273e9a1e52c32d9256301253dba2a3bbcebf808829b1b117e2b8593dc9bb9',
         allowedMoveCallTargets: [`${packageId}::ticket_collection::claim_ticket`]
     };
     const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.ENOKI_API}`,
-        'zklogin-jwt': 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImUxYjkzYzY0MDE0NGI4NGJkMDViZjI5NmQ2NzI2MmI2YmM2MWE0ODciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIyOTA1NTQwNDEyODUtZzc3YXJzNTRtOXZjMmh2dWd2MW9la2h0ZDU0ZWxsOXAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIyOTA1NTQwNDEyODUtZzc3YXJzNTRtOXZjMmh2dWd2MW9la2h0ZDU0ZWxsOXAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDQ0NTE5MDAwOTA3NDQ0ODU2ODkiLCJub25jZSI6Ik8wN3BMQ3dVMmg0UXlwZ19saGdkRDBJX3dmcyIsIm5iZiI6MTcxMzk3MjgyMSwiaWF0IjoxNzEzOTczMTIxLCJleHAiOjE3MTM5NzY3MjEsImp0aSI6IjljNDA0ZTBmNTBkNDQ0NjczNjM0NTc5OGEzM2VjMDIzMDlmMTM1YmQifQ.QR5WhM_TDPaki9QwCIIqn6I2Ph3qWVXvWkuQv5B4OugS2eiq195DzOh-dQXFHJfARNTWb_LKsDoQUBRyeWyUHqIpImZ_95axLS6exJywSRyf8rjk4yZRx3lEfGWf2GuzJPckaKCBZ8B5LWUukAC18FPbtWy0SW6td0wTFV6ddos9IGcz5T1g6EMchOsPhRlkz7phOatqDPNscF-adqo0gxQBJAMVUYSLKgo0Bth6IST539lc5olLWNSKkN3Y8Wpkz30KkKZ1WJ6BAkTlu9OXtjFWB0N64e4vu1-Ljt75JK4LMD3uxs1zV380s7_LMrMWmQoMq0HCn4eODk56etsYxw', 
     };
     console.log(headers);
     console.log(JSON.stringify(data));
     try {
         const response = await axios.post(endpoint, JSON.stringify(data), { headers });
-        console.log('Transaction created successfully:', response.data);
+        console.log('Response:', response.data);
+        digest = response.data.data.digest;
+        transactionBlockBytes = response.data.data.bytes;
     } catch (error) {
         console.error('Error creating sponsored transaction block:', error.response ? error.response.data : error.message);
     }
+
+    console.log('Digest:', digest);
+    console.log('transactionBlockBytes:', transactionBlockBytes);
+
+    // sign by user with keypair
+    const signature = await keypair.signTransactionBlock(fromB64(transactionBlockBytes));
+
+
+    console.log('Signature:', signature);
+
+    //
+    const executeEndpoint = `https://api.enoki.mystenlabs.com/v1/transaction-blocks/sponsor/${digest}`;
+
+    console.log("Execute Endpoint:", executeEndpoint);
+    let dataExecuteSponsor = {
+        signature: signature.signature
+    };
+
+    console.log('Data executeSponsor:', dataExecuteSponsor);
+
+    try {
+        const response = await axios.post(executeEndpoint, JSON.stringify(dataExecuteSponsor), { headers });
+        console.log('Response for executing sponsored:', response.data);
+
+    } catch (error) {
+        console.error('Error executing sponsored transaction block:', error.response ? error.response.data : error.message);
+    }
+
+
 }
 claimGasless();
