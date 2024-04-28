@@ -16,8 +16,7 @@
 @section('name_page')
     @viteReactRefresh
     @vite([
-        'resources/js/mint.js',
-        'resources/js/statusSession.js',
+        'resources/js/mint.js'
     ])
 
     <div class="page-title-box align-self-center d-none d-md-block">
@@ -651,6 +650,7 @@
                                                                    style="font-size: 11px">{{$userItem->taskDoneEvent($userItem->id, $select_session_id)}}</p>
                                                             </td>
                                                             <td>
+                                                                
                                                                 <input
                                                                     type="checkbox"
                                                                     id="v_{{$eventId}}"

@@ -913,7 +913,7 @@ class Job extends Controller
             'headers' => [
                 'zklogin-jwt'=>$data['jwt'],
                 'Content-Type' => 'application/json',
-                'Authorization'=>'Bearer enoki_public_79ffd2b0612875980b6d0903cc504d60'
+                'Authorization'=>'Bearer '.env('ENOKI_API')
             ],
             'json' => $data,
         ]);

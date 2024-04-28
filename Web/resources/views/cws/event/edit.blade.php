@@ -24,11 +24,10 @@
 @section('name_page')
     @viteReactRefresh
     @vite([
-
        'resources/js/mint.js',
 //        'resources/js/connect_suit.jsx',
         'resources/js/formNft.jsx',
-        'resources/js/testReactjs.jsx',
+        'resources/js/testReactjs.jsx'
     ])
     <div class="page-title-box align-self-center d-none d-md-block">
         <h4 class="page-title mb-0">
