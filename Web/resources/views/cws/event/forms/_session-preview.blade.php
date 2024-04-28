@@ -26,7 +26,9 @@
         23 => 23
     ];
 @endphp
-
+@vite([
+     'resources/js/statusSession.jsx'
+ ])
 <div id="tabwizard2" class="wizard-tab">
     <div class="text-center mb-4">
         <h5>Sessions</h5>
@@ -114,6 +116,10 @@
                         {{--                        <td width="5%">{{$session->is_question ? 'Yes' : 'No'}}</td>--}}
                         <td width="5%"><a href="{{$qr}}" target="_blank">link</a></td>
                         <td width="10%">
+                            <StatusSessionComponent
+                                id="{{ $session->code }}"
+                                detailId="{{ $sessions->id }}"
+                            />
                             <input
                                 type="checkbox"
                                 id="session_{{ $k+1 }}"

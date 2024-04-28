@@ -152,6 +152,8 @@
                         <input id="booth_id" value="{{ $sessionMintWeb3->booth_id ?? '' }}" type="hidden">
                         <input id="email_login" value="{{ auth()->user()->email ?? '' }}" type="hidden">
                         <input id="address_nft_min" value="{{ $sessionMintWeb3->address_nft ?? '' }}" type="hidden">
+                        <input id="contract_event_id" value="{{ $event->contract_event_id }}" type="hidden">
+
                         {{--  <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>  --}}
                         {{--  <button id="button-claim-test" type="button" class="btn btn-primary btn--order">Claim test</button>  --}}
                         

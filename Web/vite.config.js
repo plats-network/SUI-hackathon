@@ -61,7 +61,7 @@ export default defineConfig({
                 'resources/js/app/provider.jsx',
                 'resources/js/views/solana.jsx',
                 'resources/js/testReactjs.jsx',
-                'resources/js/statusSession.js',
+                'resources/js/statusSession.jsx',
                 'resources/js/addClient.jsx',
             ],
             refresh: true,

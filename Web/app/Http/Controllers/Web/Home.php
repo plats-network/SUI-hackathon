@@ -449,8 +449,7 @@ class Home extends Controller
 //            ])->get();
 //            dd($taskDetail);
 //        }
-
-        return view('web.events.show', [
+        $data = [
             'event' => $event ?? [],
             'user' => $user ?? [],
 //            'sponsor' => $sponsor ?? [],
@@ -470,7 +469,8 @@ class Home extends Controller
             'countEventDetailBooth' => $countEventDetailBooth ?? [],
             'checkMint' => $check ?? [],
             'nft' => $nft ?? [],
-        ]);
+        ];
+        return view('web.events.show', $data);
     }
 
     //apiUserList
