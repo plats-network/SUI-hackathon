@@ -63,6 +63,7 @@ export default defineConfig({
                 'resources/js/testReactjs.jsx',
                 'resources/js/statusSession.jsx',
                 'resources/js/addClient.jsx',
+                'resources/js/statusEvent.jsx'
             ],
             refresh: true,
         }),

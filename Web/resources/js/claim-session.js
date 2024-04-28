@@ -285,6 +285,8 @@ async function autoClaim() {
             digest = response.data.data.digest;
             transactionBlockBytes = response.data.data.bytes;
         } catch (error) {
+            alert('Can`t claim session');
+            $('.loading').hide();
             console.log('Error:', error);
         }
 
@@ -343,6 +345,7 @@ async function autoClaim() {
         } catch (error) {
 
             alert(error);
+            $('.loading').hide();
             console.error('Error executing sponsored transaction block:', error);
         }
     }

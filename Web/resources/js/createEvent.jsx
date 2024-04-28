@@ -81,7 +81,7 @@ export default function App() {
 
     return (
         <div className="App">
-            <ConnectButton label={'Connect Wallet'} />
+            <ConnectButton label={'Create Event'} />
             <section>
             
                 {wallet.status === "connected" && (

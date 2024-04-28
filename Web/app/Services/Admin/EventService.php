@@ -164,7 +164,7 @@ class EventService extends BaseService
     public function create($request)
     {
         DB::beginTransaction();
-
+        
         try {
             $data = Arr::except($request->all(), '__token');
             $sessions = Arr::get($data, 'sessions');
@@ -501,7 +501,6 @@ class EventService extends BaseService
                             'type'=>2,//session,
                             'status'=>1
                         ];
-                       
                         NFTMint::create($arrNFTMint);
                     }
 

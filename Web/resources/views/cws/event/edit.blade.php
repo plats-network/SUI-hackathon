@@ -771,8 +771,9 @@
                                         id="nextBtn" onclick="nextPrev(1)">Next
                                     </button>
                                     <button
+                                        id="savebutton"
                                         type="submit"
-                                        class="min-save-btn btn btn-primary w-sm ms-auto">Save
+                                        class="min-save-btn btn btn-primary w-sm ms-auto">Create
                                     </button>
                                 </div>
 
@@ -1668,6 +1669,7 @@
         showTab(currentTab); // Display the current tab
 
         function showTab(n) {
+            console.log('showTab' ,n);
             // This function will display the specified tab of the form...
             var x = document.getElementsByClassName("wizard-tab");
             console.log(n);
