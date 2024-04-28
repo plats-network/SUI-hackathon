@@ -1669,6 +1669,9 @@
         showTab(currentTab); // Display the current tab
 
         function showTab(n) {
+            if(n == 3){
+                return;
+            }
             console.log('showTab' ,n);
             // This function will display the specified tab of the form...
             var x = document.getElementsByClassName("wizard-tab");
@@ -1711,9 +1714,9 @@
                 let currentTab = Number($('#currentTab').val());
                 console.log('tab', currentTab);
                 if (currentTab == 2) {
-                    $('.min-save-btn').html('Public');
+                    $('.min-save-btn').html('Create Event');
                 } else {
-                    $('.min-save-btn').html('Save');
+                    $('.min-save-btn').html('Create Event');
                 }
                 x[currentTab].style.display = "none";
                 currentTab = currentTab + n;

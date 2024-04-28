@@ -112,7 +112,10 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <h3 class="mb-4 mt-4">Statistics</h3>
-                        <a href="{{ route('cws.eventCreate') }}" class="btn btn-primary float-end create-event">Create Event</a>
+                        {{--  <a href="{{ route('cws.eventCreate') }}" class="btn btn-primary float-end create-event">Create Event</a>
+                          --}}
+                        <a href="{{ route('cws.eventList') }}" class="btn btn-primary float-end create-event">List Event</a>
+
                     </div>
 
                     <table class="table table-sm">

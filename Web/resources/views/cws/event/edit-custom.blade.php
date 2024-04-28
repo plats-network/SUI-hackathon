@@ -86,8 +86,8 @@
                 <input id="eventIdHidden" value="{{ $event->id }}" type="hidden">
             @endif
             @if($isPreview)
-                <div class="col-md-10">
-                    @if(true)
+                <div class="col-md-9">
+                    {{--  @if(true)
                         <a class="btn btn-danger btn-sm mb-2 mr-5" style="margin-right: 10px;"
                            href="{{ route('cws.event.overview', ['id' => $event->id]) }}">Overview</a>
 
@@ -98,12 +98,12 @@
                            href="{{route('cws.event.users', ['id' => $event->id])}}">List User</a>
                     @endif
                     <a class="btn btn-info btn-sm mb-2 mr-5 none" target="_blank" style="margin-right: 10px;"
-                       href="https://platsevent.web.app/reward-nft?id={{$event->id}}">Reward</a>
+                       href="https://platsevent.web.app/reward-nft?id={{$event->id}}">Reward</a>  --}}
 
 
                 </div>
-                <div class="col-md-2 text-end">
-                    <a href="{{ route('cws.eventEdit', ['id' => $event->id]) }}"
+                <div class="col-md-3 text-end">
+                    {{--  <a href="{{ route('cws.eventEdit', ['id' => $event->id]) }}"
                        class="btn btn-sm mb-2 btn-primary d-inline-flex align-items-center me-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                              stroke="currentColor" class="icon icon-xs me-2 mt-1">
@@ -111,7 +111,29 @@
                                   d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
                         </svg>
 
-                        Edit Event</a>
+                        Edit Event</a>  --}}
+                        <div class="d-flex">
+                            <a href="#" class="btn btn-sm mb-2 btn-primary d-inline-flex align-items-center me-2" onclick="editEvent()">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon icon-xs me-2 mt-1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
+                                </svg>
+                                Edit Event
+                            </a>
+                            <a href="{{$urlAnswers}}" class="btn btn-sm mb-2 btn-primary d-inline-flex align-items-center me-2" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi icon-total-event bi-megaphone icon-total-event" viewBox="0 0 16 16">
+                                    <path d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0v-.214c-2.162-1.241-4.49-1.843-6.912-2.083l.405 2.712A1 1 0 0 1 5.51 15.1h-.548a1 1 0 0 1-.916-.599l-1.85-3.49-.202-.003A2.014 2.014 0 0 1 0 9V7a2.02 2.02 0 0 1 1.992-2.013 75 75 0 0 0 2.483-.075c3.043-.154 6.148-.849 8.525-2.199zm1 0v11a.5.5 0 0 0 1 0v-11a.5.5 0 0 0-1 0m-1 1.35c-2.344 1.205-5.209 1.842-8 2.033v4.233q.27.015.537.036c2.568.189 5.093.744 7.463 1.993zm-9 6.215v-4.13a95 95 0 0 1-1.992.052A1.02 1.02 0 0 0 1 7v2c0 .55.448 1.002 1.006 1.009A61 61 0 0 1 4 10.065m-.657.975 1.609 3.037.01.024h.548l-.002-.014-.443-2.966a68 68 0 0 0-1.722-.082z"></path>
+                                </svg>&nbsp;
+                                Event Page
+                            </a>
+                        </div>
+
+                        <script>
+                            function editEvent() {
+                                // Add your logic here for handling the click event
+                                // For example, you can redirect to the edit page or show a modal for editing the event
+                                alert("This feature will be updated in the future");
+                            }
+                        </script>
                 </div>
             @elseif ($event && $event->id)
                 <div class="col-md-12">
