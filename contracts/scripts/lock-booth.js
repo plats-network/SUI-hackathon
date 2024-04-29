@@ -26,7 +26,7 @@ async function lockBooth() {
             // ticket event id 
             tx.object(collectionId),
             // booths collection (tập hợp các nft booth object id  của 1 booth)
-            tx.pure(["0xda305a353cc351c7c13362a70331787b2e08f67af49975af4df8fd7865ce56ad","0xda305a353cc351c7c13362a70331787b2e08f67af49975af4df8fd7865ce56ad"]),
+            tx.pure(["0x025bab49660c5c0a29eefcdec2d35df7201c79a297cf284129d4639285b4197e", "0x27600763e36900ea399db6245d90bd7a34f43e26d5a507099c4eb509599baaea","0x2eda4c3dfc2d37bf14ddde64b7c7a57cedc176785fb0e17e734e81349c08c52b","0x4b834a09667808fd32e0a3786f69c59abc31d4246fbbecb70ee3c5ab22604911"]),
             // bật on = false , off = true        
             tx.pure(true),  
         ],

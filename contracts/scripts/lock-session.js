@@ -26,7 +26,7 @@ async function lockSession() {
             // ticket event id 
             tx.object(collectionId),
             // tập hợp session object id - collection session 
-            tx.pure(["0x7e01bb84713e7ce59cd1474b4c1b7accd1a31bb2ef59067be54efe07406a818e", "0x8db556fb8316205458a364bf2ba25c11bf69bb2781cb35997da89cb8908a3b48","0xcca077d60ea628b9d149740bd8aa8a7f72714d4620e8086720255084abb2c9df","0xd3fb47a45907bc3c82e6ddb32d3ebc99f2bf7c60e5906595c1589fab4dc5e556"]),
+            tx.pure(["0x03556a53bd1b4e674cbc9e4921dcc0688c79f5b981bde91f5a5b31f6315a9b21", "0x17f4ebd7bdcaed24399e3793940e5274e18c45c0ec88c0c2718b0f04a0f46e50","0x3e028c8dbbe1a3942ef9f1772cbb2f7d42d0ab93019a69b88022165122b1aba5","0x74d8325bb8ae3424dc1faaf38874e3d5d7c03f4d5ff958987f1564d4f066191f"]),
             // bật on = false , off = true        
             tx.pure(true),  
         ],

@@ -149,9 +149,10 @@ module sui_nft::client {
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
         urls: vector<vector<u8>>,
+        max_supply: u64,
         ctx: &mut TxContext
     ): vector<ID> {
-        let booths = collection::mint_booths(event_ticket, names, descriptions, urls, event_id, ctx);
+        let booths = collection::mint_booths(event_ticket, names, descriptions, urls, event_id, max_supply, ctx);
         booths
 
     }
