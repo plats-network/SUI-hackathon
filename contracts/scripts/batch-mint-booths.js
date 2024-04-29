@@ -19,6 +19,8 @@ async function mintBooths() {
     tx.moveCall({
         target: `${process.env.PACKAGE_ID}::client::mint_batch_booths`,
         arguments: [
+            // ticket event id 
+            tx.object(collectionId),
             // event_id
             tx.pure("8ba9148d4e85e4a6862e8fa613f6cf6b"),
             // name: vector<vector<u8>>,
@@ -27,6 +29,8 @@ async function mintBooths() {
             tx.pure(["This is booth 1","This is booth 2"]),
             // url: vector<vector<u8>>,
             tx.pure(["https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos","https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"]),
+            // max supply 
+            tx.pure(2),
         ],
         //typeArguments: [`${process.env.PACKAGE_ID}::ticket_collection::NFTTicket`]
     });

@@ -67,6 +67,7 @@ module sui_nft::ticket_collection {
         image_url: String,
         /// Event Id 
         event_id: String,
+        token_id: u64
     }
 
     struct NFTSession has key, store {
@@ -382,7 +383,10 @@ module sui_nft::ticket_collection {
         event_id: vector<u8>,
         ctx: &mut TxContext    
     ): ID{
-        let booth = mint_booth_single(name,  description, image_url, event_id, ctx);
+
+        let sender = tx_context::sender(ctx);
+        assert_client(event_ticket, sender);
+        let booth = mint_booth_single(name,  description, image_url, event_id, 1,  ctx);
         let booth_id = *object::uid_as_inner(&booth.id);
         let claimed = EventBoothClaimed {id: object::new(ctx), locked: false};
         ofield::add(&mut claimed.id, true,  booth);
@@ -396,22 +400,33 @@ module sui_nft::ticket_collection {
         descriptions: vector<vector<u8>>,
         urls: vector<vector<u8>>,
         event_id: vector<u8>,
+        max_supply: u64,
         ctx: &mut TxContext
     ):vector<ID>{
+
+        let sender = tx_context::sender(ctx);
+        assert_client(event_ticket, sender);
+
         let i = 0; 
         let booths = vector::empty();
 
         let len = vector::length(&names);
         while (i < len){
+            let j = 0;
+
             let name = vector::borrow(&names, i );
             let description = vector::borrow(&descriptions, i);
             let url = vector::borrow(&urls, i);
-            let booth = mint_booth_single(*name,  *description, *url, event_id,  ctx);
-            let booth_id = *object::uid_as_inner(&booth.id);
-            let claimed = EventBoothClaimed {id: object::new(ctx), locked: false};
-            ofield::add(&mut claimed.id, true,  booth);
-            bag::add(&mut event_ticket.booths, booth_id, claimed);
-            vector::push_back(&mut booths, booth_id);   
+            while (j < max_supply) {
+                let booth = mint_booth_single(*name,  *description, *url, event_id, j ,  ctx);
+                let booth_id = *object::uid_as_inner(&booth.id);
+                let claimed = EventBoothClaimed {id: object::new(ctx), locked: false};
+                ofield::add(&mut claimed.id, true,  booth);
+                bag::add(&mut event_ticket.booths, booth_id, claimed);
+                vector::push_back(&mut booths, booth_id);   
+                j = j+1;
+            };
+
             i = i +1;
         };
 
@@ -488,6 +503,7 @@ module sui_nft::ticket_collection {
         description: vector<u8>,
         image_url: vector<u8>,
         event_id: vector<u8>,
+        token_id: u64,
         ctx: &mut TxContext
     ): NFTBooth {
         let nft = NFTBooth {
@@ -496,6 +512,7 @@ module sui_nft::ticket_collection {
             description: string::utf8(description),
             image_url: string::utf8(image_url),
             event_id: string::utf8(event_id),
+            token_id
         };
 
         nft
@@ -544,6 +561,7 @@ module sui_nft::ticket_collection {
         let ticket_created_id;
         let ticket_created_ids;
         let session_created_ids;
+        let booth_created_ids;
 
         //let user = @0xAB;
         let event_id_1 = b"8ba9148d4e85e4a6862e8fa613f6cf6b";
@@ -817,12 +835,23 @@ module sui_nft::ticket_collection {
             vector::push_back(&mut descriptions ,b"This is booth 2");
             vector::push_back(&mut urls ,b"booth2.xyz");
 
-            let booths: vector<ID> = mint_booths(&mut event_ticket, names, descriptions, urls, event_id_1, ctx(scenario));
+            let booths: vector<ID> = mint_booths(&mut event_ticket, names, descriptions, urls, event_id_1,1,  ctx(scenario));
             debug::print(&utf8(b"CHECK MINT BATCH BOOTHS"));
             debug::print(&booths);
+            booth_created_ids = booths;
             test_scenario::return_shared<EventTicket>(event_ticket);
             //test_scenario::return_to_sender(scenario, booths);
         };
+
+        // lock booth
+        // test_scenario::next_tx(scenario, client1);
+        // {
+        //     let booth_id_1 = *vector::borrow(&booth_created_ids, 0);
+        //     let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
+        //     lock_booth(&mut event_ticket, booth_id_1, false, ctx(scenario));
+        //     test_scenario::return_shared<EventTicket>(event_ticket);
+
+        // };
 
         // end test
         test_scenario::end(scenario_val);

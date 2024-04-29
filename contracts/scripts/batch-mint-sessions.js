@@ -30,7 +30,7 @@ async function mintSessions() {
             // url: vector<vector<u8>>,
             tx.pure(["https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos", "https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"]),
             // max supply 
-            tx.pure(2),
+            tx.pure(1),
         ],
         //typeArguments: [`${process.env.PACKAGE_ID}::ticket_collection::NFTTicket`]
     });
