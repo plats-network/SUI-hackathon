@@ -390,11 +390,11 @@ color: blue;
         window.open("{{$url_download_ticket}}");
         @endif
     </script>
-    @if ($checkMint)
+    {{--  @if ($checkMint)
         <script>
             alert('Claim is success.')
         </script>
-    @endif
+    @endif  --}}
     {{--validate--}}
     <script>
         //https://yii2-cookbook-test.readthedocs.io/forms-activeform-js/
