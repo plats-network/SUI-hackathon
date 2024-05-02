@@ -161,6 +161,7 @@
                             @csrf
                             <input type="hidden" name="id" value="{{ $event->id }}">
                             <input type="hidden" name="nft_hash_id" value="{{ $nft_hash_id }}">
+                            <input type="hidden" id="event_object_id" value="{{ auth()->user()->event_object_id }}">
 
                             {{-- Step --}}
                             @if(true)

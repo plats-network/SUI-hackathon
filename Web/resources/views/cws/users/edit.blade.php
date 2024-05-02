@@ -63,6 +63,7 @@
                                     </div>
                                 @endif
                                 <input type="hidden" id="user_id" value="{{$user->id}}">
+                                <input type="hidden" id="event_object_id" value="{{$user->event_object_id ?? ''}}">
                             </div>
                             @if($user->role == CLIENT_ROLE)
                                 <div id="add_button"></div>

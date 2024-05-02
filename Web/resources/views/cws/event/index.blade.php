@@ -1,6 +1,10 @@
 @extends('cws.layouts.app')
 
 @section('name_page')
+    @viteReactRefresh
+    @vite([
+       'resources/js/lockEvent.jsx',
+    ])
     <div class="page-title-box align-self-center d-none d-md-block">
         <h4 class="page-title mb-0">Event</h4>
     </div>
@@ -75,6 +79,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="event_object_id" value="{{ auth()->user()->event_object_id }}">
 
     <div class="row">
         <div class="col-xl-12">
@@ -119,13 +124,15 @@
                                     </td>
                                     <td>{{rand(100,1000)}}</td>
                                     <td>
-                                        <input
-                                            type="checkbox"
-                                            id="switch_{{ $i+1 }}"
-                                            switch="none"
-                                            @if($event->status) checked @endif
-                                        >
-                                        <label class="event" data-id="{{$event->id}}" for="switch_{{ $i+1 }}" data-on-label="On" data-off-label="Off"></label>
+                                        <input type="hidden" id="status_{{$i}}" data-id="{{$event->id}}" data-i="{{$i}}" value="{{$event->status}}">
+                                        <div id="lock_event_{{$i}}"></div>
+{{--                                        <input--}}
+{{--                                            type="checkbox"--}}
+{{--                                            id="switch_{{ $i+1 }}"--}}
+{{--                                            switch="none"--}}
+{{--                                            @if($event->status) checked @endif--}}
+{{--                                        >--}}
+{{--                                        <label class="event" data-id="{{$event->id}}" for="switch_{{ $i+1 }}" data-on-label="On" data-off-label="Off"></label>--}}
                                     </td>
                                     <td style="width: 20%;">
                                         <ul class="list-inline mb-0">
@@ -139,7 +146,7 @@
                                                     'label' => 'Show',
                                                     'icon' => 'show'
                                                 ])
-                                                
+
                                                 @include('cws.actions.link', [
                                                     'url' => route('cws.event.users', ['id' => $event->id]),
                                                     'label' => 'Users',

@@ -61,6 +61,7 @@ export default defineConfig({
                 'resources/js/views/solana.jsx',
                 'resources/js/testReactjs.jsx',
                 'resources/js/addClient.jsx',
+                'resources/js/lockEvent.jsx',
             ],
             refresh: true,
         }),

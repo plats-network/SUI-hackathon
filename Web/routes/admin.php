@@ -198,6 +198,7 @@ Route::prefix('export')->controller(Export::class)->group(function () {
 // });
 //update whitelist
 Route::post('update-whitelist', [User::class, 'updateWhitelist']);
+Route::post('create-ticket', [User::class, 'createTicket']);
 // mint nft
 Route::post('create-nft-claim', [\App\Http\Controllers\Admin\NFTController::class, 'createNftClaim'])->name('api.createNftClaim');
 
