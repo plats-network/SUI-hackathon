@@ -61,15 +61,16 @@ class EventController extends Controller
     public function dashboard(Request $request){
 
         $limit = $request->get('limit') ?? 10;
-        $events = $this->taskService->search([
+        $clientUser = Auth::user();
+        $condition = [
             'limit' => $limit,
-            'type' => EVENT
-        ]);
-
-        $data = [
-            'events' => $events
+            'type' => EVENT,
         ];
-        return view('cws.dashboard.index', $data);
+        if (Auth::user()->role != ADMIN_ROLE) {
+            $condition['creator_id'] = $clientUser->id;
+        }
+        $events = $this->taskService->search($condition);
+        return view('cws.dashboard.index', ['events'=>$events]);
     }
     /**
      * Display a listing of the resource.
