@@ -1,6 +1,6 @@
 import React from 'react';
 
-function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
+function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey, upload}) {
     return (
         <div className="row mb-3 nft-ticket-div">
             <div className="col-4">
@@ -12,8 +12,10 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
                        name="file-image-nft"
                        onChange={onFileChange}/>
                 <label htmlFor={`image-file-${itemKey}`}>
-                    <img className="image-label img-preview"
-                         src={nftData.image_file || "/imgs/no-image.png"}/>
+                    {upload ?
+                        <img src="/imgs/loading/loading-upfile.webp" alt="loading"/> :
+                        <img className="image-label img-preview" src={nftData.image_file || "/imgs/no-image.png"}/>
+                    }
                 </label>
             </div>
             <div className="col-5">
