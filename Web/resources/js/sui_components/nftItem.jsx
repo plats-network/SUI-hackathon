@@ -12,7 +12,7 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey, uploa
                        name="file-image-nft"
                        onChange={onFileChange}/>
                 <label htmlFor={`image-file-${itemKey}`}>
-                    {upload ?
+                    {upload === itemKey ?
                         <img src="/imgs/loading/loading-upfile.webp" alt="loading"/> :
                         <img className="image-label img-preview" src={nftData.image_file || "/imgs/no-image.png"}/>
                     }
