@@ -15,6 +15,15 @@ export default function App() {
 
     const handleClick = async () => {
 
+        const totalNftTicket = $('input[name^="nft-ticket-name-"]').length;
+        
+        console.log('totalNftTicket',totalNftTicket);
+        
+        if(totalNftTicket <= 0){
+            alert('please mint nft ticket first!')
+            return;
+        }
+
         const newSessionData = [];
         
         $('.itemSessionDetailMint').each(function (index) {
@@ -27,7 +36,8 @@ export default function App() {
                 nameSession: nameSession,
                 descriptionSession: descriptionSession,
                 fileSession: fileSession,
-                mintftSession: mintftSession
+                mintftSession: mintftSession,
+                totalNftTicket: totalNftTicket
             };  
             newSessionData.push(sessionObj);
         });
@@ -71,11 +81,13 @@ export default function App() {
         let newData = {
             nameSession: data.map(item => item.nameSession),
             descriptionSession: data.map(item => item.descriptionSession),
-            fileSession: data.map(item => item.fileSession)
+            fileSession: data.map(item => item.fileSession),
+            totalNftTicket: data.map(item => item.totalNftTicket)
         };
         console.log('newData',newData);
         console.log('wallet',wallet);
-        const tx = new TransactionBlock();
+
+        let tx = new TransactionBlock();
         
         let typenetwork = $('meta[name="type_network"]').attr('content');
 
@@ -84,36 +96,31 @@ export default function App() {
         let packageId = $('meta[name="package_id"]').attr('content');
 
         // let collection_id = $('meta[name="collection_id"]').attr('content');
-        let collection_id = $('meta[name="event_id"]').attr('content');
+        const contract_event_id = localStorage.getItem("contract_event_id");
 
         let event_id = $('meta[name="nft_hash_id"]').attr('content');
- 
+
+        let totalNftTicket = $('input[name^="nft-ticket-name-"]').length;
+        
+        console.log('totalNftTickets',totalNftTicket);
+
         tx.moveCall({
             target: `${packageId}::client::mint_batch_sessions`,
             arguments: [
 
-                tx.pure(collection_id),
+                tx.pure(contract_event_id),
 
                 tx.pure(event_id),
 
                 tx.pure(newData.nameSession),
                 
-                // description: vector<vector<u8>>,
                 tx.pure(newData.descriptionSession),
-                // url: vector<vector<u8>>,
+                
                 tx.pure(newData.fileSession),
 
-                tx.pure(1),
-
-                // tx.object(collection_id),
-
-                //tx.pure(data.nameSession),
-                //tx.pure(data.descriptionSession),
-                //tx.pure(data.fileSession),
+                tx.pure(newData.totalNftTicket[0] ?? 1),
+              
             ],
-            // typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
-
-            // typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
         $('.loading').show();
         try {
@@ -136,7 +143,8 @@ export default function App() {
                     o.type === "created" &&
                     o.objectType.includes("::ticket_collection::NFTSession")
             ).map(item => item.objectId);
-            // console.log('sessionIds',sessionIds);
+            
+            console.log('sessionIds',sessionIds);
             //user login jdk
             // const user = "0x70f94573c6cd732304f2c0fd9d80cf7d6206e4609c5c4b259972e90885fc3acb";
             // tx.transferObjects([tx.object(sessionIds)] , user);
@@ -189,15 +197,12 @@ export default function App() {
         <div className="App">
             <ConnectButton label={'Connect Wallet'} />
             <section>
+            
                 {wallet.status === "connected" && (
                     <>
-                        {wallet?.account && (
-                            <>
-                                <p>
-                                    <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
-                                </p>
-                            </>
-                        )}
+                        <p>
+                            <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
+                        </p>
                     </>
                 )}
             </section>

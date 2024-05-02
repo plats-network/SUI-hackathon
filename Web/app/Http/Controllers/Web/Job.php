@@ -333,9 +333,21 @@ class Job extends Controller
     public function getTravelGame(Request $request, $taskId)
     {   
         try {
+            
             $event = $this->task->find($taskId);
+            
             //$checkUserGetCode = $this->checkUserGetCode($request, $taskId);
-          
+            
+            $inforSessions = TaskEvent::where('task_id', $taskId)
+            ->with('detail')
+            ->where('type', 0)
+            ->first();
+        
+            $inforBooths = TaskEvent::where('task_id', $taskId)
+                ->with('detail')
+                ->where('type', 1)
+                ->first();
+                
             $travelSessions = [];
             $session = $this->taskEvent->whereTaskId($taskId)->whereType(TASK_SESSION)->first();
             $travelSessionIds = $this->eventDetail
@@ -355,7 +367,7 @@ class Job extends Controller
                 ->toArray();
 
             $travelSessions = $this->travelGame
-               ->whereIn('id', $travelSessionIds)
+//                ->whereIn('id', $travelSessionIds)
                 ->orderBy('created_at', 'desc')
                 ->get();
 //dd($travelSessions);
@@ -425,6 +437,7 @@ class Job extends Controller
             //Create code if $totalCompleted >=6
             $maxSession = 1;
             if ($totalCompleted >= $maxSession) {
+                
                 //$this->taskService->genCodeByUser($user->id, $taskId, $travelSessionIds, $travelBootsIds, $session->id, $booth->id);
 
                 // $codes = $userCode->where('user_id', $userId)
@@ -442,35 +455,37 @@ class Job extends Controller
                     'color_code' => randColor()
                 ]);*/
                 
+
+                $taskEventDetail =  TaskEventDetail::where('code', $request['id'] ?? $request['code_task_event_details'])->first();
+                
                 //Check user code not exists
                 $checkCode = $this->userCode
                     ->whereUserId($user->id)
-                    ->whereTaskEventId($session->id)
-                    // ->where('travel_game_id', $session->travel_game_id)
-                    ->where('type', 0)
-                    ->exists();
-                
+                    ->where('task_event_id',$taskEventDetail->task_event_id)
+                    ->where('task_event_details_id',$taskEventDetail->id)
+                    ->where('travel_game_id', $session->travel_game_id)
+                    ->where('type', 0)->first();
+
+                //chưa có mã code thì thêm
                 if (!$checkCode) {
                     
                     $max = $this->userCode
-                        ->whereTaskEventId($session->id)
-                        // ->where('travel_game_id', $session->travel_game_id)
+                        ->where('task_event_id',$taskEventDetail->task_event_id)
+                        ->whereNotNull('task_event_details_id')
                         ->max('number_code');
 
-                     $maxCode =  $max + 1;
-                    //Check if  $maxCode < 100 then add 100
-                    if ($maxCode < 100) {
-                        $maxCode = $maxCode;
-                    }
-
-                    $this->userCode->create([
+                    $maxCode =  $max + 1;
+                    
+                    $newUserCode = $this->userCode->create([
                         'user_id' => $user->id,
-                        'task_event_id' => $session->id,
-                        'travel_game_id' => $session->travel_game_id,
+                        'task_event_id' => $taskEventDetail->task_event_id,
+                        'travel_game_id' => $taskEventDetail->travel_game_id,
+                        'task_event_details_id' => $taskEventDetail->id,
                         'type' => 0,
-                        'number_code' => $maxCode,
-                        'color_code' => randColor()
+                        'color_code' => randColor(),
+                        'number_code'=> $maxCode
                     ]);
+    
                 }
 
 
@@ -592,6 +607,29 @@ class Job extends Controller
                 'task_id'=>$sessionMintweb3->task_id ?? '',
                 'user_id'=>auth()->user()->id,
         ])->first();
+        
+        foreach ($groupSessions[""] as $item) {
+            if ($item['flag'] === true) {
+                $ids[] = $item['id'];
+            }
+        }
+        
+        $listLuckyCode =  $this->userCode
+            ->where('task_event_id', $sessionMintweb3->task_event_id)
+            ->whereNotNull('task_event_details_id')
+            ->where('user_id',auth()->user()->id)
+            ->get();
+
+        if(!empty($listLuckyCode)){
+            
+            foreach ($listLuckyCode as $item) {
+
+                if(isset($item['number_code'])){
+                    
+                    $numberCodes[] = $item['number_code'];
+                }
+            }
+        }
 
         $data = [
             'event' => $event,
@@ -606,10 +644,14 @@ class Job extends Controller
             'qrCode' => $qrCode,
             'checkNftMint' => $checkNftMint,
             'groupSessions' => ($groupSessions),
+            'sessions'=>$inforSessions,
+            'booths'=>$inforBooths,
             'nftMint'=>$nftMint,
             'nftUserClaimSession'=>$nftUserClaimSession,
             'code_task_event_details'=>$request['code_task_event_details'],
-            'sessionMintWeb3'=>$sessionMintweb3
+            'sessionMintWeb3'=>$sessionMintweb3,
+            // 'luckyCode'=>$checkCode,
+            'listLuckyCode'=> !empty($numberCodes) ? implode(',', $numberCodes) : []
         ];
         return view('web.events.travel_game', $data);
     }
@@ -871,7 +913,7 @@ class Job extends Controller
             'headers' => [
                 'zklogin-jwt'=>$data['jwt'],
                 'Content-Type' => 'application/json',
-                'Authorization'=>'Bearer enoki_public_79ffd2b0612875980b6d0903cc504d60'
+                'Authorization'=>'Bearer '.env('ENOKI_API')
             ],
             'json' => $data,
         ]);

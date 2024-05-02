@@ -88,6 +88,7 @@
                 </div>
                 <input type="hidden" id="mnemonic_client" value="{{ env('MNEMONIC_CLIENT')}}">
                 <input type="hidden" id="package_id" value="{{ env('PACKAGE_ID')}}">
+                <input type="hidden" id="contract_event_id" value="{{ $event->contract_event_id }}">
                 <input type="hidden" id="collection_id" value="{{ env('COLLECTION_ID')}}">
                 <input type="hidden" id="ticket_id" value="{{ !empty($nft) ? $nft->address_nft : ''}}">
                 <div id="fixed" class="col-lg-4">
@@ -102,7 +103,7 @@
     color: blue;
     margin-top: 20px;
     display: block;
-" class="link-primary" target="_blank" href="https://suiscan.xyz/devnet/tx/{{$checkMint->digest ?? ''}}">
+" class="link-primary" target="_blank" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$checkMint->digest ?? ''}}">
                                         Suiet Explorer Link
                                     </a>
                                 @else
@@ -389,11 +390,11 @@ color: blue;
         window.open("{{$url_download_ticket}}");
         @endif
     </script>
-    @if ($checkMint)
+    {{--  @if ($checkMint)
         <script>
             alert('Claim is success.')
         </script>
-    @endif
+    @endif  --}}
     {{--validate--}}
     <script>
         //https://yii2-cookbook-test.readthedocs.io/forms-activeform-js/

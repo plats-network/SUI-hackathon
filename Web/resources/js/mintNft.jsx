@@ -24,6 +24,7 @@ function createMintNftTxnBlock(data) {
     // const nftCollectionId = import.meta.env.VITE_COLLECTION_ID;
     const nftCollectionId = $('#event_object_id').val();
     const event_hash_id = $('meta[name="nft_hash_id"]').attr('content');
+    const contract_event_id = localStorage.getItem("contract_event_id");
 
     console.log('nftName',nftName);
     console.log('event_hash_id',event_hash_id);
@@ -32,12 +33,12 @@ function createMintNftTxnBlock(data) {
     console.log('nftCategory',nftCategory);
     console.log('nftAmount',nftAmount);
 
-    console.log('contractAddress :', contractAddress, 'nftCollectionId :', nftCollectionId);
+    console.log('contractAddress :', contractAddress, 'nftCollectionId :', contract_event_id);
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,
         arguments: [
             // collection object id
-            txb.pure(nftCollectionId),
+            txb.pure(contract_event_id),
             // event_id
             txb.pure(event_hash_id),
             // name: vector<u8>,

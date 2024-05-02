@@ -2,10 +2,10 @@
 
 @section('style')
     @uploadFileCSS
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link href="{{asset('css/select2.min.css')}}" rel="stylesheet"/>
     <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.1.1/dist/select2-bootstrap-5-theme.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+          href="{{asset('css/select2-bootstrap-5-theme.min.css')}}"/>
+{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">--}}
 
     {{--Editor--}}
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
@@ -24,11 +24,10 @@
 @section('name_page')
     @viteReactRefresh
     @vite([
-
        'resources/js/mint.js',
 //        'resources/js/connect_suit.jsx',
         'resources/js/formNft.jsx',
-        'resources/js/testReactjs.jsx',
+        'resources/js/testReactjs.jsx'
     ])
     <div class="page-title-box align-self-center d-none d-md-block">
         <h4 class="page-title mb-0">
@@ -104,6 +103,9 @@
         #button_connect_suit {
             margin-bottom: 20px;
         }
+        .btn-hiden-create{
+            display: none;
+        }
     </style>
     <div class="text-end">
         <div id="button_connect_suit" style="display: inline-block"></div>
@@ -178,11 +180,11 @@
                                         <a class="nav-link navItemTab " id="navItemTab1" data-step="1">NFT Ticket</a>
                                     </li>
                                     <li class="nav-item ">
-                                        <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session</a>
+                                        <a class="nav-link navItemTab " id="navItemTab2" data-step="2">Session & Booth</a>
                                     </li>
-                                    <li class="nav-item ">
+                                    {{--  <li class="nav-item ">
                                         <a class="nav-link navItemTab " id="navItemTab3" data-step="3">Booth</a>
-                                    </li>
+                                    </li>  --}}
                                     @if($is_update)
                                         <li class="nav-item">
                                             <a class="nav-link navItemTab" id="navItemTab4" data-step="4" href="#">Check-in</a>
@@ -773,8 +775,9 @@
                                         id="nextBtn" onclick="nextPrev(1)">Next
                                     </button>
                                     <button
+                                        id="savebutton"
                                         type="submit"
-                                        class="min-save-btn btn btn-primary w-sm ms-auto">Save
+                                        class="min-save-btn btn-hiden-create btn btn-primary w-sm ms-auto">Create
                                     </button>
                                 </div>
 
@@ -829,10 +832,9 @@
     {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
  --}}
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{asset('js/sweetalert2@11.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
-            integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
+    <script src="{{asset('js/chart.umd.js')}}"
             crossorigin="anonymous"></script>
     <script src="dashboard.js"></script>
 
@@ -1291,6 +1293,19 @@
 
             $(document).on('click', '.min-save-btn', function (event) {
                 console.log('Save');
+                let ticketCollectionId = localStorage.getItem("contract_event_id");
+                if(!ticketCollectionId){
+                    alert('Please create NFT before save');
+                }
+                console.log('ticketCollectionId',ticketCollectionId);
+                let inputCollectionId = document.createElement('input');
+                inputCollectionId.setAttribute('type', 'hidden');
+                inputCollectionId.setAttribute('name', 'ticket_collection_id');
+                inputCollectionId.setAttribute('value', ticketCollectionId);
+
+                let form = document.getElementById('post_form');
+                form.appendChild(inputCollectionId);
+
                 let idForm = '#post_form';
                 $(idForm).removeAttr('onsubmit');
                 $(idForm).submit();
@@ -1654,12 +1669,25 @@
         var currentTab = Number($('#currentTab').val());
         //arr index tab
         var arrTab = [0, 10, 20, 30, 40, 50];
+        var maxTab = 2;
+
         showTab(currentTab); // Display the current tab
 
         function showTab(n) {
+
+            console.log('showTab' ,n);
             // This function will display the specified tab of the form...
             var x = document.getElementsByClassName("wizard-tab");
             console.log(n);
+            if(n == maxTab){
+                $("#nextBtn").addClass('btn-hiden-create');
+                $('.min-save-btn').removeClass('btn-hiden-create');
+                $('.min-save-btn').html('Create Event');
+            }else{
+                $("#nextBtn").removeClass('btn-hiden-create');
+                $('.min-save-btn').addClass('btn-hiden-create');
+                $('.min-save-btn').html('Create Event');
+            }
             console.log(x);
             x[n].style.display = "block";
 
@@ -1688,30 +1716,33 @@
         }
 
         function nextPrev(n) {
+
             console.log('next');
             //Todo check validate then next
             //Check if n = 1 and validate form before next
             if (validateForm(n) == false) {
                 return false;
-            } else {
-                var x = document.getElementsByClassName("wizard-tab");
-                let currentTab = Number($('#currentTab').val());
-                console.log('tab', currentTab);
-                if (currentTab == 2) {
-                    $('.min-save-btn').html('Public');
-                } else {
-                    $('.min-save-btn').html('Save');
-                }
-                x[currentTab].style.display = "none";
-                currentTab = currentTab + n;
-                $('#currentTab').val(currentTab);
-                if (currentTab >= x.length) {
-                    currentTab = currentTab - n;
-                    x[currentTab].style.display = "block";
-                }
-                showTab(currentTab)
             }
 
+            var x = document.getElementsByClassName("wizard-tab");
+            let currentTab = Number($('#currentTab').val());
+            console.log('tab', currentTab);
+            if (currentTab == maxTab) {
+                $('.min-save-btn').removeClass('btn-hiden-create');
+                $('.min-save-btn').html('Create Event');
+            }
+            if(currentTab < maxTab){
+                $('.min-save-btn').addClass('btn-hiden-create');
+                $('.min-save-btn').html('Create Event');
+            }
+            x[currentTab].style.display = "none";
+            currentTab = currentTab + n;
+            $('#currentTab').val(currentTab);
+            if (currentTab >= x.length) {
+                currentTab = currentTab - n;
+                x[currentTab].style.display = "block";
+            }
+            showTab(currentTab)
 
         }
 

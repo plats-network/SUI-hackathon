@@ -26,7 +26,9 @@
         23 => 23
     ];
 @endphp
-
+@vite([
+     'resources/js/statusSession.jsx'
+ ])
 <div id="tabwizard2" class="wizard-tab">
     <div class="text-center mb-4">
         <h5>Sessions</h5>
@@ -114,19 +116,18 @@
                         {{--                        <td width="5%">{{$session->is_question ? 'Yes' : 'No'}}</td>--}}
                         <td width="5%"><a href="{{$qr}}" target="_blank">link</a></td>
                         <td width="10%">
-                            <input
-                                type="checkbox"
+                            
+                            <div 
+                                class="statusSession" 
+                                data-nftres="{{ $countNFTSession[$k]->nft_res }}" 
+                                data-nftsessionid="{{ $countNFTSession[$k]->address_nft }}" 
+                                data-contracteventid="{{ $event->contract_event_id }}" 
                                 id="session_{{ $k+1 }}"
-                                switch="none"
-                                @if($session->status) checked @endif
-                            >
-                            <label class="job"
-                                   data-id="{{$session->code}}"
-                                   data-detail-id="{{$sessions->id}}"
-                                   for="session_{{ $k+1 }}"
-                                   data-on-label="On"
-                                   data-off-label="Off">
-                            </label>
+                                data-status="{{  $session->status ? 'true' : 'false' }}" 
+                                data-id="{{$session->code}}" 
+                                data-detailsessionid="{{$sessions->id}}"> 
+                            </div>
+
                         </td>
                         <td width="20%">
                             <select
