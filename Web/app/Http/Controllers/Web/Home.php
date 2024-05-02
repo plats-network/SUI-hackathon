@@ -53,11 +53,11 @@ class Home extends Controller
 
     public function index(Request $request)
     {
-        if (session()->has('url_return')) {
-            $url_return = session()->get('url_return');
-            session()->forget('url_return');
-            return redirect($url_return);
-        }
+//        if (session()->has('url_return')) {
+//            $url_return = session()->get('url_return');
+//            session()->forget('url_return');
+//            return redirect($url_return);
+//        }
 
         try {
 
