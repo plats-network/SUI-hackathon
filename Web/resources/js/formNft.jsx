@@ -19,7 +19,7 @@ function NftForm() {
         }
     ]);
     const [items, setItems] = useState([0])
-    const [upload, setUpload] = useState(false);
+    const [upload, setUpload] = useState(-1);
 
     const handleInputChange = (event, index) => {
         const {name, value} = event.target;
@@ -55,7 +55,7 @@ function NftForm() {
 
             let data = new FormData();
             data.append('file', file, 'file-image-nft');
-            setUpload(true);
+            setUpload(index);
             try {
                 const response = await axios.post('/upload-image-nft', data, {
                     headers: {
@@ -73,7 +73,7 @@ function NftForm() {
             } catch (error) {
                 console.error('Error uploading file: ', error);
             } finally {
-                setUpload(false);
+                setUpload(-1);
             }
         }
     };
