@@ -2,10 +2,10 @@
 
 @section('style')
     @uploadFileCSS
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link href="{{asset('css/select2.min.css')}}" rel="stylesheet"/>
     <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.1.1/dist/select2-bootstrap-5-theme.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+          href="{{asset('css/select2-bootstrap-5-theme.min.css')}}"/>
+{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">--}}
 
     {{--Editor--}}
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
@@ -163,6 +163,7 @@
                             @csrf
                             <input type="hidden" name="id" value="{{ $event->id }}">
                             <input type="hidden" name="nft_hash_id" value="{{ $nft_hash_id }}">
+                            <input type="hidden" id="event_object_id" value="{{ auth()->user()->event_object_id }}">
 
                             {{-- Step --}}
                             @if(true)
@@ -831,10 +832,9 @@
     {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
  --}}
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{asset('js/sweetalert2@11.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
-            integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
+    <script src="{{asset('js/chart.umd.js')}}"
             crossorigin="anonymous"></script>
     <script src="dashboard.js"></script>
 
@@ -1674,7 +1674,7 @@
         showTab(currentTab); // Display the current tab
 
         function showTab(n) {
-           
+
             console.log('showTab' ,n);
             // This function will display the specified tab of the form...
             var x = document.getElementsByClassName("wizard-tab");
@@ -1714,7 +1714,7 @@
             //... and run a function that will display the correct step indicator:
             fixStepIndicator(n)
         }
-        
+
         function nextPrev(n) {
 
             console.log('next');
@@ -1743,7 +1743,7 @@
                 x[currentTab].style.display = "block";
             }
             showTab(currentTab)
-              
+
         }
 
         //validateForm step

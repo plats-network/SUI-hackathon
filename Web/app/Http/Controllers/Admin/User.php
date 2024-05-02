@@ -77,12 +77,29 @@ class User extends Controller
         $row = [
             'white_list' => $data['white_list'] === true ? 1 : 0,
             'wallet_address' => $data['wallet_address'] ?? '',
+            'event_object_id' => $data['event_object_id'] ?? '',
         ];
         $user->update($row);
         return response()->json([
             'message' => 'success'
         ], 200);
     }
+
+    public function createTicket(Request $request)
+    {
+        $data = $request->all();
+        $user = UserModel::find($data['id']);
+        $row = [
+            'event_object_id' => $data['event_object_id'] ?? '',
+            'white_list' => $data['white_list'] === true ? 1 : 0,
+            'wallet_address' => $data['wallet_address'] ?? '',
+        ];
+        $user->update($row);
+        return response()->json([
+            'message' => 'success'
+        ], 200);
+    }
+
 
     public function saveUserByEvent(Request $request)
     {
