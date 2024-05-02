@@ -12,7 +12,7 @@
         <link rel="shortcut icon" href="assets/images/favicon.ico">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{{asset('js/sweetalert2@11.min.js')}}"></script>
         @notifyCss
         @vite(['resources/sass/event-job.scss'])
     </head>
