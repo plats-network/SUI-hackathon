@@ -21,7 +21,8 @@ function createMintNftTxnBlock(data) {
     const nftCategory = data.nft_category;
     const nftDescription = data.nft_symbol;
     const nftImgUrl = data.image_file ?? "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
-    const nftCollectionId = import.meta.env.VITE_COLLECTION_ID;
+    // const nftCollectionId = import.meta.env.VITE_COLLECTION_ID;
+    const nftCollectionId = $('#event_object_id').val();
     const event_hash_id = $('meta[name="nft_hash_id"]').attr('content');
     const contract_event_id = localStorage.getItem("contract_event_id");
 

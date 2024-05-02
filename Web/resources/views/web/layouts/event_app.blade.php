@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ url('css/loading.css') }}">
     <meta name='type_network' content="{{ env('TYPE_NETWORK')}}" data-dz-name="">
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{asset('js/sweetalert2@11.min.js')}}"></script>
     @vite(['resources/sass/event.scss',  'resources/js/event.js'])
 
     @notifyCss
