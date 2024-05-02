@@ -53,6 +53,11 @@ class Home extends Controller
 
     public function index(Request $request)
     {
+        if (session()->has('url_return')) {
+            $url_return = session()->get('url_return');
+            session()->forget('url_return');
+            return redirect($url_return);
+        }
 
         try {
 
@@ -231,6 +236,9 @@ class Home extends Controller
     public function show(Request $request, $id)
     {
         $user = Auth::user();
+        $currentUrl = url()->current();
+        $request->session()->put('url_return', $currentUrl);
+
         if (empty($user)) {
             return redirect()->route('web.formLogin');
         }
@@ -722,10 +730,10 @@ class Home extends Controller
             $booths = $this->eventDetail->whereTaskEventId($eventBooth->id)->orderBy('sort', 'asc')->get();
 
             return redirect(route('job.getTravelGame', [
-                    'task_id' => $task->id,
-                    'code_task_event_details' => $request->code_task_event_details
+                'task_id' => $task->id,
+                'code_task_event_details' => $request->code_task_event_details
 
-                ]));
+            ]));
 
 
             foreach ($sessions as $session) {

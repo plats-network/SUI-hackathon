@@ -447,11 +447,11 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-3">
-                                                            <div class="col-10 mt-25">
-                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_category }}</p>
-                                                            </div>
-                                                            <div class="col-10 mt-20">
-                                                                <p class="class-ticket">{{ count($countNFTData) }}</p>
+{{--                                                            <div class="col-10 mt-25">--}}
+{{--                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_category }}</p>--}}
+{{--                                                            </div>--}}
+                                                            <div class="col-10" style="margin-top: 60px;">
+                                                                <p class="class-ticket">1</p>
                                                             </div>
                                                         </div>
                                                         <div class="col-2" style="margin-top: 50px">
