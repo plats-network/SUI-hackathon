@@ -1,7 +1,7 @@
 @extends('web.layouts.event_app')
-<head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-</head>
+{{--<head>--}}
+{{--    <meta http-equiv="X-UA-Compatible" content="IE=edge" />--}}
+{{--</head>--}}
 @section('content')
     <style>
         .disabled {
@@ -27,9 +27,9 @@
                     <div class="pr-lg-4 mb-100">
                         <div class="post-details-content">
                             <div class="post-blog-thumbnail mb-30">
-                                <img src="{{$event->banner_url}}" alt="">
+                                <img src="{{$event->banner_url ?? ''}}" alt="">
                             </div>
-                            <h4 class="post-title">{{$event->name}}</h4>
+                            <h4 class="post-title">{{$event->name ?? ''}}</h4>
                             <div class="post-meta">
                                 <a class="post-date" href="#">
                                     <i class="zmdi zmdi-alarm-check"></i> {{dateFormat($event->created_at)}}
@@ -70,7 +70,7 @@
                                         ->linkedin($event->name)
                                         ->whatsapp()
                                         ->telegram()
-                                !!}
+//                                !!}
                             </div>
                         </div>
                         <div class="post-author-area d-flex align-items-center my-5">
@@ -127,7 +127,8 @@ color: blue;
                                         </a>
                                     @endif
 
-                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>
+{{--                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>--}}
+                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'zklogin'}} {{ !$nft ? 'disabled' : '' }}" href="#" data-url="{{route('web.formLogin')}}" >Register event</a>
 
                                 @endif
                                 <hr>
@@ -377,7 +378,7 @@ color: blue;
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
             integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
             crossorigin="anonymous"></script>
-    <script src="dashboard.js"></script>
+{{--    <script src="dashboard.js"></script>--}}
 
     <script>
         var _token = $('meta[name="csrf-token"]').attr('content');

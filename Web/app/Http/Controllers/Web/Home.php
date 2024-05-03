@@ -53,13 +53,15 @@ class Home extends Controller
 
     public function index(Request $request)
     {
-
         try {
             $url_return = route('web.home');
             if (session()->has('url_return')) {
                 $url_return = session()->get('url_return');
-                session()->forget('url_return');
+                Log::info('url_return index: ' . $url_return);
+//                session()->forget('url_return');
             }
+//            dd($url_return);
+
             $limit = $request->get('limit') ?? 4;
 
             $user = Auth::user();
