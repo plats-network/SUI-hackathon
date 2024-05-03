@@ -119,8 +119,8 @@
                             
                             <div 
                                 class="statusSession" 
-                                data-nftres="{{ $countNFTSession[$k]->nft_res ?? [] }}" 
-                                data-nftsessionid="{{ $countNFTSession[$k]->address_nft ?? [] }}" 
+                                data-nftres="{{ $countNFTSession[$k]->nft_res ?? '' }}" 
+                                data-nftsessionid="{{ $countNFTSession[$k]->address_nft ?? '' }}" 
                                 data-contracteventid="{{ $event->contract_event_id ?? '' }}" 
                                 id="session_{{ $k+1 }}"
                                 data-status="{{  $session->status ? 'true' : 'false' }}" 
