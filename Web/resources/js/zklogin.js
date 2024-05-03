@@ -73,7 +73,7 @@ $(document).ready(function() {
 
 //check token login to social
 async function getTokenSocial(){
-
+    const url_return = $('#url_return').val();
     const urlFragment = window.location.search.substring(1) || window.location.hash.substring(1);
     console.log(urlFragment);
 
@@ -106,10 +106,12 @@ async function getTokenSocial(){
         dataType: "dataType",
         success: function (response) {
             console.log(response);
-            window.location.href = window.location.origin + window.location.pathname;
+            // window.location.href = window.location.origin + window.location.pathname;
+            window.location.href = url_return;
         },
         complete: function () {
-            window.location.href = window.location.origin + window.location.pathname;
+            // window.location.href = window.location.origin + window.location.pathname;
+            window.location.href = url_return;
         }
     });
 
