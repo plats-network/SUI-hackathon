@@ -53,14 +53,15 @@ class Home extends Controller
 
     public function index(Request $request)
     {
-
-
         try {
             $url_return = route('web.home');
             if (session()->has('url_return')) {
                 $url_return = session()->get('url_return');
-                session()->forget('url_return');
+                Log::info('url_return index: ' . $url_return);
+//                session()->forget('url_return');
             }
+//            dd($url_return);
+
             $limit = $request->get('limit') ?? 4;
 
             $user = Auth::user();
@@ -237,11 +238,12 @@ class Home extends Controller
     public function show(Request $request, $id)
     {
         $user = Auth::user();
-        if (empty($user)) {
-            $currentUrl = url()->current();
-            $request->session()->put('url_return', $currentUrl);
-            return redirect()->route('web.formLogin');
-        }
+//        if (empty($user)) {
+        $currentUrl = url()->current();
+        $request->session()->put('url_return', $currentUrl);
+        Log::info('url_return show: ' . session()->get('url_return'));
+//            return redirect()->route('web.formLogin');
+//        }
         $show_message = $request->get('sucess_checkin') ?? 0;
         //download_ticket
         $download_ticket = $request->get('download_ticket') ?? 0;

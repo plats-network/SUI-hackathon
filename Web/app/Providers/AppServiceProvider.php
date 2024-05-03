@@ -54,14 +54,14 @@ class AppServiceProvider extends ServiceProvider
         //09.12.2023
         //Version Website. Load From Env
         View::share('version', env('APP_VERSION', '2'));
-        DB::connection()->enableQueryLog();
+//        DB::connection()->enableQueryLog();
 
-        DB::listen(function ($query) {
-            Log::info(
-                $query->sql,
-                $query->bindings
-            );
-        });
+//        DB::listen(function ($query) {
+//            Log::info(
+//                $query->sql,
+//                $query->bindings
+//            );
+//        });
     }
 
     /**

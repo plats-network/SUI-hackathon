@@ -1,4 +1,12 @@
 $(document).ready(function() {
+
+    $(document).on('click', '.zklogin', function (event) {
+        let url = $(this).data('url');
+        //redirect to login page
+        window.location.href = url;
+    });
+
+
   var confer_window = $(window);
   const Toast = Swal.mixin({
     toast: true,
