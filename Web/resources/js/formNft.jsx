@@ -50,6 +50,8 @@ function NftForm() {
     };
 
     const handleFileChange = async (event, index) => {
+        $('.loading').show();
+
         let file = event.target.files[0];
         if (file) {
 
@@ -72,8 +74,12 @@ function NftForm() {
                 }
             } catch (error) {
                 console.error('Error uploading file: ', error);
+                $('.loading').hide();
+
             } finally {
                 setUpload(-1);
+                $('.loading').hide();
+
             }
         }
     };
