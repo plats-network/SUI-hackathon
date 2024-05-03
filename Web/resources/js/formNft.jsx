@@ -5,6 +5,7 @@ import axios from 'axios';
 import NftItem from './sui_components/nftItem';
 import MintNft1 from './mintNft';
 import NftItemMinted from "./sui_components/nftItemMinted";
+
 function NftForm() {
     const [nftMinted, setNftMinted] = useState([]);
     const [nftData, setNftData] = useState([
@@ -18,6 +19,7 @@ function NftForm() {
         }
     ]);
     const [items, setItems] = useState([0])
+    const [upload, setUpload] = useState(-1);
 
     const handleInputChange = (event, index) => {
         const {name, value} = event.target;
@@ -50,25 +52,10 @@ function NftForm() {
     const handleFileChange = async (event, index) => {
         let file = event.target.files[0];
         if (file) {
-            // Tạo một FileReader mới
-            let reader = new FileReader();
-
-            // Định nghĩa hàm onload cho FileReader
-            reader.onloadend = () => {
-                // Khi tệp đã được đọc xong, cập nhật state với URL của ảnh
-                const list = [...nftData];
-                if (list[index]) {
-                    list[index]['image_file'] = reader.result;
-                    setNftData(list);
-                }
-            };
-
-            // Bắt đầu đọc tệp như URL
-            reader.readAsDataURL(file);
 
             let data = new FormData();
             data.append('file', file, 'file-image-nft');
-
+            setUpload(index);
             try {
                 const response = await axios.post('/upload-image-nft', data, {
                     headers: {
@@ -85,6 +72,8 @@ function NftForm() {
                 }
             } catch (error) {
                 console.error('Error uploading file: ', error);
+            } finally {
+                setUpload(-1);
             }
         }
     };
@@ -122,6 +111,7 @@ function NftForm() {
                         onFileChange={(event) => handleFileChange(event, key)}
                         nftData={nftData[key]}
                         id={`nft-item-${item}`}
+                        upload={upload}
                     />)}
                 </div>
                 <div className="col-6 append-nft-detail" id={"append-nft-detail"}>

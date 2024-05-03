@@ -53,9 +53,13 @@ class Home extends Controller
 
     public function index(Request $request)
     {
-        
-        try {
 
+        try {
+            $url_return = route('web.home');
+            if (session()->has('url_return')) {
+                $url_return = session()->get('url_return');
+                session()->forget('url_return');
+            }
             $limit = $request->get('limit') ?? 4;
 
             $user = Auth::user();
@@ -88,7 +92,8 @@ class Home extends Controller
 
         $data = [
             'events' => $events,
-            'eventsPendings' => $eventsPendings
+            'eventsPendings' => $eventsPendings,
+            'url_return' => $url_return,
         ];
 
         return view('web.home', $data);
@@ -230,10 +235,12 @@ class Home extends Controller
 
     public function show(Request $request, $id)
     {
-        // $user = Auth::user();
-        // if (empty($user)) {
-        //     return redirect()->route('web.formLogin');
-        // }
+        $user = Auth::user();
+        if (empty($user)) {
+            $currentUrl = url()->current();
+            $request->session()->put('url_return', $currentUrl);
+            return redirect()->route('web.formLogin');
+        }
         $show_message = $request->get('sucess_checkin') ?? 0;
         //download_ticket
         $download_ticket = $request->get('download_ticket') ?? 0;
@@ -722,10 +729,10 @@ class Home extends Controller
             $booths = $this->eventDetail->whereTaskEventId($eventBooth->id)->orderBy('sort', 'asc')->get();
 
             return redirect(route('job.getTravelGame', [
-                    'task_id' => $task->id,
-                    'code_task_event_details' => $request->code_task_event_details
+                'task_id' => $task->id,
+                'code_task_event_details' => $request->code_task_event_details
 
-                ]));
+            ]));
 
 
             foreach ($sessions as $session) {
