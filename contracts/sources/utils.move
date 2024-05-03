@@ -5,8 +5,8 @@ module sui_nft::utils {
     use sui::url::{Self, Url};
     use sui::address;
 
-    public fun u64_to_bytes(value: u64): vector<u8> {
-        let buffer = vec::empty<u8>();
+    public fun u64_to_bytes(mut value: u64): vector<u8> {
+        let mut buffer = vec::empty<u8>();
         while (value != 0) {
             vec::push_back(&mut buffer, ((48 + value % 10) as u8));
             value = value / 10;
@@ -23,8 +23,8 @@ module sui_nft::utils {
         string::utf8(buffer)
     }
 
-    public fun u128_to_bytes(value: u128): vector<u8> {
-        let buffer = vec::empty<u8>();
+    public fun u128_to_bytes(mut value: u128): vector<u8> {
+        let mut buffer = vec::empty<u8>();
         while (value != 0) {
             vec::push_back(&mut buffer, ((48 + value % 10) as u8));
             value = value / 10;

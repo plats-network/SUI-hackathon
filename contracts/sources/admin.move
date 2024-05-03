@@ -10,8 +10,8 @@ module sui_nft::admin {
     }
 
     // batch processes
-    entry fun batch_add_client(self: &mut EventTicket, addrs: vector<address>, pub: &Publisher) {
-        let (i, len) = (0u64, vec::length(&addrs));
+    entry fun batch_add_client(self: &mut EventTicket, mut addrs: vector<address>, pub: &Publisher) {
+        let (mut i, len) = (0u64, vec::length(&addrs));
         while (i < len) {
             let addr = vec::pop_back(&mut addrs);
             collection::add_client(self, addr, pub);
@@ -19,7 +19,7 @@ module sui_nft::admin {
         }
     }
 
-    entry fun batch_remove_client(self: &mut EventTicket, addrs:vector<address>, pub: &Publisher) {
+    entry fun batch_remove_client(self: &mut EventTicket, mut addrs:vector<address>, pub: &Publisher) {
         let (i, len) = (0u64, vec::length(&addrs));
         while (i < len) {
             let addr = vec::pop_back(&mut addrs);

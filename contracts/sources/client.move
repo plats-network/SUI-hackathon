@@ -1,10 +1,7 @@
 module sui_nft::client {
 
 
-    use sui::tx_context::{TxContext};
-    use sui_nft::ticket_collection::{Self as collection, EventTicket, NFTSession, NFTBooth};
-    use sui::object::ID;
-    use std::vector;
+    use sui_nft::ticket_collection::{Self as collection, EventTicket};
 
     public entry fun lock_event(
         event_ticket: &mut EventTicket,
@@ -37,11 +34,11 @@ module sui_nft::client {
     // batch processes lock sessions 
     public entry fun batch_lock_sessions(
         event_ticket: &mut EventTicket, 
-        sessions: vector<ID>, 
+        mut sessions: vector<ID>, 
         locked: bool, 
         ctx: &TxContext
         ) {
-        let (i, len) = (0u64, vector::length(&sessions));
+        let (mut i, len) = (0u64, vector::length(&sessions));
         while (i < len) {
             let session_id = vector::pop_back(&mut sessions);
             collection::lock_session(event_ticket, session_id, locked, ctx);
@@ -53,11 +50,11 @@ module sui_nft::client {
     // batch processes lock booths 
     public entry fun batch_lock_booths(
         event_ticket: &mut EventTicket, 
-        booths: vector<ID>, 
+        mut booths: vector<ID>, 
         locked: bool, 
         ctx: &TxContext
         ) {
-        let (i, len) = (0u64, vector::length(&booths));
+        let (mut i, len) = (0u64, vector::length(&booths));
         while (i < len) {
             let booth_id = vector::pop_back(&mut booths);
             collection::lock_booth(event_ticket, booth_id, locked, ctx);
