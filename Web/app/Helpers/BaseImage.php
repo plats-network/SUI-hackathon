@@ -10,6 +10,9 @@ class BaseImage {
     public static function loadImage($image_url = null)
     {
         if (is_null($image_url)) {
+            
+            // return asset('/imgs/imagedefault.jpg');
+
             return Storage::disk('s3')->url('icon/hidden_box.png');
         }
         if (strpos($image_url ,'https') !== false){

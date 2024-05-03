@@ -53,7 +53,7 @@ class Home extends Controller
 
     public function index(Request $request)
     {
-
+        
         try {
 
             $limit = $request->get('limit') ?? 4;
@@ -230,10 +230,10 @@ class Home extends Controller
 
     public function show(Request $request, $id)
     {
-        $user = Auth::user();
-        if (empty($user)) {
-            return redirect()->route('web.formLogin');
-        }
+        // $user = Auth::user();
+        // if (empty($user)) {
+        //     return redirect()->route('web.formLogin');
+        // }
         $show_message = $request->get('sucess_checkin') ?? 0;
         //download_ticket
         $download_ticket = $request->get('download_ticket') ?? 0;

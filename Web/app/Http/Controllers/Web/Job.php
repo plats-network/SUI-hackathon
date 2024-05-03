@@ -655,6 +655,11 @@ class Job extends Controller
         ];
         return view('web.events.travel_game', $data);
     }
+
+    public function createLuckycode(){
+        var_dump(11111111);
+    }
+
     //Check user get code when have at  tend 6/8 session in booth
     public function checkUserGetCode(Request $request, $taskId)
     {

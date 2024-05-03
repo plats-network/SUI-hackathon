@@ -101,6 +101,9 @@ Route::middleware(['user_event'])->group(function ($r) {
     $r->get('event-register/{id}', [EventController::class, 'register'])->name('web.events.register');
     $r->get('events/code', [Job::class, 'index'])->name('web.eventCode');
 
+    //tạo vé mã quay thưởng lucky code
+    $r->post('/createluckycode', [Job::class, 'createLuckycode'])->name('web.createluckycode');
+    
     //user claim session và booth
     $r->post('claim/event', [Job::class, 'index'])->name('web.claim');
 
