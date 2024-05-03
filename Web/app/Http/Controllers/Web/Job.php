@@ -49,6 +49,12 @@ class Job extends Controller
     // Url: http://event.plats.test/events/code?type=event&id=tuiLOSvRxDUZk2cNTMu5LoA8s4VXxoO4fXe
     public function index(Request $request)
     {
+        $user = Auth::user();
+        if (empty($user)) {
+            $currentUrl = url()->full();
+            $request->session()->put('url_return', $currentUrl);
+            return redirect()->route('web.formLogin');
+        }
         $data = $request->only(['type','id']);
 
         //valid credential
@@ -655,6 +661,11 @@ class Job extends Controller
         ];
         return view('web.events.travel_game', $data);
     }
+
+    public function createLuckycode(){
+        var_dump(11111111);
+    }
+
     //Check user get code when have at  tend 6/8 session in booth
     public function checkUserGetCode(Request $request, $taskId)
     {

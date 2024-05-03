@@ -376,3 +376,15 @@ function keypairFromSecretKey(privateKeyBase64){
     const keyPair = decodeSuiPrivateKey(privateKeyBase64);
     return Ed25519Keypair.fromSecretKey(keyPair.secretKey);
 }
+$('#claim').on('click',async function (e) {
+
+    const payload = {
+    
+    };
+    
+    console.log('payloadclaim',payload);
+    
+    const proofResponse = await axios.post(`/createluckycode`, payload);
+
+    console.log('proofResponse',proofResponse.data);
+});

@@ -158,7 +158,9 @@
                         {{--  <button id="button-claim-test" type="button" class="btn btn-primary btn--order">Claim test</button>  --}}
                         
                     @endif
-                    
+
+                    {{--  <button id="claim">Claim</button>  --}}
+
                 </div>
                 <ul class="nav nav-tabs">
                     <li><a data-toggle="tab" href="#sesion">Sessions Game</a></li>

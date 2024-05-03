@@ -107,11 +107,11 @@ async function getTokenSocial(){
         success: function (response) {
             console.log(response);
             // window.location.href = window.location.origin + window.location.pathname;
-            window.location.href = url_return;
+            window.location.href = url_return ?? window.location.origin + window.location.pathname;
         },
         complete: function () {
             // window.location.href = window.location.origin + window.location.pathname;
-            window.location.href = url_return;
+            window.location.href = url_return ?? window.location.origin + window.location.pathname;
         }
     });
 

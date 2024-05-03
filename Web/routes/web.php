@@ -99,8 +99,10 @@ Route::middleware(['user_event'])->group(function ($r) {
     $r->get('nft/claim/{id}', [\App\Http\Controllers\Web\ClaimNftController::class, 'claim'])->name('nft.claim');
     $r->get('nft/claim-action/{id}', [\App\Http\Controllers\Web\ClaimNftController::class, 'claimAction'])->name('nft.claimAction');
     $r->get('event-register/{id}', [EventController::class, 'register'])->name('web.events.register');
-    $r->get('events/code', [Job::class, 'index'])->name('web.eventCode');
 
+    //tạo vé mã quay thưởng lucky code
+    $r->post('/createluckycode', [Job::class, 'createLuckycode'])->name('web.createluckycode');
+    
     //user claim session và booth
     $r->post('claim/event', [Job::class, 'index'])->name('web.claim');
 
@@ -110,6 +112,8 @@ Route::middleware(['user_event'])->group(function ($r) {
 
 
 });
+
+Route::get('events/code', [Job::class, 'index'])->name('web.eventCode');
 
 // Các route không yêu cầu middleware
 Route::get('event/{id}', [Home::class, 'show'])->name('web.events.show');

@@ -4,6 +4,7 @@ import "@suiet/wallet-kit/style.css"; // don't forget to import default styleshe
 import NftInput from "./sui_components/nftInput";
 import React, {useState} from 'react';
 import ReactDOM from "react-dom";
+import {getFullnodeUrl, SuiClient} from '@mysten/sui.js/client';
 
 function createMintNftTxnBlock(data) {
     // define a programmable transaction block
@@ -13,8 +14,6 @@ function createMintNftTxnBlock(data) {
     const contractAddress = import.meta.env.VITE_PACKAGE_ID;
     const contractModule = "client";
     const contractMethod = "mint_batch_tickets";
-
-
 
     const nftName = data.nft_name;
     const nftAmount = data.nft_amount;
@@ -59,22 +58,78 @@ function createMintNftTxnBlock(data) {
     return txb;
 }
 
+const createEvent = async () => {
+
+
+};
+
 export default function mintNft({nftData, _setMinted, nftMinted, setNftData, setItems, items}) {
     const wallet = useWallet();
     const [nftInputs, setNftInputs] = useState([]);
     const mnemonic_client = import.meta.env.VITE_MNEMONIC_CLIENT;
     const [isLoading, setIsLoading] = useState(false);
+    const [totalMin, setTotalMin] = useState(0);
     const datas = JSON.parse(JSON.stringify(nftData));
     const itemCopy = JSON.parse(JSON.stringify(items));
-
-
+    let typenetwork = $('meta[name="type_network"]').attr('content');
     async function mintNft(event) {
         event.preventDefault();
         if (!wallet.connected) return;
+
         setIsLoading(true);
         const nftMints = [];
         const newItems = [];
         const newDatas = [];
+        if(nftData.length === 0) {
+            alert('No NFT to mint'); 
+            return;
+        } 
+        
+        //nếu tootal min = 0 là click mint lần đầu tiên thì sẽ tạo ticket_collectionId
+        if(totalMin == 0){
+            console.log('totalMin',totalMin);
+            let tx = new TransactionBlock();
+
+            let packageId = $('meta[name="package_id"]').attr('content');
+
+            tx.moveCall({
+                target: `${packageId}::ticket_collection::create_event`,
+                arguments: [
+                    //tx.pure(process.env.PUBLISHER_ID),
+                    // địa chỉ của organizer để có thể tạo nft ticket, lock event, session 
+                    tx.pure(wallet.address)
+                ],
+            });
+            
+            const txs  = await wallet.signAndExecuteTransactionBlock({
+                transactionBlock: tx,
+                options: {
+                    showInput: true,
+                    showEffects: true,
+                    showEvents: true,
+                    showObjectChanges: true,
+                },
+            });
+
+            console.log("create ticket tx", JSON.stringify(txs, null, 2));
+
+            const ticketCollectionId = (
+                txs.objectChanges.filter(
+                    (o) =>
+                        o.type === "created" &&
+                        o.objectType.includes("::ticket_collection::EventTicket")
+                )[0]
+            ).objectId;
+
+            if(!ticketCollectionId || ticketCollectionId == ""){
+                alert('Failed to create ticket collection');
+                return;
+            }
+            localStorage.setItem('contract_event_id',ticketCollectionId);
+            console.log(`ticket  id : `,ticketCollectionId);
+            setTotalMin(1);
+        }
+        
         for (let i = 0; i < nftData.length; i++) {
             const txb = createMintNftTxnBlock(nftData[i]);
             try {
@@ -120,7 +175,6 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
         setNftData([...differenceData]);
         setItems([...difference]);
         setNftData([...differenceData]);
-
         setIsLoading(false);
 
     }
