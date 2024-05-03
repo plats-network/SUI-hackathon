@@ -237,11 +237,9 @@ class Home extends Controller
     public function show(Request $request, $id)
     {
         $user = Auth::user();
-//        dd($user);
-        $currentUrl = url()->current();
-        $request->session()->put('url_return', $currentUrl);
-
         if (empty($user)) {
+            $currentUrl = url()->current();
+            $request->session()->put('url_return', $currentUrl);
             return redirect()->route('web.formLogin');
         }
         $show_message = $request->get('sucess_checkin') ?? 0;
