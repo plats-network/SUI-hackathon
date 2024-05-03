@@ -488,7 +488,7 @@ class EventService extends BaseService
                         }
                     }
                     // nếu có address nft nghĩa là user đã mint sang bên mạng của web 3 rồi
-                    if(isset($item['nft-address']) && !empty($item['nft-address'])){
+                    if(isset($item['nft-address'])){
                         
                         $arrNFTMint = [
                             'task_id' => $task->id,
