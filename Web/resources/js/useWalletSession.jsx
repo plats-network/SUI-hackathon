@@ -46,6 +46,8 @@ export default function App() {
     }
 
     const appendNftSessionDetail = async (details) => {
+        let typenetwork = $('meta[name="type_network"]').attr('content');
+
         console.log('details',details);
         // Khai báo một biến để chứa chuỗi HTML
         let html = '';
@@ -68,7 +70,7 @@ export default function App() {
             html += '        </div>\n';
             html += '    </div>\n';
             html += '    <div class="col-2" style="margin-top: 50px">\n';
-            html += '        <p class="class-ticket"><a target="_blank" href="https://suiscan.xyz/devnet/tx/' + detail.txhash + '">txhash</a></p>\n';
+            html += '        <p class="class-ticket"><a target="_blank" href="https://suiscan.xyz/'+typenetwork+'/tx/' + detail.txhash + '">txhash</a></p>\n';
             html += '    </div>\n';
             html += '</div>';
         });
@@ -159,14 +161,14 @@ export default function App() {
 
             // Lặp qua mỗi đối tượng trong mảng data
             data.forEach((obj, index) => {
-
+                console.log('line 164',obj);
                 // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
                 obj.txhash = result.digest;
 
                 //mint lại data
                 $('.itemSessionDetailMint').eq(index).find('.nft_address_session').val(sessionIds[index]);
-                $('.itemSessionDetailMint').eq(index).find('.nft_uri_session').val(`https://suiscan.xyz/${typenetwork}/tx/${result.digest}`);
-                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(result));
+                $('.itemSessionDetailMint').eq(index).find('.nft_uri_session').val(obj.fileSession);
+                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(sessionIds));
                 $('.itemSessionDetailMint').eq(index).find('.image-file').val();
             });
 
