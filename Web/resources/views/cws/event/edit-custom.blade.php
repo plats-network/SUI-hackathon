@@ -175,7 +175,7 @@
                                     </li>  --}}
                                     @if($is_update)
                                         <li class="nav-item">
-                                            <a class="nav-link navItemTab" id="navItemTab4" data-step="4" href="#">Check-in</a>
+                                            <a class="nav-link navItemTab" id="navItemTab3" data-step="3" href="#">Check-in</a>
                                         </li>
                                     @endif
                                     {{--                                    <li class="nav-item">--}}
@@ -188,11 +188,11 @@
                                     {{--                                    </li>--}}
                                     @if($is_update)
                                         <li class="nav-item">
-                                            <a class="nav-link navItemTab" id="navItemTab5" data-step="5" href="#">Users
+                                            <a class="nav-link navItemTab" id="navItemTab4" data-step="4" href="#">Users
                                                 List</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link navItemTab" id="navItemTab6" data-step="6" href="#">Dashboard</a>
+                                            <a class="nav-link navItemTab" id="navItemTab5" data-step="5" href="#">Dashboard</a>
                                         </li>
                                     @endif
 
@@ -440,10 +440,10 @@
                                                         </div>
                                                         <div class="col-3">
                                                             <div class="col-10 mt-25">
-                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_symbol }}</p>
+                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_title }}</p>
                                                             </div>
                                                             <div class="col-10 mt-20">
-                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_title }}</p>
+                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_symbol }}</p>
                                                             </div>
                                                         </div>
                                                         <div class="col-3">
@@ -487,16 +487,16 @@
                             ])
 
                             <!-- Booth -->
-                            @include('cws.event.forms._booth-preview', [
-                                'booths' => $booths,
-                                'isPreview' => $isPreview,
-                                'event' => $event
-                            ])
+{{--                            @include('cws.event.forms._booth-preview', [--}}
+{{--                                'booths' => $booths,--}}
+{{--                                'isPreview' => $isPreview,--}}
+{{--                                'event' => $event--}}
+{{--                            ])--}}
                             {{--                            NFT--}}
 
                             {{--CheckIn--}}
                             @if($is_update)
-                                <div id="tabwizard4" class="wizard-tab" style="display: none;">
+                                <div id="tabwizard3" class="wizard-tab" style="display: none;">
                                     <div>
                                         <div class="text-center mb-4">
                                             <h5>Checkin</h5>
@@ -620,7 +620,7 @@
                             @if($is_update)
 
                                 {{--User List--}}
-                                <div id="tabwizard5" class="wizard-tab" style="display: none;">
+                                <div id="tabwizard4" class="wizard-tab" style="display: none;">
                                     <div>
                                         <div class="text-center mb-4">
                                             <h5>User List</h5>
@@ -704,7 +704,7 @@
                                 </div>
 
                                 {{--Dashboard--}}
-                                <div id="tabwizard6" class="wizard-tab" style="display: none;">
+                                <div id="tabwizard5" class="wizard-tab" style="display: none;">
                                     <div>
 
                                         <div class="text-center mb-4">
