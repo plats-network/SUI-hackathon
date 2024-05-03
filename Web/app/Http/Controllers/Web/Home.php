@@ -53,14 +53,14 @@ class Home extends Controller
 
     public function index(Request $request)
     {
-//        if (session()->has('url_return')) {
-//            $url_return = session()->get('url_return');
-//            session()->forget('url_return');
-//            return redirect($url_return);
-//        }
+
 
         try {
-
+            $url_return = route('web.home');
+            if (session()->has('url_return')) {
+                $url_return = session()->get('url_return');
+                session()->forget('url_return');
+            }
             $limit = $request->get('limit') ?? 4;
 
             $user = Auth::user();
@@ -93,7 +93,8 @@ class Home extends Controller
 
         $data = [
             'events' => $events,
-            'eventsPendings' => $eventsPendings
+            'eventsPendings' => $eventsPendings,
+            'url_return' => $url_return,
         ];
 
         return view('web.home', $data);
@@ -236,6 +237,7 @@ class Home extends Controller
     public function show(Request $request, $id)
     {
         $user = Auth::user();
+//        dd($user);
         $currentUrl = url()->current();
         $request->session()->put('url_return', $currentUrl);
 
