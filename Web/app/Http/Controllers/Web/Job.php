@@ -49,6 +49,12 @@ class Job extends Controller
     // Url: http://event.plats.test/events/code?type=event&id=tuiLOSvRxDUZk2cNTMu5LoA8s4VXxoO4fXe
     public function index(Request $request)
     {
+        $user = Auth::user();
+        if (empty($user)) {
+            $currentUrl = url()->full();
+            $request->session()->put('url_return', $currentUrl);
+            return redirect()->route('web.formLogin');
+        }
         $data = $request->only(['type','id']);
 
         //valid credential

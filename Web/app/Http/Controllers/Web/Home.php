@@ -237,7 +237,7 @@ class Home extends Controller
     {
         $user = Auth::user();
         if (empty($user)) {
-            $currentUrl = url()->current();
+            $currentUrl = url()->full();
             $request->session()->put('url_return', $currentUrl);
             return redirect()->route('web.formLogin');
         }
