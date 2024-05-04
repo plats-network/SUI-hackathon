@@ -41,7 +41,7 @@ async function createTicket() {
     });
 
 
-    console.log("create ticket tx", JSON.stringify(txs, null, 2));
+    console.log("create event shared tx", JSON.stringify(txs, null, 2));
 
     const ticketCollectionId = (
         txs.objectChanges.filter(
@@ -50,9 +50,25 @@ async function createTicket() {
             o.objectType.includes("::ticket_collection::EventTicket")
         )[0]
       ).objectId;
-      console.log(`ticket  id : ${ticketCollectionId}`);
-    // get collection object id 
+      console.log(`event shared  id : ${ticketCollectionId}`);
+    
+      const sessionCollectionId = (
+        txs.objectChanges.filter(
+          (o) =>
+            o.type === "created" &&
+            o.objectType.includes("::ticket_collection::SessionCollection")
+        )[0]
+      ).objectId;
+      console.log(`session Collection id : ${sessionCollectionId}`);
 
+      const boothCollectionId = (
+        txs.objectChanges.filter(
+          (o) =>
+            o.type === "created" &&
+            o.objectType.includes("::ticket_collection::BoothCollection")
+        )[0]
+      ).objectId;
+      console.log(`booth Collection id : ${boothCollectionId}`);
 }
 
 createTicket();

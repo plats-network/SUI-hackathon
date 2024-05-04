@@ -9,34 +9,34 @@ if (!process.env.PACKAGE_ID) {
     process.exit(1);
   }
 
-async function claim() {
-    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_USER);
+async function mint() {
+    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
     const client = new SuiClient({
         url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
+    //let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
     let packageId = process.env.PACKAGE_ID;
     let collectionId = process.env.EVENT_OBJECT_ID;
-
-    // claim ticket by user
     tx.moveCall({
-        target: `${packageId}::ticket_collection::claim_session`,
+        target: `${packageId}::ticket_collection::check_claimed_ticket`,
         arguments: [
+            //  event object id 
             tx.object(collectionId),
-            // session collection id 
-            tx.object(process.env.SESSION_COLLECTION_ID),
-            // session object id 
-            tx.pure("0xee12f30884eda3ed5f14796afb4b66f0998b07b0096b928233290a807fb3287c")
+            // ticket id
+            tx.pure.id("0xfc8111d61ffc53a7dcf8707718252674cc93cc12b3cd4b6356479baad8fcf7cb"),
+
         ],
-        typeArguments: [`${packageId}::ticket_collection::NFTSession`]
+        //typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
-    const result = await client.signAndExecuteTransactionBlock({
-        signer: keypair,
+
+    const result = await client.devInspectTransactionBlock({
+        sender: keypair.toSuiAddress(),
         transactionBlock: tx,
     });
 
+    console.log("Result:",result.results[0].returnValues[0][0]);
 
-    console.log({ result });
 }
 
-claim();
+mint();

@@ -1,7 +1,7 @@
 module sui_nft::client {
 
 
-    use sui_nft::ticket_collection::{Self as collection, EventTicket};
+    use sui_nft::ticket_collection::{Self as collection, EventTicket, SessionCollection, BoothCollection};
 
     public entry fun lock_event(
         event_ticket: &mut EventTicket,
@@ -13,56 +13,23 @@ module sui_nft::client {
     }
     public entry fun lock_session(
         event_ticket: &mut EventTicket,
-        session_id: ID, 
+        session_collection: &mut SessionCollection, 
         locked: bool, 
         ctx: &mut TxContext
     
     ) {
-        collection::lock_session(event_ticket,session_id, locked, ctx);
+        collection::lock_session(event_ticket,session_collection, locked, ctx);
     }
 
     public entry fun lock_booth(
         event_ticket: &mut EventTicket,
-        booth_id: ID, 
+        booth_collection: &mut BoothCollection, 
         locked: bool, 
         ctx: &mut TxContext
     
     ) {
-        collection::lock_booth(event_ticket, booth_id,  locked, ctx);
+        collection::lock_booth(event_ticket, booth_collection,  locked, ctx);
     }
-
-    // batch processes lock sessions 
-    public entry fun batch_lock_sessions(
-        event_ticket: &mut EventTicket, 
-        mut sessions: vector<ID>, 
-        locked: bool, 
-        ctx: &TxContext
-        ) {
-        let (mut i, len) = (0u64, vector::length(&sessions));
-        while (i < len) {
-            let session_id = vector::pop_back(&mut sessions);
-            collection::lock_session(event_ticket, session_id, locked, ctx);
-            i = i + 1;
-        }
-    }
-
-
-    // batch processes lock booths 
-    public entry fun batch_lock_booths(
-        event_ticket: &mut EventTicket, 
-        mut booths: vector<ID>, 
-        locked: bool, 
-        ctx: &TxContext
-        ) {
-        let (mut i, len) = (0u64, vector::length(&booths));
-        while (i < len) {
-            let booth_id = vector::pop_back(&mut booths);
-            collection::lock_booth(event_ticket, booth_id, locked, ctx);
-            i = i + 1;
-        }
-    }
-
-
 
     public entry fun mint_ticket(
         event_ticket: &mut EventTicket,
@@ -98,6 +65,7 @@ module sui_nft::client {
 
     public entry fun mint_session(
         event_ticket: &mut EventTicket,
+        session_collection: &mut SessionCollection, 
         name: vector<u8>,
         description: vector<u8>,
         url: vector<u8>,
@@ -105,7 +73,7 @@ module sui_nft::client {
         ctx: &mut TxContext
     ): ID {
         
-        let session_id = collection::mint_session(event_ticket, name, description, url, event_id, ctx);
+        let session_id = collection::mint_session(event_ticket, session_collection,  name, description, url, event_id, ctx);
 
         session_id
 
@@ -113,6 +81,7 @@ module sui_nft::client {
 
     public entry fun mint_batch_sessions(
         event_ticket: &mut EventTicket,
+        session_collection: &mut SessionCollection, 
         event_id: vector<u8>,
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
@@ -121,7 +90,7 @@ module sui_nft::client {
         ctx: &mut TxContext
     ): vector<ID> {
         
-        let sessions = collection::mint_sessions(event_ticket, names, descriptions, urls, event_id, max_supply,  ctx);
+        let sessions = collection::mint_sessions(event_ticket, session_collection, names, descriptions, urls, event_id, max_supply,  ctx);
         sessions
 
     }
@@ -129,19 +98,21 @@ module sui_nft::client {
 
     public entry fun mint_booth(
         event_ticket: &mut EventTicket,
+        booth_collection: &mut BoothCollection, 
         event_id: vector<u8>,
         name: vector<u8>,
         description: vector<u8>,
         url: vector<u8>,
         ctx: &mut TxContext
     ): ID {
-        let booth_id = collection::mint_booth(event_ticket, name, description, url, event_id,  ctx);
+        let booth_id = collection::mint_booth(event_ticket, booth_collection, name, description, url, event_id,  ctx);
         booth_id
 
     }
 
     public entry fun mint_batch_booths(
         event_ticket: &mut EventTicket,
+        booth_collection: &mut BoothCollection, 
         event_id: vector<u8>,
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
@@ -149,7 +120,7 @@ module sui_nft::client {
         max_supply: u64,
         ctx: &mut TxContext
     ): vector<ID> {
-        let booths = collection::mint_booths(event_ticket, names, descriptions, urls, event_id, max_supply, ctx);
+        let booths = collection::mint_booths(event_ticket, booth_collection, names, descriptions, urls, event_id, max_supply, ctx);
         booths
 
     }

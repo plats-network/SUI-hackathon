@@ -21,6 +21,8 @@ async function mintBooths() {
         arguments: [
             // ticket event id 
             tx.object(collectionId),
+            // booth collection id 
+            tx.object(process.env.BOOTH_COLLECTION_ID),
             // event_id
             tx.pure("8ba9148d4e85e4a6862e8fa613f6cf6b"),
             // name: vector<vector<u8>>,

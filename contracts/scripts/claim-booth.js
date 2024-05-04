@@ -20,15 +20,15 @@ async function claim() {
 
     // claim ticket by user
     tx.moveCall({
-        target: `${packageId}::ticket_collection::claim_session`,
+        target: `${packageId}::ticket_collection::claim_booth`,
         arguments: [
             tx.object(collectionId),
-            // session collection id 
-            tx.object(process.env.SESSION_COLLECTION_ID),
-            // session object id 
-            tx.pure("0xee12f30884eda3ed5f14796afb4b66f0998b07b0096b928233290a807fb3287c")
+            // booth collection id 
+            tx.object(process.env.BOOTH_COLLECTION_ID),
+            // booth object id 
+            tx.pure("0x04f009e7f56a56e73e4b00a8800c2f2e8d74ba46e8999d9e61d18fd2201434da")
         ],
-        typeArguments: [`${packageId}::ticket_collection::NFTSession`]
+        typeArguments: [`${packageId}::ticket_collection::NFTBooth`]
     });
     const result = await client.signAndExecuteTransactionBlock({
         signer: keypair,
