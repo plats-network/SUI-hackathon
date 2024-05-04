@@ -92,10 +92,10 @@
                             <div>
 
                             </div>
-                            <div id="GenItemCreateEvent">
+                            {{--  <div id="GenItemCreateEvent">
 
-                            </div>
-                            {{--  <a href="{{ route('cws.eventCreate') }}" class="btn  btn-primary d-inline-flex align-items-center me-2" ><svg class="icon icon-xs me-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Create Event</a>  --}}
+                            </div>  --}}
+                            <a href="{{ route('cws.eventCreate') }}" class="btn  btn-primary d-inline-flex align-items-center me-2" ><svg class="icon icon-xs me-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Create Event</a>
                         </div>
                     </div>
 

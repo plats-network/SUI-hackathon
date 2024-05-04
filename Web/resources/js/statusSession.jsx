@@ -131,10 +131,7 @@ Array.from(statusSessionElements).forEach(element => {
     const dataNftsessionid = element.dataset.nftsessionid;
     const dataNftRes = element.dataset.nftres;
     
-    let sessionIds =  JSON.parse(dataNftRes).objectChanges.filter((o) =>
-        o.type === "created" &&
-        o.objectType.includes("::ticket_collection::NFTSession")
-    ).map(item => item.objectId);
+    let sessionIds =  JSON.parse(dataNftRes);
 
     console.log('sessionIds',sessionIds);
 
