@@ -25,14 +25,6 @@ function createMintNftTxnBlock(data) {
     const event_hash_id = $('meta[name="nft_hash_id"]').attr('content');
     const contract_event_id = localStorage.getItem("contract_event_id");
 
-    console.log('nftName',nftName);
-    console.log('event_hash_id',event_hash_id);
-    console.log('nftDescription',nftDescription);
-    console.log('nftImgUrl',nftImgUrl);
-    console.log('nftCategory',nftCategory);
-    console.log('nftAmount',nftAmount);
-
-    console.log('contractAddress :', contractAddress, 'nftCollectionId :', contract_event_id);
     txb.moveCall({
         target: `${contractAddress}::${contractModule}::${contractMethod}`,
         arguments: [
@@ -81,13 +73,12 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
         const newItems = [];
         const newDatas = [];
         if(nftData.length === 0) {
-            alert('No NFT to mint'); 
+            alert('No NFT to mint');
             return;
-        } 
-        
+        }
+
         //nếu tootal min = 0 là click mint lần đầu tiên thì sẽ tạo ticket_collectionId
         if(totalMin == 0){
-            console.log('totalMin',totalMin);
             let tx = new TransactionBlock();
 
             let packageId = $('meta[name="package_id"]').attr('content');
@@ -96,11 +87,11 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
                 target: `${packageId}::ticket_collection::create_event`,
                 arguments: [
                     //tx.pure(process.env.PUBLISHER_ID),
-                    // địa chỉ của organizer để có thể tạo nft ticket, lock event, session 
+                    // địa chỉ của organizer để có thể tạo nft ticket, lock event, session
                     tx.pure(wallet.address)
                 ],
             });
-            
+
             const txs  = await wallet.signAndExecuteTransactionBlock({
                 transactionBlock: tx,
                 options: {
@@ -129,7 +120,7 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
             console.log(`ticket  id : `,ticketCollectionId);
             setTotalMin(1);
         }
-        
+
         for (let i = 0; i < nftData.length; i++) {
             const txb = createMintNftTxnBlock(nftData[i]);
             try {

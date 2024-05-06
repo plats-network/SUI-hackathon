@@ -13,13 +13,14 @@ function NftForm() {
             nft_id: 0,
             nft_name: "",
             nft_symbol: "",
-            image_file: "",
+            image_file: "/imgs/no-image.png",
             nft_category: "Standard",
             nft_amount: 1
         }
     ]);
     const [items, setItems] = useState([0])
     const [upload, setUpload] = useState(-1);
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleInputChange = (event, index) => {
         const {name, value} = event.target;
@@ -30,6 +31,10 @@ function NftForm() {
         }
     };
     const handleAddMore = () => {
+        if (isUploading) {
+            alert('A file is currently being uploaded, please wait...');
+            return;
+        }
         setItems([...items, items.length]);
         setNftData([
             ...nftData,
@@ -37,7 +42,7 @@ function NftForm() {
                 nft_id: items.length,
                 nft_name: "",
                 nft_symbol: "",
-                image_file: "",
+                image_file: "/imgs/no-image.png",
                 nft_category: "Standard",
                 nft_amount: "1"
             }
@@ -50,11 +55,13 @@ function NftForm() {
     };
 
     const handleFileChange = async (event, index) => {
-        $('.loading').show();
-
+        if (isUploading) {
+            alert('A file is currently being uploaded, please wait...');
+            return;
+        }
         let file = event.target.files[0];
         if (file) {
-
+            setIsUploading(true);
             let data = new FormData();
             data.append('file', file, 'file-image-nft');
             setUpload(index);
@@ -74,24 +81,15 @@ function NftForm() {
                 }
             } catch (error) {
                 console.error('Error uploading file: ', error);
-                $('.loading').hide();
-
             } finally {
                 setUpload(-1);
-                $('.loading').hide();
-
+                setIsUploading(false);
             }
         }
     };
     const _setMinted = (data, key) => {
         setNftMinted(data);
-    }
-    // console.log('nftData:', nftData);
-    // console.log('nftMinted:', nftMinted);
-    // React.useEffect(() => {
-    //     setNftData(nftData.filter(item => !nftMinted.some(mintedItem => item.nft_id === mintedItem.nft_id)));
-    // }, [nftMinted]);
-    // console.log('nftMinted1:', nftData);
+    };
 
     return (
         <>
