@@ -9,30 +9,44 @@ if (!process.env.PACKAGE_ID) {
     process.exit(1);
   }
 
-async function mint() {
+
+async function lockBooth() {
     const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
     const client = new SuiClient({
         url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
+    let packageId = process.env.PACKAGE_ID;
+    const collectionId= process.env.EVENT_OBJECT_ID;
+
 
     tx.moveCall({
-        target: `${process.env.PACKAGE_ID}::sui_nft::mint_to_sender`,
+        target: `${packageId}::client::lock_booth`,
         arguments: [
-            tx.pure("SUI Hackathon"),
-            tx.pure("This is a ticket yo join SUI Hackathon"),
-            tx.pure("https://picsum.photos/id/237/200/300"),
+            // ticket event id 
+            tx.object(collectionId),
+            // booth collection id 
+            tx.pure(process.env.BOOTH_COLLECTION_ID),
+            // bật on = false , off = true        
+            tx.pure(true),  
         ],
-        //typeArguments: [`${packageId}::minter::NFT`]
+
     });
 
-    const result = await client.signAndExecuteTransactionBlock({
+    const txs = await client.signAndExecuteTransactionBlock({
         signer: keypair,
         transactionBlock: tx,
+        options: {
+            showInput: true,
+            showEffects: true,
+            showEvents: true,
+            showObjectChanges: true,
+        },
     });
 
-    console.log({ result });
+    console.log("lock booth  tx", JSON.stringify(txs, null, 2));
+
+
 }
 
-mint();
-
+lockBooth();

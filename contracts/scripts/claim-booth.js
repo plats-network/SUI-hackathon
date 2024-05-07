@@ -9,30 +9,34 @@ if (!process.env.PACKAGE_ID) {
     process.exit(1);
   }
 
-async function mint() {
-    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
+async function claim() {
+    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_USER);
     const client = new SuiClient({
         url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
+    let packageId = process.env.PACKAGE_ID;
+    let collectionId = process.env.EVENT_OBJECT_ID;
 
+    // claim ticket by user
     tx.moveCall({
-        target: `${process.env.PACKAGE_ID}::sui_nft::mint_to_sender`,
+        target: `${packageId}::ticket_collection::claim_booth`,
         arguments: [
-            tx.pure("SUI Hackathon"),
-            tx.pure("This is a ticket yo join SUI Hackathon"),
-            tx.pure("https://picsum.photos/id/237/200/300"),
+            tx.object(collectionId),
+            // booth collection id 
+            tx.object(process.env.BOOTH_COLLECTION_ID),
+            // booth object id 
+            tx.pure("0x04f009e7f56a56e73e4b00a8800c2f2e8d74ba46e8999d9e61d18fd2201434da")
         ],
-        //typeArguments: [`${packageId}::minter::NFT`]
+        typeArguments: [`${packageId}::ticket_collection::NFTBooth`]
     });
-
     const result = await client.signAndExecuteTransactionBlock({
         signer: keypair,
         transactionBlock: tx,
     });
 
+
     console.log({ result });
 }
 
-mint();
-
+claim();

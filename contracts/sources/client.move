@@ -1,101 +1,128 @@
 module sui_nft::client {
 
 
-    use sui::tx_context::{TxContext};
-    
-    use sui_nft::ticket_collection::{Self as collection, TicketCollection};
-    
-    // ===== Collection =====
-    entry fun create_new_collection<T: key>(
-        url: vector<u8>,
-        name: vector<u8>,
-        description: vector<u8>,
-        price: u64,
+    use sui_nft::ticket_collection::{Self as collection, EventTicket, SessionCollection, BoothCollection};
+
+    public entry fun lock_event(
+        event_ticket: &mut EventTicket,
+        locked: bool, 
         ctx: &mut TxContext
+    
     ) {
-
-        collection::create<T>(url, name, description, price, ctx);
-
+        collection::lock_event(event_ticket, locked, ctx);
+    }
+    public entry fun lock_session(
+        event_ticket: &mut EventTicket,
+        session_collection: &mut SessionCollection, 
+        locked: bool, 
+        ctx: &mut TxContext
+    
+    ) {
+        collection::lock_session(event_ticket,session_collection, locked, ctx);
     }
 
-    entry fun mint_nft<T>(
+    public entry fun lock_booth(
+        event_ticket: &mut EventTicket,
+        booth_collection: &mut BoothCollection, 
+        locked: bool, 
+        ctx: &mut TxContext
+    
+    ) {
+        collection::lock_booth(event_ticket, booth_collection,  locked, ctx);
+    }
+
+    public entry fun mint_ticket(
+        event_ticket: &mut EventTicket,
         name: vector<u8>,
         description: vector<u8>,
         image_url: vector<u8>,
         category: vector<u8>,
-        collection: &mut TicketCollection<T>,
+        event_id: vector<u8>,
         token_id: u64,
         ctx: &mut TxContext
-    ) {
+    ): ID {
 
-        collection::mint(collection, name, description, image_url, category, token_id, ctx);
-
+        let nft_id = collection::mint_ticket(event_ticket, name, description, image_url, category, event_id, token_id, ctx);
+        nft_id
     }
 
 
-    public entry fun mint_batch<T>(
-        collection:&mut TicketCollection<T>,
+    public entry fun mint_batch_tickets(
+        event_ticket: &mut EventTicket,
+        event_id: vector<u8>,
         name: vector<u8>,
         description: vector<u8>,
         url: vector<u8>,
         catogory: vector<u8>,
         max_supply: u64,
         ctx: &mut TxContext
-    ){
+    ): vector<ID>{
 
+        let tickets = collection::mint_tickets(event_ticket, event_id, name, description, url, catogory, max_supply, ctx );
 
-        // let nfts: vector<NFTTicket> = collection::mint_batch(collection, name, description, url, category, max_supply, ctx);
-        // let len = vector::length(&nfts);
-        // let i = 0;
-
-        // while (i < len) {
-        //     let nft = *vector::borrow(&mut nfts, i);
-        //     transfer::transfer(nft, tx_context::sender(ctx));
-        //     i = i+1;
-        // }
-        collection::mint_batch(collection,name, description, url, catogory, max_supply, ctx );
-    
+        tickets
     }
 
-    entry fun mint_session<T>(
+    public entry fun mint_session(
+        event_ticket: &mut EventTicket,
+        session_collection: &mut SessionCollection, 
         name: vector<u8>,
         description: vector<u8>,
-        image_url: vector<u8>,
-        collection: &TicketCollection<T>,
+        url: vector<u8>,
+        event_id: vector<u8>,
         ctx: &mut TxContext
-    ) {
-        collection::mint_session(collection, name, description, image_url, ctx);
+    ): ID {
+        
+        let session_id = collection::mint_session(event_ticket, session_collection,  name, description, url, event_id, ctx);
+
+        session_id
+
     }
 
-    entry fun mint_batch_sessions<T>(
+    public entry fun mint_batch_sessions(
+        event_ticket: &mut EventTicket,
+        session_collection: &mut SessionCollection, 
+        event_id: vector<u8>,
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
-        image_urls: vector<vector<u8>>,
-        collection: &mut TicketCollection<T>,
+        urls: vector<vector<u8>>,
+        max_supply: u64,
         ctx: &mut TxContext
-    ) {
-        collection::mint_batch_sessions(collection, names, descriptions, image_urls, ctx);
+    ): vector<ID> {
+        
+        let sessions = collection::mint_sessions(event_ticket, session_collection, names, descriptions, urls, event_id, max_supply,  ctx);
+        sessions
+
     }
 
 
-    entry fun mint_booth<T>(
+    public entry fun mint_booth(
+        event_ticket: &mut EventTicket,
+        booth_collection: &mut BoothCollection, 
+        event_id: vector<u8>,
         name: vector<u8>,
         description: vector<u8>,
-        image_url: vector<u8>,
-        collection: &mut TicketCollection<T>,
+        url: vector<u8>,
         ctx: &mut TxContext
-    ) {
-        collection::mint_booth(collection, name, description, image_url, ctx);
+    ): ID {
+        let booth_id = collection::mint_booth(event_ticket, booth_collection, name, description, url, event_id,  ctx);
+        booth_id
+
     }
 
-    entry fun mint_batch_booths<T>(
+    public entry fun mint_batch_booths(
+        event_ticket: &mut EventTicket,
+        booth_collection: &mut BoothCollection, 
+        event_id: vector<u8>,
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
-        image_urls: vector<vector<u8>>,
-        collection: &mut TicketCollection<T>,
+        urls: vector<vector<u8>>,
+        max_supply: u64,
         ctx: &mut TxContext
-    ) {
-        collection::mint_batch_booths(collection, names, descriptions, image_urls, ctx);
+    ): vector<ID> {
+        let booths = collection::mint_booths(event_ticket, booth_collection, names, descriptions, urls, event_id, max_supply, ctx);
+        booths
+
     }
 
 
