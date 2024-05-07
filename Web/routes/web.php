@@ -99,17 +99,28 @@ Route::middleware(['user_event'])->group(function ($r) {
     $r->get('nft/claim/{id}', [\App\Http\Controllers\Web\ClaimNftController::class, 'claim'])->name('nft.claim');
     $r->get('nft/claim-action/{id}', [\App\Http\Controllers\Web\ClaimNftController::class, 'claimAction'])->name('nft.claimAction');
     $r->get('event-register/{id}', [EventController::class, 'register'])->name('web.events.register');
-    $r->get('events/code', [Job::class, 'index'])->name('web.eventCode');
 
+    //tạo vé mã quay thưởng lucky code
+    $r->post('/createluckycode', [Job::class, 'createLuckycode'])->name('web.createluckycode');
+    
     //user claim session và booth
     $r->post('claim/event', [Job::class, 'index'])->name('web.claim');
 
+    //Get zk proof response to web3
+    $r->post('/zkpdevnet/post', [Job::class, 'zkpDevNet'])->name('web.zkpdevnet');
+    $r->post('/zkptestnet/post', [Job::class, 'zkpTestNet'])->name('web.zkptestnet');
+
+
 });
+
+Route::get('events/code', [Job::class, 'index'])->name('web.eventCode');
 
 // Các route không yêu cầu middleware
 Route::get('event/{id}', [Home::class, 'show'])->name('web.events.show');
+
 // mint nft
 Route::post('update_nft_status', [\App\Http\Controllers\Admin\NFTController::class, 'updateNftClaim'])->name('api.updateStatusNftClaim');
+Route::post('update_session_booth_nft_status', [\App\Http\Controllers\Admin\NFTController::class, 'updateSessionBoothClaim'])->name('api.updateSessionBoothClaim');
 
 Route::get('/', [Home::class, 'index'])->name('web.home');
 Route::get('event-lists', [Home::class, 'events'])->name('web.events');

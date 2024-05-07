@@ -30,6 +30,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Magic;
 use MagicAdmin\Exception\DIDTokenException;
 use MagicAdmin\Exception\RequestException;
+use Illuminate\Support\Facades\Validator;
 
 class Home extends Controller
 {
@@ -52,8 +53,14 @@ class Home extends Controller
 
     public function index(Request $request)
     {
-
         try {
+            $url_return = route('web.home');
+            if (session()->has('url_return')) {
+                $url_return = session()->get('url_return');
+                Log::info('url_return index: ' . $url_return);
+//                session()->forget('url_return');
+            }
+//            dd($url_return);
 
             $limit = $request->get('limit') ?? 4;
 
@@ -87,7 +94,8 @@ class Home extends Controller
 
         $data = [
             'events' => $events,
-            'eventsPendings' => $eventsPendings
+            'eventsPendings' => $eventsPendings,
+            'url_return' => $url_return,
         ];
 
         return view('web.home', $data);
@@ -230,9 +238,11 @@ class Home extends Controller
     public function show(Request $request, $id)
     {
         $user = Auth::user();
-        if (empty($user)) {
-            return redirect()->route('web.formLogin');
-        }
+        // if (empty($user)) {
+            $currentUrl = url()->full();
+            $request->session()->put('url_return', $currentUrl);
+            // return redirect()->route('web.formLogin');
+        // }
         $show_message = $request->get('sucess_checkin') ?? 0;
         //download_ticket
         $download_ticket = $request->get('download_ticket') ?? 0;
@@ -292,30 +302,27 @@ class Home extends Controller
                     'download_link' => 'https://platsevent.web.app/claim-nft?id=' . $event->id,
                 );
 
-
                 Mail::to($user)->send(new \App\Mail\ThankYouCheckInNFT($user, $options));
-
                 //Mail::to($user)->send(new OrderCreated());
-                $recipientEmail = $user->email;
-                $userName = $user->name;
-                $senderName = 'Plats Event';
-                $nftModel = NFT::query()->where('task_id', $id)->first();
-                $nftName = '';
-                $nftDescription = '';
-                $nftUrl = '';
-                if ($nftModel) {
-                    $nftName = $nftModel->name;
-                    $nftDescription = $nftModel->description;
-                    $nftUrl = $nftModel->url;
-                }
+//                $recipientEmail = $user->email;
+//                $userName = $user->name;
+//                $senderName = 'Plats Event';
+//                $nftModel = NFT::query()->where('task_id', $id)->first();
+//                $nftName = '';
+//                $nftDescription = '';
+//                $nftUrl = '';
+//                if ($nftModel) {
+//                    $nftName = $nftModel->name;
+//                    $nftDescription = $nftModel->description;
+//                    $nftUrl = $nftModel->url;
+//                }
 
 
                 //Mail::to($recipientEmail)->send(new NFTNotification($userName, $senderName, $nftName, $nftDescription, $nftUrl));
 
             }
-            $sponsor = $this->sponsor->whereTaskId($id)->first();
-            $checkSponsor = session()->get('sponsor-' . optional($user)->id);
-
+//            $sponsor = $this->sponsor->whereTaskId($id)->first();
+//            $checkSponsor = session()->get('sponsor-' . optional($user)->id);
             if ($request->session()->has('sponsor-' . optional($user)->id)) {
                 $request->session()->forget('sponsor-' . optional($user)->id);
             }
@@ -370,30 +377,25 @@ class Home extends Controller
                     'sucess_checkin' => 1
                 ]);
             }
+
             // lay session
             $travelSessions = [];
-            $session = $this->eventModel->whereTaskId($id)->whereType(TASK_SESSION)->first();
-            $countEventDetail = TaskEventDetail::where('task_event_id', $session->id)->count();
+            $session = $this->eventModel->with('detail')->whereTaskId($id)->whereType(TASK_SESSION)->first();
+            $countEventDetail = $session->detail->count();
 
-            $travelSessionIds = $this->eventDetail
-                ->select('travel_game_id')
-                ->distinct()
-                ->whereTaskEventId($session->id)
-                ->pluck('travel_game_id')
-                ->toArray();
-            $travelSessions = $this->travelGame
-                ->whereIn('id', $travelSessionIds)
-                ->orderBy('created_at', 'desc')
-                ->get();
+//            dang khong dung travel game
+//            $travelSessionIds = $this->eventDetail
+//                ->select('travel_game_id')
+//                ->distinct()
+//                ->whereTaskEventId($session->id)
+//                ->pluck('travel_game_id')
+//                ->toArray();
+//            $travelSessions = $this->travelGame
+//                ->whereIn('id', $travelSessionIds)
+//                ->orderBy('created_at', 'desc')
+//                ->get();
 
-
-            $eventSession = $this->eventModel->whereTaskId($id)->whereType(TASK_SESSION)->first();
-
-            $sessions = $this->eventDetail->whereTaskEventId($eventSession->id)
-                //->orderBy('sort', 'asc')
-                ->orderBy('created_at', 'asc')
-                ->get();
-
+            $sessions = $session->detail;
 
             $totalCompleted = 0;
 
@@ -405,24 +407,22 @@ class Home extends Controller
             }
 
             //lay booth
-            $travelBoots = [];
-            $booth = $this->eventModel->whereTaskId($id)->whereType(TASK_BOOTH)->first();
-            $countEventDetailBooth = TaskEventDetail::where('task_event_id', $booth->id)->count();
-            $travelBootsIds = $this->eventDetail
-                ->select('travel_game_id')
-                ->distinct()
-                ->whereTaskEventId($booth->id)
-                ->pluck('travel_game_id')
-                ->toArray();
+            $travelBooths = [];
+            $booth = $this->eventModel->with('detail')->whereTaskId($id)->whereType(TASK_BOOTH)->first();
+            $countEventDetailBooth = $booth->detail->count();
 
-            $travelBooths = $this->travelGame->whereIn('id', $travelBootsIds)->get();
 
-            $eventBooths = $this->eventModel->whereTaskId($id)->whereType(TASK_BOOTH)->first();
+//            $travelBootsIds = $this->eventDetail
+//                ->select('travel_game_id')
+//                ->distinct()
+//                ->whereTaskEventId($booth->id)
+//                ->pluck('travel_game_id')
+//                ->toArray();
+//
+//            $travelBooths = $this->travelGame->whereIn('id', $travelBootsIds)->get();
 
-            $booths = $this->eventDetail->whereTaskEventId($eventBooths->id)
-                //->orderBy('sort', 'asc')
-                ->orderBy('created_at', 'asc')
-                ->get();
+
+            $booths = $booth->detail;
 //dd($travelBooths, $booths);
             $totalCompletedBooth = 0;
 
@@ -440,7 +440,6 @@ class Home extends Controller
                 'status' => 1,
                 'type' => 1,
             ])->first();
-
             if (\auth()->user()) {
                 $check = UserNft::with('nftMint')
                     ->where([
@@ -459,28 +458,28 @@ class Home extends Controller
 //            ])->get();
 //            dd($taskDetail);
 //        }
-
-        return view('web.events.show', [
-            'event' => $event,
-            'user' => $user,
-            'sponsor' => $sponsor,
-            'download_ticket' => $download_ticket,
-            'url_download_ticket' => $url_download_ticket,
-            'show_message' => $show_message,
-            'travelSessions' => $travelSessions,
+        $data = [
+            'event' => $event ?? [],
+            'user' => $user ?? [],
+//            'sponsor' => $sponsor ?? [],
+            'download_ticket' => $download_ticket ?? [],
+            'url_download_ticket' => $url_download_ticket ?? [],
+            'show_message' => $show_message ?? [],
+            'travelSessions' => $travelSessions ?? [],
             'travelBooths' => $travelBooths ?? [],
-            'task_id' => $id,
-            'session_id' => $session->id,
-            'session' => $session,
-            'booth' => $booth,
-            'totalCompleted' => $totalCompleted,
-            'countEventDetail' => $countEventDetail,
+            'task_id' => $id ?? '',
+            'session_id' => $session->id ?? '',
+            'session' => $session ?? [],
+            'booth' => $booth ?? [],
+            'totalCompleted' => $totalCompleted ?? [],
+            'countEventDetail' => $countEventDetail ?? [],
             'booth_id' => $booth->id ?? '',
-            'totalCompletedBooth' => $totalCompletedBooth,
-            'countEventDetailBooth' => $countEventDetailBooth,
-            'checkMint' => $check,
+            'totalCompletedBooth' => $totalCompletedBooth ?? [],
+            'countEventDetailBooth' => $countEventDetailBooth ?? [],
+            'checkMint' => $check ?? [],
             'nft' => $nft ?? [],
-        ]);
+        ];
+        return view('web.events.show', $data);
     }
 
     //apiUserList
@@ -731,7 +730,11 @@ class Home extends Controller
             $sessions = $this->eventDetail->whereTaskEventId($eventSession->id)->orderBy('sort', 'asc')->get();
             $booths = $this->eventDetail->whereTaskEventId($eventBooth->id)->orderBy('sort', 'asc')->get();
 
-            return redirect(route('job.getTravelGame', ['task_id' => $task->id]));
+            return redirect(route('job.getTravelGame', [
+                'task_id' => $task->id,
+                'code_task_event_details' => $request->code_task_event_details
+
+            ]));
 
 
             foreach ($sessions as $session) {

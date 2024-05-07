@@ -30,7 +30,6 @@ class Task extends Model
 
     protected const TASK = 0;
     protected const EVENT = 1;
-
     /**
      * The table associated with the model.
      *
@@ -57,10 +56,12 @@ class Task extends Model
         'slug',
         'type', // 0: task, 1: event
         'creator_id',
+        'code', // Hash
+        'nft_hash_id',
         'is_paid', // 0: Free, 1: Paid
         'reward', // SL phan thuong
         'reward_type', // Loai phan thuong
-        'code', // Hash
+        'contract_event_id'
     ];
 
     /**
@@ -142,7 +143,7 @@ class Task extends Model
 
     public function taskEvents()
     {
-        return $this->hasMany(TaskEvent::class)->with('detail');;
+        return $this->hasMany(TaskEvent::class);
     }
 
     //Session
@@ -165,7 +166,7 @@ class Task extends Model
     {
         return $this->hasMany(TaskGallery::class);
     }
- 
+
     /**
      * user tham gia sự kiện
      */

@@ -2,6 +2,7 @@ import { ConnectButton, useWallet, addressEllipsis } from "@suiet/wallet-kit";
 import "@suiet/wallet-kit/style.css"; // don't forget to import default stylesheet
 import React, { useEffect,useState } from 'react';
 import {TransactionBlock} from "@mysten/sui.js/transactions";
+// import TimerComponent from 'timerComponent';
 
 export default function App() {
     const wallet = useWallet();
@@ -28,7 +29,7 @@ export default function App() {
         setBoothData(newBoothData);
     }
 
-    const appendNftBoothDetail = (details) => {
+    const appendNftBoothDetail = async (details) => {
         console.log('details',details);
         // Khai báo một biến để chứa chuỗi HTML
         let html = '';
@@ -69,17 +70,22 @@ export default function App() {
             fileBooth: data.map(item => item.fileBooth)
         };
         const tx = new TransactionBlock();
-        let packageId = "0x3827b28d5f79b559cf7f9f545cbc99a2653e19d7c99173cec1a9428a478357f5";
+        let packageId = $('meta[name="package_id"]').attr('content');
+        let collection_id = $('meta[name="collection_id"]').attr('content');
+        
         tx.moveCall({
             target: `${packageId}::client::mint_batch_booths`,
             arguments: [
+                // tx.pure(collection_id),
+
                 tx.pure(newData.nameBooth),
                 // description: vector<vector<u8>>,
                 tx.pure(newData.descriptionBooth),
-                // url: vector<vector<u8>>,
+
                 tx.pure(newData.fileBooth),
 
-                tx.object('0x3b0b0833c020f964c09991796945efa46b4cd66af696df698ae9a41a75383819'),
+                // url: vector<vector<u8>>,
+                tx.object(collection_id),
             ],
             typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
@@ -87,14 +93,24 @@ export default function App() {
         try {
             const result = await wallet.signAndExecuteTransactionBlock({
                 transactionBlock: tx,
+                options: {
+                    showObjectChanges: true,
+                },
             });
 
-            console.log(result);
+            console.log('signAndExecuteTransactionBlock',result);
             
-            if(!result.confirmedLocalExecution){
+            if(result.confirmedLocalExecution != true){
                 alert('nft minted Booth fail!');
                 return;
             }
+            // đoạn này là user claim
+            // let sessionIds =  result.objectChanges.filter((o) =>
+            //     o.type === "created" &&
+            //     o.objectType.includes("::ticket_collection::NFTBooth")
+            // ).map(item => item.objectId);
+            // console.log('sessionIds',sessionIds);
+            console.log(data);
             // Lặp qua mỗi đối tượng trong mảng data
             data.forEach(obj => {
                 // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
@@ -105,19 +121,24 @@ export default function App() {
             $('.loading').hide();   
             alert('nft minted Booth successfully!');
         } catch (error) {
-                
+            console.log('error',error);
             $('.loading').hide();
 
-            alert('nft minted Session fails!');
+            alert('nft minted Booth fails!');
 
         }
+    }
+    const loginSui = async () => {
+        let nft_hash_id = $('meta[name="nft_hash_id"]').attr('content');
+
+        console.log('nft_hash_id',nft_hash_id);
     }
     useEffect(() => {
 
         if(boothData.length > 0){
 
             mint(wallet,boothData);
-
+            loginSui();
             console.log(wallet);
             console.log(boothData);
         }
@@ -127,7 +148,7 @@ export default function App() {
     return (
         <div className="App">
             {/* <h1 className="title gradient">Hello, Suiet Wallet Kit</h1> */}
-            <ConnectButton />
+            <ConnectButton label={'Connect Wallet'} />
 
             <section>
                 {/* <p>

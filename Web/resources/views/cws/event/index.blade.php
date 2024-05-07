@@ -5,7 +5,13 @@
         <h4 class="page-title mb-0">Event</h4>
     </div>
 @endsection
-
+@vite([
+    //{{--  'resources/js/session.jsx',  --}}
+    //{{--  'resources/js/formNft.jsx',
+    //'resources/js/mintNftSession.jsx',  --}}
+    'resources/js/statusEvent.jsx',
+    'resources/js/connect_suit_create_event.jsx'
+])
 @section('content')
     <div class="row">
         <div class="col-xl-12">
@@ -83,6 +89,12 @@
                     <div class="d-flex flex-wrap align-items-center mb-2">
                         <h5 class="card-title">Lists events</h5>
                         <div class="ms-auto">
+                            <div>
+
+                            </div>
+                            {{--  <div id="GenItemCreateEvent">
+
+                            </div>  --}}
                             <a href="{{ route('cws.eventCreate') }}" class="btn  btn-primary d-inline-flex align-items-center me-2" ><svg class="icon icon-xs me-2 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Create Event</a>
                         </div>
                     </div>
@@ -108,7 +120,11 @@
                                     </td>
                                     <td style="width: 20%;">
                                         <a
-                                            href="{{route('web.events.show', $event->id)}}"
+                                            href="{{ route('cws.eventPreview', [
+                                                'id' => $event->id,
+                                                'tab' => $tab,
+                                                'preview' => 1
+                                            ]) }}"
                                             title="{{$event->name}}"
                                             target="_blank">{{$event->name}}</a>
                                     </td>
@@ -119,13 +135,15 @@
                                     </td>
                                     <td>{{rand(100,1000)}}</td>
                                     <td>
-                                        <input
-                                            type="checkbox"
-                                            id="switch_{{ $i+1 }}"
-                                            switch="none"
-                                            @if($event->status) checked @endif
-                                        >
-                                        <label class="event" data-id="{{$event->id}}" for="switch_{{ $i+1 }}" data-on-label="On" data-off-label="Off"></label>
+                                        <div
+                                            class="statusEvent"
+                                            data-eventid="{{ $event->id }}"
+                                            data-contracteventid="{{ $event->contract_event_id }}",
+                                            data-status="{{ $event->status }}"
+                                            data-switchid="switch_{{ $i+1 }}"
+                                            >
+                                        </div>
+
                                     </td>
                                     <td style="width: 20%;">
                                         <ul class="list-inline mb-0">
@@ -139,7 +157,7 @@
                                                     'label' => 'Show',
                                                     'icon' => 'show'
                                                 ])
-                                                
+
                                                 @include('cws.actions.link', [
                                                     'url' => route('cws.event.users', ['id' => $event->id]),
                                                     'label' => 'Users',
@@ -196,7 +214,8 @@
 {{--Script--}}
 
 @section('scripts')
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{asset('js/sweetalert2@11.min.js')}}"></script>
+
     <script>
         var spinText = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ';
         // var hasPage = {{Request::get('page', 0)}};
@@ -225,6 +244,7 @@
             });
 
             $('.event').on('click', function (e) {
+                return;
                 var id = $(this).data('id');
                 var _token = $('meta[name="csrf-token"]').attr('content');
                 Swal.fire({

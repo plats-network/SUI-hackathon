@@ -59,17 +59,18 @@ class EventController extends Controller
         // code
     }
     public function dashboard(Request $request){
-        
-        $limit = $request->get('limit') ?? 10;
-        $events = $this->taskService->search([
-            'limit' => $limit,
-            'type' => EVENT
-        ]);
 
-        $data = [
-            'events' => $events
+        $limit = $request->get('limit') ?? 10;
+        $clientUser = Auth::user();
+        $condition = [
+            'limit' => $limit,
+            'type' => EVENT,
         ];
-        return view('cws.dashboard.index', $data);
+        if (Auth::user()->role != ADMIN_ROLE) {
+            $condition['creator_id'] = $clientUser->id;
+        }
+        $events = $this->taskService->search($condition);
+        return view('cws.dashboard.index', ['events'=>$events]);
     }
     /**
      * Display a listing of the resource.
@@ -501,7 +502,7 @@ class EventController extends Controller
             'quiz' => $quiz,
             'eventId' => $eventId,
             'userCheckIn' => $userCheckIn,
-            'qrCode' => $qrCode,
+            'qrCode' => base64_encode($qrCode),
             'sponsor' => $sponsor,
             'taskEventSocials' => $taskEventSocials,
             'taskEventDiscords' => $taskEventDiscords,
@@ -512,8 +513,8 @@ class EventController extends Controller
             'is_update' => 0,
             'isPreview' => $isPreview,
             'travelGames' => $travelGames,
+            'nft_hash_id'=>md5(uniqid())// id hash để quản lý bên mạng web3
         ];
-
         return view('cws.event.edit', $data);
     }
 
@@ -571,10 +572,14 @@ class EventController extends Controller
 
         /** @var Task $task */
         $task = Task::with('taskSocials', 'taskLocations', 'taskEventSocials', 'taskGenerateLinks', 'taskEventDiscords')->find($id);
-
+//        $task = Task::with('taskEvents.detail')->find($id);
+//        dd($task->taskEvents(), $task->taskEvents);
+        $session = $task->taskEvents()->firstWhere('type', 0);
+        //TODO: dung 1
+        //các bảng này không có dữ liệu
         $taskGroup = TaskGroup::where('task_id', $id)->pluck('group_id');
-
         $taskGallery = TaskGallery::where('task_id', $id)->pluck('url_image');
+        //end 1
 
         $booths = TaskEvent::where('task_id', $id)
             ->with('detail')->where('type', 1)
@@ -589,7 +594,6 @@ class EventController extends Controller
         $sessions = TaskEvent::where('task_id', $id)->with('detail')
             ->where('type', 0)
             ->first();
-
         if ($sessions) {
             foreach ($sessions['detail'] as $session) {
                 $session['totalUserJob']  = totalUserJob($session['id']);
@@ -665,9 +669,12 @@ class EventController extends Controller
         $userCheckIn = $this->listUsers($id); //List user check in event
 
         //$urlAnswers = route('quiz-name.answers', $eventId);
-        $urlAnswersFull = route('web.events.show', ['id' => $eventId, 'check_in' => true]);
+//        $urlAnswersFull = route('web.events.show', ['id' => $eventId, 'check_in' => true]);
+        $urlAnswersFull = 'https://' .config('plats.event').'/event/'.$eventId.'?check_in=1';
         //Shorten url
-        $urlAnswers = Url::shortenUrl($urlAnswersFull);
+//        $urlAnswers = Url::shortenUrl($urlAnswersFull);
+        $urlAnswers = $urlAnswersFull;
+//        dd($urlAnswers);
 
         $qrCode = QrCode::format('png')->size(250)->generate($urlAnswers);
 
@@ -757,9 +764,10 @@ class EventController extends Controller
     {
         $users = [];
         try {
-            $userIds = $this->eventUserTicket->select('user_id')->whereTaskId($id);
+            $userIds = $this->eventUserTicket->select('user_id')->whereTaskId($id)->get();
 
             $userIds = $userIds->pluck('user_id')->toArray();
+
             $userIds = array_unique($userIds);
             $users = $this->userService->search([
                 'limit' => 100,

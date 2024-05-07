@@ -1383,8 +1383,6 @@
 
 "@elm_binaries/darwin_arm64@0.19.1-0":
   version "0.19.1-0"
-  resolved "https://registry.npmjs.org/@elm_binaries/darwin_arm64/-/darwin_arm64-0.19.1-0.tgz"
-  integrity sha512-mjbsH7BNHEAmoE2SCJFcfk5fIHwFIpxtSgnEAqMsVLpBUFoEtAeX+LQ+N0vSFJB3WAh73+QYx/xSluxxLcL6dA==
 
 "@emurgo/cardano-serialization-lib-browser@^11.5.0":
   version "11.5.0"
@@ -1403,13 +1401,9 @@
 
 "@esbuild/darwin-arm64@0.17.19":
   version "0.17.19"
-  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.17.19.tgz"
-  integrity sha512-80wEoCfF/hFKM6WE1FyBHc9SfUblloAWx6FJkFWTWiCoht9Mc0ARGEM47e67W9rI09YoUxJL68WHfDRYEAvOhg==
 
 "@esbuild/darwin-arm64@0.20.2":
   version "0.20.2"
-  resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.20.2.tgz"
-  integrity sha512-4J6IRT+10J3aJH3l1yzEg9y3wkTDgDk7TSDFX+wKFiWjqWp/iCfLIYzGyasx9l0SAFPT1HwSCR+0w/h1ES/MjA==
 
 "@ethereumjs/common@^2.4.0":
   version "2.6.5"
@@ -2676,6 +2670,13 @@
     uint8-varint "^2.0.1"
     uint8arrays "^5.0.0"
 
+"@mysten/bcs@^0.7.4":
+  version "0.7.4"
+  resolved "https://registry.npmjs.org/@mysten/bcs/-/bcs-0.7.4.tgz"
+  integrity sha512-6DKzM4L10Au3Og5EJRBqJZmXWZ7hS/clVjbVUH4sA0aFtS3AZo2xc+r5fUFfdJbaWZUxVaDiQ8BNiEZWkAnEOw==
+  dependencies:
+    bs58 "^5.0.0"
+
 "@mysten/bcs@0.11.1":
   version "0.11.1"
   resolved "https://registry.npmjs.org/@mysten/bcs/-/bcs-0.11.1.tgz"
@@ -2683,7 +2684,7 @@
   dependencies:
     bs58 "^5.0.0"
 
-"@mysten/sui.js@0.50.1":
+"@mysten/sui.js@>=0.46.1", "@mysten/sui.js@0.50.1":
   version "0.50.1"
   resolved "https://registry.npmjs.org/@mysten/sui.js/-/sui.js-0.50.1.tgz"
   integrity sha512-AY0wb4n6PMTRsDGygzrrTHUK/m5KwKZ4aQcN9cayiwsq2iIhfjGo7uuqMA7Y5UiqvLCoF+z7Ig14Q5qejQ/S/w==
@@ -2956,10 +2957,18 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@open-rpc/client-js@^1.8.1":
+  version "1.8.1"
+  resolved "https://registry.npmjs.org/@open-rpc/client-js/-/client-js-1.8.1.tgz"
+  integrity sha512-vV+Hetl688nY/oWI9IFY0iKDrWuLdYhf7OIKI6U1DcnJV7r4gAgwRJjEr1QVYszUc0gjkHoQJzqevmXMGLyA0g==
+  dependencies:
+    isomorphic-fetch "^3.0.0"
+    isomorphic-ws "^5.0.0"
+    strict-event-emitter-types "^2.0.0"
+    ws "^7.0.0"
+
 "@parcel/watcher-darwin-arm64@2.4.1":
   version "2.4.1"
-  resolved "https://registry.npmjs.org/@parcel/watcher-darwin-arm64/-/watcher-darwin-arm64-2.4.1.tgz"
-  integrity sha512-ln41eihm5YXIY043vBrrHfn94SIBlqOWmoROhsMVTSXGh0QahKGy77tfEywQ7v3NywyxBBkGIfrWRHm0hsKtzA==
 
 "@parcel/watcher-wasm@^2.4.1":
   version "2.4.1"
@@ -4194,6 +4203,14 @@
   integrity sha512-JZ7seNOLvhjAQ8GeB3GYknPQJkuhF88xAYOaESZP3xPOWBMFUN+IO4RqjMqMLFDniOwsVQS7GB/MfP+hxufieg==
   dependencies:
     "@sentry/types" "7.85.0"
+
+"@shinami/clients@^0.7.3":
+  version "0.7.3"
+  resolved "https://registry.npmjs.org/@shinami/clients/-/clients-0.7.3.tgz"
+  integrity sha512-YLWrqE+s70v00kyJ+Py+burb7UQcY1gXpsk6SVxenMa+cPPrc24L9Ao1obAlJiVqxbAuLQT29DzD0o6eAI7BKg==
+  dependencies:
+    "@open-rpc/client-js" "^1.8.1"
+    superstruct "^1.0.3"
 
 "@sideway/address@^4.1.5":
   version "4.1.5"
@@ -8629,6 +8646,11 @@ dotenv-webpack@^7.1.0:
   dependencies:
     dotenv-defaults "^2.0.2"
 
+dotenv@^16.4.5:
+  version "16.4.5"
+  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.4.5.tgz"
+  integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
+
 dotenv@^8.2.0:
   version "8.6.0"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-8.6.0.tgz"
@@ -9809,8 +9831,6 @@ fs.realpath@^1.0.0:
 
 fsevents@^2.3.2, fsevents@~2.3.2:
   version "2.3.3"
-  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
-  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
 function-bind@^1.1.2:
   version "1.1.2"
@@ -10960,6 +10980,14 @@ isobject@^3.0.1:
   resolved "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz"
   integrity sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==
 
+isomorphic-fetch@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/isomorphic-fetch/-/isomorphic-fetch-3.0.0.tgz"
+  integrity sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==
+  dependencies:
+    node-fetch "^2.6.1"
+    whatwg-fetch "^3.4.1"
+
 isomorphic-localstorage@0.0.8:
   version "0.0.8"
   resolved "https://registry.npmjs.org/isomorphic-localstorage/-/isomorphic-localstorage-0.0.8.tgz"
@@ -10984,6 +11012,11 @@ isomorphic-ws@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npmjs.org/isomorphic-ws/-/isomorphic-ws-4.0.1.tgz"
   integrity sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==
+
+isomorphic-ws@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz"
+  integrity sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==
 
 it-all@^1.0.4:
   version "1.0.6"
@@ -11459,8 +11492,6 @@ lighthouse-logger@^1.0.0:
 
 lightningcss-darwin-arm64@1.19.0:
   version "1.19.0"
-  resolved "https://registry.npmjs.org/lightningcss-darwin-arm64/-/lightningcss-darwin-arm64-1.19.0.tgz"
-  integrity sha512-wIJmFtYX0rXHsXHSr4+sC5clwblEMji7HHQ4Ub1/CznVRxtCFha6JIt5JZaNf8vQrfdZnBxLLC6R8pC818jXqg==
 
 lightningcss@~1.19.0:
   version "1.19.0"
@@ -15283,6 +15314,11 @@ streamx@^2.15.0:
     fast-fifo "^1.1.0"
     queue-tick "^1.0.1"
 
+strict-event-emitter-types@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/strict-event-emitter-types/-/strict-event-emitter-types-2.0.0.tgz"
+  integrity sha512-Nk/brWYpD85WlOgzw5h173aci0Teyv8YdIAEtV+N88nDB0dLlazZyJMIsN6eo1/AR61l+p6CJTG1JIyFaoNEEA==
+
 strict-uri-encode@^1.0.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz"
@@ -16872,7 +16908,7 @@ websocket@^1.0.32, websocket@^1.0.34:
     utf-8-validate "^5.0.2"
     yaeti "^0.0.6"
 
-whatwg-fetch@^3.0.0:
+whatwg-fetch@^3.0.0, whatwg-fetch@^3.4.1:
   version "3.6.20"
   resolved "https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-3.6.20.tgz"
   integrity sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==
@@ -17004,6 +17040,11 @@ ws@^6.2.2:
     async-limiter "~1.0.0"
 
 ws@^7:
+  version "7.5.9"
+  resolved "https://registry.npmjs.org/ws/-/ws-7.5.9.tgz"
+  integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
+
+ws@^7.0.0:
   version "7.5.9"
   resolved "https://registry.npmjs.org/ws/-/ws-7.5.9.tgz"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==

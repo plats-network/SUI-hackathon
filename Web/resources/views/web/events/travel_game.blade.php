@@ -1,5 +1,14 @@
 @extends('web.layouts.event_app')
+<head>
+    <meta name='mnemonic_client' content="{{ env('MNEMONIC_CLIENT')}}">
+    <meta name='package_id' content="{{ env('PACKAGE_ID')}}">
+    <meta name='collection_id' content="{{ env('COLLECTION_ID')}}">
+    <meta name='nft_hash_id' content="{{ $nft_hash_id ?? '' }}">
+    <meta name='event_id' content="{{ env('EVENT_OBJECT_ID')}}">
+    <meta name='type_network' content="{{ env('TYPE_NETWORK')}}">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 
+</head>
 @section('content')
     @vite('resources/js/claim-session.js')
     @php
@@ -126,65 +135,65 @@
                 </div>
 
                 <div class="row justify-content-center">
-                    @php
-                        $nft = \App\Models\NFT\NFTMint::where([
-                            'status' => 1,
-                            'type' => 2,
-                        ])->first();
-                        if ($nft) {
-                                $userNft = new \App\Models\NFT\UserNft();
-                                $userNft->user_id = \auth()->user()->id;
-                                $userNft->nft_mint_id = $nft->id;
-                                $userNft->type = $nft->type;
-                                $userNft->session_id = $nft->session_id;
-                                $userNft->task_id = $nft->task_id;
-                                $userNft->save();
-                        }
-                    @endphp
-                
-                    @if ($nft && $nft->status < 3)
-                        <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
-                        <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">
-                        <input id="seed" value="{{ $nft->seed }}" type="hidden">
+                    
+                    {{--  nếu user này đã claim rồi thì hiển thị link claim của họ  --}}
+                    @if(!empty($nftUserClaimSession))
+                        <input id="user_claim" value="true" type="hidden">
+                        <a class="link-primary btn btn-primary btn btn-primary btn--order" id="button-claim-link" target="_blank" href="https://suiscan.xyz/{{  env("TYPE_NETWORK");  }}/tx/{{ $nftUserClaimSession->digest }}">SUI Explorer</a>
+                    
+                    @else
+                        <input id="address_organizer" value="{{ $sessionMintWeb3->address_organizer ?? '' }}" type="hidden">
+                        <input id="address_nft" value="{{ $sessionMintWeb3->address_nft ?? '' }}" type="hidden">
+                        <input id="seed" value="{{ $sessionMintWeb3->seed ?? '' }}" type="hidden">
                         <input id="user_address" value="{{ auth()->user()->wallet_address }}" type="hidden">
-                        <input id="nft_id" value="{{ $nft->id }}" type="hidden">
-                        <input id="email_login" value="{{ auth()->user()->email }}" type="hidden">
-                        <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>
+                        <input id="nft_id" value="{{ $sessionMintWeb3->id ?? '' }}" type="hidden">
+                        <input id="session_id" value="{{ $sessionMintWeb3->session_id ?? '' }}" type="hidden">
+                        <input id="task_id" value="{{ $sessionMintWeb3->task_id ?? '' }}" type="hidden">
+                        <input id="booth_id" value="{{ $sessionMintWeb3->booth_id ?? '' }}" type="hidden">
+                        <input id="email_login" value="{{ auth()->user()->email ?? '' }}" type="hidden">
+                        <input id="address_nft_min" value="{{ $sessionMintWeb3->address_nft ?? '' }}" type="hidden">
+                        <input id="contract_event_id" value="{{ $event->contract_event_id }}" type="hidden">
 
+                        {{--  <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>  --}}
+                        {{--  <button id="button-claim-test" type="button" class="btn btn-primary btn--order">Claim test</button>  --}}
+                        
                     @endif
-                    <a class="link-primary" style="display: none; color:blue" id="button-claim-link" target="_blank" href="https://suiscan.xyz/testnet/tx/G7xVJjyBZzAKLv9xa2WZR9tuVF3ksdneRfntd89o4u9E">SUI Explorer</a>
+
+                    {{--  <button id="claim">Claim</button>  --}}
+
                 </div>
                 <ul class="nav nav-tabs">
                     <li><a data-toggle="tab" href="#sesion">Sessions Game</a></li>
                 </ul>
 
-                <div class="tab-content">
+                <div class="tab-content mt-2">
                     <div id="sesion" class="tab-pane fade in active">
+                       
                         @foreach($travelSessions as $k => $session)
-
+                      
                             @php
-                                $codes = $userCode->where('user_id', $userId)
-                                    ->where('travel_game_id', $session->id)
-                                    ->where('task_event_id', $session_id)
-                                    ->where('type', 0)
-                                    ->pluck('number_code')
-                                    ->implode(',');
-                                $sTests = [];
+                                //$codes = $userCode->where('user_id', $userId)
+                                    //->where('travel_game_id', $session->id)
+                                    //->where('task_event_id', $session_id)
+                                    //->where('type', 0)
+                                    //->pluck('number_code')
+                                    //->implode(',');
+                                //$sTests = [];
 //                                dd($codes);
                                 if ($session->note) {
                                     $sTests = explode('-', $session->note);
                                 }
                             @endphp
-
                             <div class="item">
                                 <h3 class="text-center">{{$session->name}}</h3>
                                 <p>
                                     <strong>Missions: Scan the QR to receive a Lucky Draw Code.</strong>
                                 </p>
-                                <p><strong>Lucky Code:</strong> <span class="fs-25">{{$codes ? $codes : '---'}}</span>
+                                
+                                <p><strong>Lucky Code:</strong> <span class="fs-25">{{ $listLuckyCode ? $listLuckyCode : '1'}}</span>
                                 </p>
 
-                                <p><strong>Joined: <span style="color:green">{{$totalCompleted}}</span> / 8
+                                <p><strong>Joined: <span style="color:green">{{$totalCompleted}}</span> / {{  count($sessions['detail']) }}
                                         sessions</strong></p>
                                 @if(false)
                                     <p><strong>Prize drawing time:</strong> {{dateFormat($session->prize_at)}}</p>

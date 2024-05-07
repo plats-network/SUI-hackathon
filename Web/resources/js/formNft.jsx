@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import {WalletProvider} from '@suiet/wallet-kit';
 import axios from 'axios';
 import NftItem from './sui_components/nftItem';
-import MintNft from './mintNft';
+import MintNft1 from './mintNft';
 import NftItemMinted from "./sui_components/nftItemMinted";
 
 function NftForm() {
@@ -13,12 +13,14 @@ function NftForm() {
             nft_id: 0,
             nft_name: "",
             nft_symbol: "",
-            image_file: "",
+            image_file: "/imgs/no-image.png",
             nft_category: "Standard",
             nft_amount: 1
         }
     ]);
     const [items, setItems] = useState([0])
+    const [upload, setUpload] = useState(-1);
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleInputChange = (event, index) => {
         const {name, value} = event.target;
@@ -29,6 +31,10 @@ function NftForm() {
         }
     };
     const handleAddMore = () => {
+        if (isUploading) {
+            alert('A file is currently being uploaded, please wait...');
+            return;
+        }
         setItems([...items, items.length]);
         setNftData([
             ...nftData,
@@ -36,7 +42,7 @@ function NftForm() {
                 nft_id: items.length,
                 nft_name: "",
                 nft_symbol: "",
-                image_file: "",
+                image_file: "/imgs/no-image.png",
                 nft_category: "Standard",
                 nft_amount: "1"
             }
@@ -49,27 +55,16 @@ function NftForm() {
     };
 
     const handleFileChange = async (event, index) => {
+        if (isUploading) {
+            alert('A file is currently being uploaded, please wait...');
+            return;
+        }
         let file = event.target.files[0];
         if (file) {
-            // Tạo một FileReader mới
-            let reader = new FileReader();
-
-            // Định nghĩa hàm onload cho FileReader
-            reader.onloadend = () => {
-                // Khi tệp đã được đọc xong, cập nhật state với URL của ảnh
-                const list = [...nftData];
-                if (list[index]) {
-                    list[index]['image_file'] = reader.result;
-                    setNftData(list);
-                }
-            };
-
-            // Bắt đầu đọc tệp như URL
-            reader.readAsDataURL(file);
-
+            setIsUploading(true);
             let data = new FormData();
             data.append('file', file, 'file-image-nft');
-
+            setUpload(index);
             try {
                 const response = await axios.post('/upload-image-nft', data, {
                     headers: {
@@ -86,18 +81,15 @@ function NftForm() {
                 }
             } catch (error) {
                 console.error('Error uploading file: ', error);
+            } finally {
+                setUpload(-1);
+                setIsUploading(false);
             }
         }
     };
     const _setMinted = (data, key) => {
         setNftMinted(data);
-    }
-    // console.log('nftData:', nftData);
-    // console.log('nftMinted:', nftMinted);
-    // React.useEffect(() => {
-    //     setNftData(nftData.filter(item => !nftMinted.some(mintedItem => item.nft_id === mintedItem.nft_id)));
-    // }, [nftMinted]);
-    // console.log('nftMinted1:', nftData);
+    };
 
     return (
         <>
@@ -123,6 +115,7 @@ function NftForm() {
                         onFileChange={(event) => handleFileChange(event, key)}
                         nftData={nftData[key]}
                         id={`nft-item-${item}`}
+                        upload={upload}
                     />)}
                 </div>
                 <div className="col-6 append-nft-detail" id={"append-nft-detail"}>
@@ -149,7 +142,7 @@ function NftForm() {
                      style={{borderLeft: '1px', borderRight: '1px solid'}}>
                     <div className="p-2">
                         <WalletProvider>
-                            <MintNft
+                            <MintNft1
                                 nftData={nftData}
                                 _setMinted={_setMinted}
                                 nftMinted={nftMinted}

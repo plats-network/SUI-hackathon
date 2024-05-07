@@ -49,11 +49,11 @@
     <div class="row" style="height: auto; min-height: 400px">
         <div class="col-6" style="border-left: 1px;border-right: 1px solid;">
             <div class="row mb-3 col-12">
-                <input type="text" class="form-control" value="{{$booths->name}}" placeholder="Name" id="booths[name]" name="booths[name]" />
+                <input type="text" class="form-control" value="{{$booths->name ?? 'booth'}}" placeholder="Name" id="booths[name]" name="booths[name]"/>
             </div>
             <div class="row mb-3 col-12">
                 <div id="editor3"></div>
-                <input type="hidden" class="form-control" id="booths-description" name="booths[description]" value="{{$booths->description}}" />
+                <input type="hidden" class="form-control" id="booths-description" name="booths[description]" value="{{$booths->description ?? 'test booth'}}" />
             </div>
             <div class="row mb-3 col-12">
                 <div class="listRowBooth" id="listRowBooth">
@@ -76,7 +76,7 @@
         <div class="col-6 d-flex flex-row-reverse" style="border-left: 1px;border-right: 1px solid;">
             <div class="p-2">
                 <div id="btnGenItemBooth">
-                    
+
                 </div>
                 {{--  <button id="btnGenItemBooth" type="button" class="btn btn-primary btn-rounded waves-effect waves-light mb-2 me-2">Generate Booth</button>  --}}
             </div>

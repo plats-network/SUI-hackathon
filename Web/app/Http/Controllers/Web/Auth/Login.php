@@ -91,7 +91,7 @@ class Login extends Controller
     }
     public function showFormLogin()
     {
-
+        
         if (Auth::guard('web')->user()) {
             return redirect('/');
         }
@@ -360,6 +360,7 @@ class Login extends Controller
 
     private function authenticated($request, $user)
     {
+
         return redirect()->intended();
     }
 }

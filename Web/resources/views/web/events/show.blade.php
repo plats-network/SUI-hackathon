@@ -1,7 +1,7 @@
 @extends('web.layouts.event_app')
-<head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-</head>
+{{--<head>--}}
+{{--    <meta http-equiv="X-UA-Compatible" content="IE=edge" />--}}
+{{--</head>--}}
 @section('content')
     <style>
         .disabled {
@@ -27,9 +27,9 @@
                     <div class="pr-lg-4 mb-100">
                         <div class="post-details-content">
                             <div class="post-blog-thumbnail mb-30">
-                                <img src="{{$event->banner_url}}" alt="">
+                                <img src="{{$event->banner_url ?? ''}}" alt="">
                             </div>
-                            <h4 class="post-title">{{$event->name}}</h4>
+                            <h4 class="post-title">{{$event->name ?? ''}}</h4>
                             <div class="post-meta">
                                 <a class="post-date" href="#">
                                     <i class="zmdi zmdi-alarm-check"></i> {{dateFormat($event->created_at)}}
@@ -70,7 +70,7 @@
                                         ->linkedin($event->name)
                                         ->whatsapp()
                                         ->telegram()
-                                !!}
+//                                !!}
                             </div>
                         </div>
                         <div class="post-author-area d-flex align-items-center my-5">
@@ -88,6 +88,7 @@
                 </div>
                 <input type="hidden" id="mnemonic_client" value="{{ env('MNEMONIC_CLIENT')}}">
                 <input type="hidden" id="package_id" value="{{ env('PACKAGE_ID')}}">
+                <input type="hidden" id="contract_event_id" value="{{ $event->contract_event_id }}">
                 <input type="hidden" id="collection_id" value="{{ env('COLLECTION_ID')}}">
                 <input type="hidden" id="ticket_id" value="{{ !empty($nft) ? $nft->address_nft : ''}}">
                 <div id="fixed" class="col-lg-4">
@@ -100,8 +101,10 @@
     border: none;
     background: none;
     color: blue;
-" class="link-primary" target="_blank" href="https://suiscan.xyz/testnet/tx/{{ !empty($checkMint) ? json_decode($checkMint->nftMint['nft_res'], true)['digest'] : '' }}">
-                                        SUI Explorer Link
+    margin-top: 20px;
+    display: block;
+" class="link-primary" target="_blank" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$checkMint->digest ?? ''}}">
+                                        Suiet Explorer Link
                                     </a>
                                 @else
                                     @if ($nft)
@@ -119,12 +122,13 @@ border: none;
 display:none;
 background: none;
 color: blue;
-" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/testnet/tx/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
+" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/devnet/tx/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
                                             Suiet Explorer Link
                                         </a>
                                     @endif
 
-                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>
+{{--                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>--}}
+                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'zklogin'}} {{ !$nft ? 'disabled' : '' }}" href="#" data-url="{{route('web.formLogin')}}" >Register event</a>
 
                                 @endif
                                 <hr>
@@ -369,12 +373,12 @@ color: blue;
     {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
  --}}
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{asset('js/sweetalert2@11.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
             integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
             crossorigin="anonymous"></script>
-    <script src="dashboard.js"></script>
+{{--    <script src="dashboard.js"></script>--}}
 
     <script>
         var _token = $('meta[name="csrf-token"]').attr('content');
@@ -387,11 +391,11 @@ color: blue;
         window.open("{{$url_download_ticket}}");
         @endif
     </script>
-    @if ($checkMint)
+    {{--  @if ($checkMint)
         <script>
             alert('Claim is success.')
         </script>
-    @endif
+    @endif  --}}
     {{--validate--}}
     <script>
         //https://yii2-cookbook-test.readthedocs.io/forms-activeform-js/

@@ -46,6 +46,7 @@ export default defineConfig({
                 'resources/js/profile-nft.js',
                 //'resources/css/mail.css',
                 'resources/js/connect_suit_session.jsx',
+                'resources/js/connect_suit_create_event.jsx',
                 'resources/js/session.jsx',
                 'resources/js/formNft.jsx',
                 'resources/js/connect-wallet.jsx',
@@ -59,6 +60,10 @@ export default defineConfig({
                 'resources/js/mintNftSession.jsx',
                 'resources/js/app/provider.jsx',
                 'resources/js/views/solana.jsx',
+                'resources/js/testReactjs.jsx',
+                'resources/js/statusSession.jsx',
+                'resources/js/addClient.jsx',
+                'resources/js/statusEvent.jsx'
             ],
             refresh: true,
         }),

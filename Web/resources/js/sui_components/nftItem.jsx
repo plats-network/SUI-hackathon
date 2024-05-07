@@ -1,6 +1,6 @@
 import React from 'react';
 
-function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
+function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey, upload}) {
     return (
         <div className="row mb-3 nft-ticket-div">
             <div className="col-4">
@@ -12,11 +12,13 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
                        name="file-image-nft"
                        onChange={onFileChange}/>
                 <label htmlFor={`image-file-${itemKey}`}>
-                    <img className="image-label img-preview"
-                         src={nftData.image_file || "/imgs/no-image.png"}/>
+                    {upload === itemKey ?
+                        <img src="/imgs/loading/loading-upfile.webp" alt="loading"/> :
+                        <img className="image-label img-preview" src={nftData.image_file || "/imgs/no-image.png"}/>
+                    }
                 </label>
             </div>
-            <div className="col-4">
+            <div className="col-5">
                 <div className="mt-20">
                     <input type="text"
                            className="form-control nft_name"
@@ -33,32 +35,29 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey}) {
                            onChange={onInputChange}/>
                 </div>
             </div>
-            <div className="col-4">
+            <div className="col-3">
                 <div className="mt-20">
-                    <input type="text"
+                    <input type="hidden"
                            className="form-control nft_category"
                            placeholder="NFT Category"
                            name="nft_category"
                            defaultValue="Standard"
                            onChange={onInputChange}/>
                 </div>
-                <div className={'row mt-20'}>
-                    <div className="col-6">
-                        <input type="number"
-                               className="form-control nft_amount"
-                               name="nft_amount"
-                               min="1"
-                               defaultValue="1"
-                               onChange={onInputChange}/>
-                    </div>
-                    <div className="col-6">
-                        <button type="button" className="btn btn-danger" onClick={onDelete}>
-                            Delete
-                        </button>
-                    </div>
+                <div className={'mt-20'}>
+                    <input type="number"
+                           className="form-control nft_amount"
+                           name="nft_amount"
+                           min="1"
+                           defaultValue="1"
+                           onChange={onInputChange}/>
+                </div>
+                <div className={'mt-20 d-flex justify-end'}>
+                    <button type="button" className="btn btn-danger" onClick={onDelete} style={{width: "100%"}}>
+                        Delete
+                    </button>
                 </div>
             </div>
-
 
 
         </div>

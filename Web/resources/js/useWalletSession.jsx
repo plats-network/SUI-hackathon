@@ -2,24 +2,42 @@ import { ConnectButton, useWallet, addressEllipsis } from "@suiet/wallet-kit";
 import "@suiet/wallet-kit/style.css"; // don't forget to import default stylesheet
 import React, { useEffect, useState } from 'react';
 import {TransactionBlock} from "@mysten/sui.js/transactions";
+// import TimerComponent from 'timerComponent';
+
+import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
+import {getFullnodeUrl, SuiClient} from '@mysten/sui.js/client';
 
 export default function App() {
+
     const wallet = useWallet();
  
     const [sessionData, setSessionData] = useState([]);
 
     const handleClick = async () => {
+
+        const totalNftTicket = $('input[name^="nft-ticket-name-"]').length;
+        
+        console.log('totalNftTicket',totalNftTicket);
+        
+        if(totalNftTicket <= 0){
+            alert('please mint nft ticket first!')
+            return;
+        }
+
         const newSessionData = [];
         
         $('.itemSessionDetailMint').each(function (index) {
 
-            const nameSession = $(this).find('.name_session').val();
-            const descriptionSession = $(this).find('.description_session').val();
+            const nameSession = $(this).find('.name_session').val() ?? 'name_session';
+            const descriptionSession = $(this).find('.description_session').val() ?? 'description_session';
             const fileSession = $(this).find('.image-file').attr('link-img') ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
+            const mintftSession = $(this).find('.mintft_session').val() ?? 'mintft_session';
             const sessionObj = {
                 nameSession: nameSession,
                 descriptionSession: descriptionSession,
-                fileSession: fileSession
+                fileSession: fileSession,
+                mintftSession: mintftSession,
+                totalNftTicket: totalNftTicket
             };  
             newSessionData.push(sessionObj);
         });
@@ -27,7 +45,9 @@ export default function App() {
         setSessionData(newSessionData);
     }
 
-    const appendNftSessionDetail = (details) => {
+    const appendNftSessionDetail = async (details) => {
+        let typenetwork = $('meta[name="type_network"]').attr('content');
+
         console.log('details',details);
         // Khai báo một biến để chứa chuỗi HTML
         let html = '';
@@ -50,59 +70,106 @@ export default function App() {
             html += '        </div>\n';
             html += '    </div>\n';
             html += '    <div class="col-2" style="margin-top: 50px">\n';
-            html += '        <p class="class-ticket"><a target="_blank" href="https://suiscan.xyz/testnet/tx/' + detail.txhash + '">txhash</a></p>\n';
+            html += '        <p class="class-ticket"><a target="_blank" href="https://suiscan.xyz/'+typenetwork+'/tx/' + detail.txhash + '">txhash</a></p>\n';
             html += '    </div>\n';
             html += '</div>';
         });
 
         // Sau khi lặp qua mảng details, thêm chuỗi HTML vào '.append-nft-session-detail'
         $('.append-nft-session-detail').empty().append(html);
-
     };
     
     const mint = async (wallet,data) => {
         let newData = {
             nameSession: data.map(item => item.nameSession),
             descriptionSession: data.map(item => item.descriptionSession),
-            fileSession: data.map(item => item.fileSession)
+            fileSession: data.map(item => item.fileSession),
+            totalNftTicket: data.map(item => item.totalNftTicket)
         };
         console.log('newData',newData);
         console.log('wallet',wallet);
-        const tx = new TransactionBlock();
-        let packageId = "0x3827b28d5f79b559cf7f9f545cbc99a2653e19d7c99173cec1a9428a478357f5";
+
+        let tx = new TransactionBlock();
+        
+        let typenetwork = $('meta[name="type_network"]').attr('content');
+
+        console.log(typenetwork);
+
+        let packageId = $('meta[name="package_id"]').attr('content');
+
+        // let collection_id = $('meta[name="collection_id"]').attr('content');
+        const contract_event_id = localStorage.getItem("contract_event_id");
+
+        let event_id = $('meta[name="nft_hash_id"]').attr('content');
+
+        let totalNftTicket = $('input[name^="nft-ticket-name-"]').length;
+        
+        console.log('totalNftTickets',totalNftTicket);
+
         tx.moveCall({
             target: `${packageId}::client::mint_batch_sessions`,
             arguments: [
-                
+
+                tx.pure(contract_event_id),
+
+                tx.pure(event_id),
+
                 tx.pure(newData.nameSession),
-                // description: vector<vector<u8>>,
+                
                 tx.pure(newData.descriptionSession),
-                // url: vector<vector<u8>>,
+                
                 tx.pure(newData.fileSession),
 
-                //tx.pure(data.nameSession),
-                //tx.pure(data.descriptionSession),
-                //tx.pure(data.fileSession),
-                tx.object('0x3b0b0833c020f964c09991796945efa46b4cd66af696df698ae9a41a75383819'),
+                tx.pure(newData.totalNftTicket[0] ?? 1),
+              
             ],
-            typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
         });
         $('.loading').show();
         try {
             const result = await wallet.signAndExecuteTransactionBlock({
                 transactionBlock: tx,
+                options: {
+                    showObjectChanges: true,
+                },
             });
             
-            console.log(result);
-            if(!result.confirmedLocalExecution){
+            if(result.confirmedLocalExecution != true){
                 alert('nft minted Session fails!');
                 return;
             }
+            console.log(result);
+            console.log(data);
+
+            // đoạn này là user claim
+            let sessionIds =  result.objectChanges.filter((o) =>
+                    o.type === "created" &&
+                    o.objectType.includes("::ticket_collection::NFTSession")
+            ).map(item => item.objectId);
+            
+            console.log('sessionIds',sessionIds);
+            //user login jdk
+            // const user = "0x70f94573c6cd732304f2c0fd9d80cf7d6206e4609c5c4b259972e90885fc3acb";
+            // tx.transferObjects([tx.object(sessionIds)] , user);
+
+            // const resultUserClaim = await client.signAndExecuteTransactionBlock({
+            //     signer: keypair,
+            //     transactionBlock: tx,
+            // });
+            // console.log(`Sessions id :`,$sessionIds);
+            // console.log('resultUserClaim',resultUserClaim);
+            // hết đoạn này là user claim
 
             // Lặp qua mỗi đối tượng trong mảng data
-            data.forEach(obj => {
+            data.forEach((obj, index) => {
+                console.log('line 164',obj);
                 // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
                 obj.txhash = result.digest;
+
+                //mint lại data
+                $('.itemSessionDetailMint').eq(index).find('.nft_address_session').val(sessionIds[index]);
+                $('.itemSessionDetailMint').eq(index).find('.nft_uri_session').val(obj.fileSession);
+                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(sessionIds));
+                $('.itemSessionDetailMint').eq(index).find('.image-file').val();
             });
 
             appendNftSessionDetail(data);
@@ -114,7 +181,7 @@ export default function App() {
          } catch (error) {
 
             $('.loading').hide();
-
+            console.log('error',error);
             alert('nft minted Session fails!');
 
         }
@@ -124,23 +191,20 @@ export default function App() {
         
         if(sessionData.length > 0){
 
-            mint(wallet,sessionData);
+            return mint(wallet,sessionData);
         }
     }, [sessionData]);
 
     return (
         <div className="App">
-            <ConnectButton />
+            <ConnectButton label={'Connect Wallet'} />
             <section>
+            
                 {wallet.status === "connected" && (
                     <>
-                        {wallet?.account && (
-                            <>
-                                <p>
-                                    <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
-                                </p>
-                            </>
-                        )}
+                        <p>
+                            <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
+                        </p>
                     </>
                 )}
             </section>

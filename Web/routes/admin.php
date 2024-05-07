@@ -2,9 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
-    Dashboard, Reward, Event, TaskBeta,
-    Group, User, Export, AuthController,
-    ConfirmController, TravelGame
+    Dashboard,
+    Reward,
+    Event,
+    TaskBeta,
+    Group,
+    User,
+    Export,
+    AuthController,
+    ConfirmController,
+    TravelGame
 };
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\Admin\{
@@ -16,7 +23,7 @@ use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Web\QuizGameController;
 
 // NEW
-Route::middleware(['guest', 'web'])->group(function($authRoute) {
+Route::middleware(['guest', 'web'])->group(function ($authRoute) {
     $authRoute->get('login', [AuthController::class, 'formLogin'])->name('cws.formLogin');
     $authRoute->post('loginPost', [AuthController::class, 'login'])->name('cws.login');
     //Auto login
@@ -35,7 +42,7 @@ Route::middleware(['guest', 'web'])->group(function($authRoute) {
     $authRoute->post('forgotPost', [AuthController::class, 'forgot'])->name('cws.forgot');
 });
 
-Route::middleware(['client_admin'])->group(function($cws) {
+Route::middleware(['client_admin'])->group(function ($cws) {
     $cws->get('/', [Dashboard::class, 'index'])->name('cws.home');
     $cws->get('logout', [AuthController::class, 'logout'])->name('cws.logout');
     $cws->get('setting', [User::class, 'setting'])->name('cws.setting');
@@ -43,7 +50,9 @@ Route::middleware(['client_admin'])->group(function($cws) {
     $cws->post('change-email', [User::class, 'changeEmail'])->name('cws.changeEmail');
     $cws->post('change-info', [User::class, 'changeInfo'])->name('cws.changeInfo');
     // User
-    $cws->get('users', [User::class, 'index'])->name('cws.users');
+    $cws->get('users', [User::class, 'index'])->name('cws.users')->middleware('super_admin');
+    $cws->get('users/edit/{id}', [User::class, 'edit'])->name('cws.users.edit')->middleware('super_admin');
+    $cws->post('users/update/{id}', [User::class, 'update'])->name('cws.users.update')->middleware('super_admin');
 
     //Get event list
     $cws->get('dashboard', [EventController::class, 'dashboard'])->name('cws.dashboard');
@@ -187,7 +196,9 @@ Route::prefix('export')->controller(Export::class)->group(function () {
 //         $router->get('/delete/{id}', 'destroy')->whereUuid('id');
 //     });
 // });
-
+//update whitelist
+Route::post('update-whitelist', [User::class, 'updateWhitelist']);
+Route::post('create-ticket', [User::class, 'createTicket']);
 // mint nft
 Route::post('create-nft-claim', [\App\Http\Controllers\Admin\NFTController::class, 'createNftClaim'])->name('api.createNftClaim');
 

@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Validator;
 
 class NFTController extends Controller
 {
@@ -117,10 +118,11 @@ class NFTController extends Controller
         return null;
     }
 
+
     public function updateNftClaim(Request $request)
     {
         $nft = NFT\NFTMint::find($request->nft_id);
-
+        
         if (auth()->user() == null) {
             // check login and auth
             $existingUser = User::where('email', $request->email)->first();
@@ -138,7 +140,8 @@ class NFTController extends Controller
                 Auth::login($newUser);
             }
         }
-        if ($nft) {
+        if (!empty($nft)) {
+
             // update nft
             $nft->status = 3;
             $nft->save();
@@ -149,8 +152,8 @@ class NFTController extends Controller
             $userNft->type = $nft->type;
             $userNft->booth_id = $nft->booth_id;
             $userNft->task_id = $nft->task_id;
+            $userNft->digest = $request->digest ?? '';
             $userNft->save();
-
 //            $nft = NFT\NFTMint::find($request->nft_id);
 //            $nft->status = 3;
 //            $nft->save();
@@ -158,6 +161,82 @@ class NFTController extends Controller
         return [
             "code" => 200
         ];
+    }
+
+    public function updateSessionBoothClaim(Request $request)
+    {
+        $data = $request->only(['booth_id','digest','nft_mint_id','session_id','task_id']);
+        
+        $validator = [
+            'booth_id'=>[
+            ],
+            'digest'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'nft_mint_id'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'session_id'=>[
+            ],
+            'task_id'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+        ];
+
+        $messages = [
+
+        ];
+
+        $validator = Validator::make($data, $validator,$messages);
+
+        // validate data
+        if ($validator->fails()) {
+
+            return response()->json([
+                'status' => false,
+                'message' =>  $validator->messages()->first()
+            ], 400);
+        }
+
+        if(isset($data['session_id'])){
+
+            $userClaimtNft = UserNft::where('user_id',auth()->user()->id)
+                ->where('session_id', $data['session_id'])
+                ->where('task_id', $data['task_id'])->first();
+        }
+        
+        if(isset($data['booth_id'])){
+            
+            $userClaimtNft = UserNft::where('user_id',auth()->user()->id)
+            ->where('booth_id', $data['booth_id'])
+            ->where('task_id', $request['task_id'])->first();
+            
+        }
+
+        // nếu user này chưa claim thì claim có rồi thì thôi
+        if(!empty($userClaimtNft)){
+
+            return response()->json([
+                'status' => false,
+                'message' =>  'Your User Claimed NFT already'
+            ], 400);
+        }
+
+        $data['type'] = 2;
+        $data['user_id'] = auth()->user()->id;
+        $createUserNft = UserNft::create($data);
+
+        return response()->json([
+            'status' => true,
+            'message' =>  'Your User Claim NFT success',
+            'data'=>$createUserNft
+        ], 200);
     }
 
     public function uploadImageNft(Request $request)
