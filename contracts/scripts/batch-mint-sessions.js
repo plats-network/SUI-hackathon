@@ -21,8 +21,6 @@ async function mintSessions() {
         arguments: [
             // ticket event id 
             tx.object(collectionId),
-            // session collection id 
-            tx.object(process.env.SESSION_COLLECTION_ID),
             // event_id
             tx.pure("8ba9148d4e85e4a6862e8fa613f6cf6b"),
             // name: vector<vector<u8>>,
@@ -44,7 +42,15 @@ async function mintSessions() {
             showObjectChanges: true,
         },
     });
-    console.log(txs);
+
+    const sessionCollectionIds = 
+        txs.objectChanges.filter(
+            (o) =>
+                o.type === "created" &&
+                o.objectType.includes("::ticket_collection::SessionCollection")
+        ).map(item => item.objectId);
+
+    console.log(`Sessions collection id : ${sessionCollectionIds}`);
     const sessionIds = 
         txs.objectChanges.filter(
             (o) =>

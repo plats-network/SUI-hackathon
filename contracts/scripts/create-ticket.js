@@ -51,24 +51,7 @@ async function createTicket() {
         )[0]
       ).objectId;
       console.log(`event shared  id : ${ticketCollectionId}`);
-    
-      const sessionCollectionId = (
-        txs.objectChanges.filter(
-          (o) =>
-            o.type === "created" &&
-            o.objectType.includes("::ticket_collection::SessionCollection")
-        )[0]
-      ).objectId;
-      console.log(`session Collection id : ${sessionCollectionId}`);
 
-      const boothCollectionId = (
-        txs.objectChanges.filter(
-          (o) =>
-            o.type === "created" &&
-            o.objectType.includes("::ticket_collection::BoothCollection")
-        )[0]
-      ).objectId;
-      console.log(`booth Collection id : ${boothCollectionId}`);
 }
 
 createTicket();

@@ -26,7 +26,7 @@ async function lockSession() {
             // ticket event id 
             tx.object(collectionId),
             // session collection id 
-            tx.pure(process.env.SESSION_COLLECTION_ID),
+            tx.pure("0xa5626b2f554c0ec4f4e0b4efff337a84d0d1e0de1a6a1290176224190fd0bb3a"),
             // bật on = false , off = true        
             tx.pure(true),  
         ],
