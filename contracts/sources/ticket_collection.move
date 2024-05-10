@@ -127,7 +127,6 @@ module sui_nft::ticket_collection {
     #[allow(lint(self_transfer))]
     public fun create_event(client:address, ctx: &mut TxContext) {
         let id = object::new(ctx);
-        let event_id = *object::uid_as_inner(&id);
         let tickets = bag::new(ctx);
         let sessions  = bag::new(ctx);
         let booths  = bag::new(ctx);
@@ -146,22 +145,22 @@ module sui_nft::ticket_collection {
             }
         );
         // sessions
-        transfer::share_object(
-            SessionCollection {
-                id: object::new(ctx),
-                sessions: vector::empty(),
-                locked: false,
-                event: event_id
-            });
+        // transfer::share_object(
+        //     SessionCollection {
+        //         id: object::new(ctx),
+        //         sessions: vector::empty(),
+        //         locked: false,
+        //         event: event_id
+        //     });
         // booths 
-        transfer::share_object(
-            BoothCollection {
-                id: object::new(ctx),
-                booths: vector::empty(),
-                locked: false,
-                event: event_id
-            }
-        );
+        // transfer::share_object(
+        //     BoothCollection {
+        //         id: object::new(ctx),
+        //         booths: vector::empty(),
+        //         locked: false,
+        //         event: event_id
+        //     }
+        // );
 
     }
 
@@ -308,30 +307,8 @@ module sui_nft::ticket_collection {
         tickets
     }
 
-    public(package) fun mint_session(
-        event_ticket: &mut EventTicket,
-        session_collection: &mut SessionCollection, 
-        name: vector<u8>,
-        description: vector<u8>,
-        image_url: vector<u8>,
-        event_id: vector<u8>,
-        ctx: &mut TxContext  
-    
-    ): ID{
-        let sender = tx_context::sender(ctx);
-        assert_client(event_ticket, sender);
-        let session = mint_session_single(name,  description, image_url, event_id, 0, ctx);
-        let session_id = *object::uid_as_inner(&session.id);
-        let mut claimed = EventSessionClaimed {id: object::new(ctx)};
-        ofield::add(&mut claimed.id, true,  session);
-        bag::add(&mut event_ticket.sessions, session_id, claimed);
-        vector::push_back(&mut session_collection.sessions, session_id);
-
-        session_id
-    }
     public(package) fun mint_sessions(
         event_ticket: &mut EventTicket,
-        session_collection: &mut SessionCollection,
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
         urls: vector<vector<u8>>,
@@ -341,13 +318,15 @@ module sui_nft::ticket_collection {
     ): vector<ID>{
         let sender = tx_context::sender(ctx);
         assert_client(event_ticket, sender);
-        let mut sessions = vector::empty();
-        let mut i = 0; 
 
+        let mut sessions_collection_id = vector::empty();
+        let mut i = 0; 
+        let event_object_id = *object::uid_as_inner(&event_ticket.id);
         // todo
         let len = vector::length(&names);
 
         while (i < len){
+            let mut sessions = vector::empty();
             let mut j = 0;
             let name = vector::borrow(&names, i );
             let description = vector::borrow(&descriptions, i);
@@ -363,9 +342,18 @@ module sui_nft::ticket_collection {
             };
 
             i = i +1;
+            let session_collection_id = object::new(ctx);
+            vector::push_back(&mut sessions_collection_id, *object::uid_as_inner(&session_collection_id));
+            transfer::share_object(
+                SessionCollection {
+                    id: session_collection_id,
+                    sessions: sessions,
+                    locked: false,
+                    event: event_object_id
+                });
+
         };
-        vector::append(&mut session_collection.sessions, sessions);
-        sessions
+        sessions_collection_id
     }
 
     // Internal claim session function 
@@ -400,31 +388,9 @@ module sui_nft::ticket_collection {
             tx_context::sender(ctx)
         )
     }
-
-    public(package) fun mint_booth(
-        event_ticket: &mut EventTicket,
-        booth_collection: &mut BoothCollection, 
-        name: vector<u8>,
-        description: vector<u8>,
-        image_url: vector<u8>,
-        event_id: vector<u8>,
-        ctx: &mut TxContext    
-    ): ID{
-
-        let sender = tx_context::sender(ctx);
-        assert_client(event_ticket, sender);
-        let booth = mint_booth_single(name,  description, image_url, event_id, 1,  ctx);
-        let booth_id = *object::uid_as_inner(&booth.id);
-        let mut claimed = EventBoothClaimed {id: object::new(ctx)};
-        ofield::add(&mut claimed.id, true,  booth);
-        bag::add(&mut event_ticket.booths, booth_id, claimed);
-        vector::push_back(&mut booth_collection.booths, booth_id);
-        booth_id
-
-    }    
+    
     public(package) fun mint_booths(
         event_ticket: &mut EventTicket,
-        booth_collection: &mut BoothCollection,
         names: vector<vector<u8>>,
         descriptions: vector<vector<u8>>,
         urls: vector<vector<u8>>,
@@ -437,12 +403,16 @@ module sui_nft::ticket_collection {
         assert_client(event_ticket, sender);
 
         let mut i = 0; 
-        let mut booths = vector::empty();
+        
+        let mut booths_collection_id = vector::empty();
+        let event_object_id = *object::uid_as_inner(&event_ticket.id);
+
+
 
         let len = vector::length(&names);
         while (i < len){
             let mut j = 0;
-
+            let mut booths = vector::empty();
             let name = vector::borrow(&names, i );
             let description = vector::borrow(&descriptions, i);
             let url = vector::borrow(&urls, i);
@@ -457,10 +427,19 @@ module sui_nft::ticket_collection {
             };
 
             i = i +1;
-        };
-        vector::append(&mut booth_collection.booths, booths);
+            let booth_collection_id = object::new(ctx);
+                        vector::push_back(&mut booths_collection_id, *object::uid_as_inner(&booth_collection_id));
+            transfer::share_object(
+                BoothCollection {
+                    id: booth_collection_id,
+                    booths: booths,
+                    locked: false,
+                    event: event_object_id
+                });
 
-        booths    
+        };
+
+        booths_collection_id    
     }
 
     // Internal claim ticket function 

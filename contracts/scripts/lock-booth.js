@@ -26,7 +26,7 @@ async function lockBooth() {
             // ticket event id 
             tx.object(collectionId),
             // booth collection id 
-            tx.pure(process.env.BOOTH_COLLECTION_ID),
+            tx.pure(""),
             // bật on = false , off = true        
             tx.pure(true),  
         ],
