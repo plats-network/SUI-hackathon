@@ -330,7 +330,8 @@
                                                                    name="thumbnail">
                                                             <input type="file" id="w0"
                                                                    accept="image/png, image/gif, image/jpeg"
-                                                                   name="_fileinput_w0"></div>
+                                                                   name="_fileinput_w0">
+                                                        </div>
                                                         <div class="invalid-feedback">
                                                         </div>
                                                     </div>
@@ -1060,7 +1061,7 @@
             // var fileSlideInit = null;
             @if($event->banner_url)
                 fileAvatarInit = [{
-                "path": "{{$event->banner_url}}",
+                "path": "{{ asset('/imgs/imagedefault.jpg') ?? '' }}",
                 "base_url": "",
                 "type": null,
                 "size": null,
@@ -1294,17 +1295,36 @@
             $(document).on('click', '.min-save-btn', function (event) {
                 console.log('Save');
                 let ticketCollectionId = localStorage.getItem("contract_event_id");
-                if(!ticketCollectionId){
+                let sessionCollectionId = localStorage.getItem("contract_session_id");
+                let boothCollectionId = localStorage.getItem("contract_booth_id");
+
+                if(!ticketCollectionId || !sessionCollectionId || !boothCollectionId){
                     alert('Please create NFT before save');
                 }
+                
                 console.log('ticketCollectionId',ticketCollectionId);
-                let inputCollectionId = document.createElement('input');
-                inputCollectionId.setAttribute('type', 'hidden');
-                inputCollectionId.setAttribute('name', 'ticket_collection_id');
-                inputCollectionId.setAttribute('value', ticketCollectionId);
+                // Tạo input hidden cho ticketCollectionId
+                let inputTicketCollectionId = document.createElement('input');
+                inputTicketCollectionId.setAttribute('type', 'hidden');
+                inputTicketCollectionId.setAttribute('name', 'ticket_collection_id');
+                inputTicketCollectionId.setAttribute('value', ticketCollectionId);
+
+                // Tạo input hidden cho sessionCollectionId
+                let inputSessionCollectionId = document.createElement('input');
+                inputSessionCollectionId.setAttribute('type', 'hidden');
+                inputSessionCollectionId.setAttribute('name', 'session_collection_id');
+                inputSessionCollectionId.setAttribute('value', sessionCollectionId);
+
+                // Tạo input hidden cho boothCollectionId
+                let inputBoothCollectionId = document.createElement('input');
+                inputBoothCollectionId.setAttribute('type', 'hidden');
+                inputBoothCollectionId.setAttribute('name', 'booth_collection_id');
+                inputBoothCollectionId.setAttribute('value', boothCollectionId);
 
                 let form = document.getElementById('post_form');
-                form.appendChild(inputCollectionId);
+                form.appendChild(inputTicketCollectionId);
+                form.appendChild(inputSessionCollectionId);
+                form.appendChild(inputBoothCollectionId);
 
                 let idForm = '#post_form';
                 $(idForm).removeAttr('onsubmit');

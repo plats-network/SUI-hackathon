@@ -42,15 +42,15 @@
         <input type="hidden" name="sessions[id]" id="sessions[id]" value="{{$sessions->id}}">
         <input type="hidden" name="sessions[task_id]" id="sessions[task_id]" value="{{$event->id}}">
         <div class="row">
-            <div class="col-lg-9">
+            <div class="col-lg-12">
                 <div class="mb-3">
-                    <label for="basicpill-pancard-input" class="form-label">Name</label>
+                    <label for="basicpill-pancard-input" class="form-label">Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" value="{{$sessions->name}}" placeholder="Name"
                            id="sessions[name]" name="sessions[name]">
                     <div class="valid-feedback"></div>
                 </div>
             </div>
-            <div class="col-lg-2">
+            {{--  <div class="col-lg-2">
                 <div class="mb-3">
                     <label for="basicpill-vatno-input"
                            class="form-label">Max job</label>
@@ -65,18 +65,31 @@
                         max="100">
                     <div class="valid-feedback"></div>
                 </div>
-            </div>
+            </div>  --}}
         </div>
         <div class="row">
             <div class="col-lg-12">
                 <div class="mb-3">
-                    <label for="basicpill-cstno-input" class="form-label">Description</label>
-                    <div id="editor2"></div>
+                    <label for="basicpill-cstno-input" class="form-label">Description <span class="text-danger">*</span></label>
+                    @if($isPreview)
+                        {!! $sessions->description !!}
+                    @else
+                    <textarea  class="form-control" id="sessions-description"  name="sessions[description]">
+                        {{$sessions->description}}
+                    </textarea>
+                    <script>
+                            ClassicEditor.create( document.querySelector('#sessions-description' ) )
+                            .then(editor => { 
+                                
+                            } ) .catch( error => { 
+                                console.error( error ); 
+                            } );
+                    </script>
+                    @endif
+                    {{--  <div id="editor2"></div>
                     <input type="hidden"
-                           class="form-control"
-                           id="sessions-description"
-                           name="sessions[description]"
-                           value="{{$sessions->description}}"/>
+                          
+                           value="{{$sessions->description}}"/>  --}}
                 </div>
             </div>
         </div>
@@ -93,7 +106,7 @@
                     {{--                    <th>Quiz</th>--}}
                     <th>Click</th>
                     <th>QR <span class="text-danger">(ON/OFF)</span></th>
-                    <th>Sort</th>
+                    {{--  <th>Sort</th>  --}}
                 </tr>
                 </thead>
                 <tbody id="list-session-id" data-s-ids="{{json_encode($sessions->detail->pluck('id')->toArray())}}">
@@ -112,24 +125,29 @@
                                  data-se-url="{{$qr}}"></div>
                             <a class="se-donw mt-3" data-id="{{$session->id}}" data-num="{{$k+1}}" data-name="session">Download</a>
                         </td>
-                        <td width="5%">{{totalUserJob($session->id)}}</td>
+                        {{--  <td width="5%">{{totalUserJob($session->id)}}</td>  --}}
+                        <td width="5%">
+                            {{ $session->amount }}
+                        </td>
                         {{--                        <td width="5%">{{$session->is_question ? 'Yes' : 'No'}}</td>--}}
-                        <td width="5%"><a href="{{$qr}}" target="_blank">link</a></td>
+                        <td width="5%">
+                            <a href="{{$qr}}" target="_blank">link</a>
+                        </td>
                         <td width="10%">
-                            
                             <div 
                                 class="statusSession" 
-                                data-nftres="{{ $countNFTSession[$k]->nft_res ?? '' }}" 
-                                data-nftsessionid="{{ $countNFTSession[$k]->address_nft ?? '' }}" 
+                                data-nftres="{{ $session->address_nft ?? '' }}" 
+                                data-nftsessionid="{{ $session->address_nft ?? '' }}" 
+                                data-contracttaskeventid="{{ $session->contract_task_events_details_id ?? '' }}" 
                                 data-contracteventid="{{ $event->contract_event_id ?? '' }}" 
                                 id="session_{{ $k+1 }}"
                                 data-status="{{  $session->status ? 'true' : 'false' }}" 
                                 data-id="{{$session->code}}" 
                                 data-detailsessionid="{{$sessions->id}}"> 
+                                
                             </div>
-
                         </td>
-                        <td width="20%">
+                        {{--  <td width="20%">
                             <select
                                 name="sort"
                                 class="form-select sortUpdate"
@@ -139,13 +157,14 @@
                                     <option value="{{ $k }}" {{$k == $session->sort ? 'selected' : ''}}>{{$v}}</option>
                                 @endforeach
                             </select>
-                        </td>
+                        </td>  --}}
                     </tr>
                 @endforeach
                 </tbody>
             </table>
         @else
-            <div class="row mt-3">
+        
+            {{--  <div class="row mt-3">
                 <div class="listRowSession" id="listRowSession" style="padding-left: 150px;">
                     @foreach($sessions->detail as $a => $sessionDetail)
                         <div class="mb-3 row itemSessionDetail" id="itemSession{{$sessionDetail->id}}">
@@ -355,7 +374,7 @@
                     </div>
                     <hr>
                 </div>
-            </div>
+            </div>  --}}
         @endif
     </div>
 </div>

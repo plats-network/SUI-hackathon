@@ -98,36 +98,33 @@
                                 @if ($checkMint)
                                     <a  class="btn btn-info" style="display: block" href="#">Claim already</a>
                                     <a style="
-    border: none;
-    background: none;
-    color: blue;
-    margin-top: 20px;
-    display: block;
-" class="link-primary" target="_blank" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$checkMint->digest ?? ''}}">
+                                            border: none;
+                                            background: none;
+                                            color: blue;
+                                            margin-top: 20px;
+                                            display: block;
+                                        " class="link-primary" target="_blank" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$checkMint->digest ?? ''}}">
                                         Suiet Explorer Link
                                     </a>
                                 @else
-                                    @if ($nft)
+                                   
+                                @if ($nft)
 
-{{--                                        <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">--}}
-                                        <input id="digest_nft" value="{{ isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : ''}}" type="hidden">
-{{--                                        <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">--}}
-{{--                                        <input id="seed" value="{{ $nft->seed }}" type="hidden">--}}
-{{--                                        <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">--}}
-                                        <input id="nft_id" value="{{ $nft->id }}" type="hidden">
-{{--                                        <input id="email_login" value="{{ auth()->user() ? auth()->user()->email : '' }}" type="hidden">--}}
-                                        <a style="display:none; margin-bottom: 20px" class="btn btn-info claim-success" href="#">Claim already</a>
-                                        <a style="
-border: none;
-display:none;
-background: none;
-color: blue;
-" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/devnet/tx/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
-                                            Suiet Explorer Link
-                                        </a>
-                                    @endif
+                                    <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
+                                    <input id="digest_nft" value="{{ isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : ''}}" type="hidden">
+                                    <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">
+                                    <input id="seed" value="{{ $nft->seed }}" type="hidden">
+                                    <input id="task_id" value="{{ $nft->task_id }}" type="hidden">
+                                    <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">
+                                    <input id="nft_id" value="{{ $nft->id_ticket_nft_mint }}" type="hidden">
+                                    <input id="email_login" value="{{ auth()->user() ? auth()->user()->email : '' }}" type="hidden">
+                                    <a style="display:none; margin-bottom: 20px" class="btn btn-info claim-success" href="#">Claim already</a>
+                                    <a style="border: none;display:none;background: none;color: blue;" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/devnet/tx/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
+                                        Suiet Explorer Link
+                                    </a>
+                                @endif
 
-{{--                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>--}}
+{{--                               <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>--}}
                                    <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'zklogin'}} {{ !$nft ? 'disabled' : '' }}" href="#" data-url="{{route('web.formLogin')}}" >Register event</a>
 
                                 @endif
@@ -340,6 +337,7 @@ color: blue;
             </div>
         </div>
     </div>
+
     {{--Model success--}}
     <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
          aria-hidden="true">
@@ -354,8 +352,6 @@ color: blue;
             </div>
         </div>
     </div>
-
-
 
     @include('web.layouts.subscribe')
     <a href="#" class="btn btn-primary ticket--sp">Get ticket</a>

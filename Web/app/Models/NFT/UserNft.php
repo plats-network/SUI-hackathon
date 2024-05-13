@@ -12,6 +12,7 @@ class UserNft extends Model
     protected $table = 'user_nft';
 
     protected $fillable = [
+        'id',
         'user_id',
         'nft_mint_id',
         'type',

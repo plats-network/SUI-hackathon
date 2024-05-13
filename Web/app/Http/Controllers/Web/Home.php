@@ -31,6 +31,7 @@ use Magic;
 use MagicAdmin\Exception\DIDTokenException;
 use MagicAdmin\Exception\RequestException;
 use Illuminate\Support\Facades\Validator;
+use App\Models\NFT\TicketNftMint;
 
 class Home extends Controller
 {
@@ -423,7 +424,7 @@ class Home extends Controller
 
 
             $booths = $booth->detail;
-//dd($travelBooths, $booths);
+            //dd($travelBooths, $booths);
             $totalCompletedBooth = 0;
 
             foreach ($booths as $booth) {
@@ -432,20 +433,45 @@ class Home extends Controller
                     $totalCompletedBooth++;
                 }
             }
-
+    
             // check claim nft
             $check = false;
-            $nft = NFTMint::where([
-                'task_id' => $id,
-                'status' => 1,
-                'type' => 1,
-            ])->first();
+          
+            //lấy danh sách các nft đã claim
+            $nftMint = UserNft::select('nft_mint_id')->where('type',1)->where('task_id',$id)->pluck('nft_mint_id');
+                
+            //lấy danh sách địa chỉ ví đã dùng rồi các nft đã mint
+            $claimedNfts = TicketNftMint::whereIn('id', $nftMint)->pluck('address_nft');
+
+            $nft = TicketNftMint::select(
+                'ticket_nft_mint.id as id_ticket_nft_mint',
+                'ticket_nft_mint.address_nft',
+                'ticket_nft_mint.ticket_id',
+                'ticket_nft_mint.created_at',
+                'ticket_nft_mint.txt_hash',
+                'ticket_collection.id',
+                'ticket_collection.title',
+                'ticket_collection.description',
+                'ticket_collection.group',
+                'ticket_collection.amount',
+                'ticket_collection.photo',
+                'ticket_collection.available_amount',
+                'ticket_collection.task_id')->join('ticket_collection','ticket_collection.id','=','ticket_nft_mint.ticket_id')
+                ->whereNotIn('ticket_nft_mint.address_nft',$claimedNfts)
+                ->where([
+                    'ticket_collection.task_id' => $id,
+                ])->first();
+
             if (\auth()->user()) {
                 $check = UserNft::with('nftMint')
                     ->where([
                         'user_id' => \auth()->user()->id,
-                        'task_id' => $id
-                    ])->first();
+                        'task_id' => $id,
+                        'type'=>1
+                    ])
+                    ->whereNull('session_id')
+                    ->whereNull('booth_id')
+                    ->first();
             }
         } catch (\Exception $e) {
 //            dd($e->getMessage());
