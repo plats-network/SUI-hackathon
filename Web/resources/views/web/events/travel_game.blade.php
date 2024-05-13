@@ -135,25 +135,40 @@
                 </div>
 
                 <div class="row justify-content-center">
-                    
+       
                     {{--  nếu user này đã claim rồi thì hiển thị link claim của họ  --}}
                     @if(!empty($nftUserClaimSession))
                         <input id="user_claim" value="true" type="hidden">
                         <a class="link-primary btn btn-primary btn btn-primary btn--order" id="button-claim-link" target="_blank" href="https://suiscan.xyz/{{  env("TYPE_NETWORK");  }}/tx/{{ $nftUserClaimSession->digest }}">SUI Explorer</a>
                     
                     @else
-                        <input id="address_organizer" value="{{ $sessionMintWeb3->address_organizer ?? '' }}" type="hidden">
+                        {{--  <input id="address_organizer" value="{{ $sessionMintWeb3->address_organizer ?? '' }}" type="hidden">
                         <input id="address_nft" value="{{ $sessionMintWeb3->address_nft ?? '' }}" type="hidden">
                         <input id="seed" value="{{ $sessionMintWeb3->seed ?? '' }}" type="hidden">
                         <input id="user_address" value="{{ auth()->user()->wallet_address }}" type="hidden">
                         <input id="nft_id" value="{{ $sessionMintWeb3->id ?? '' }}" type="hidden">
-                        <input id="session_id" value="{{ $sessionMintWeb3->session_id ?? '' }}" type="hidden">
+                        <input id="session_id" value="{{ $sessionMintWeb3->task_event_detail_id ?? '' }}" type="hidden">
                         <input id="task_id" value="{{ $sessionMintWeb3->task_id ?? '' }}" type="hidden">
                         <input id="booth_id" value="{{ $sessionMintWeb3->booth_id ?? '' }}" type="hidden">
                         <input id="email_login" value="{{ auth()->user()->email ?? '' }}" type="hidden">
                         <input id="address_nft_min" value="{{ $sessionMintWeb3->address_nft ?? '' }}" type="hidden">
                         <input id="contract_event_id" value="{{ $event->contract_event_id }}" type="hidden">
+                        <input id="contract_task_events_details_id" value="{{ $sessionMintWeb3->contract_task_events_details_id }}" type="hidden">  --}}
 
+
+                        <input id="address_organizer" value="{{ $nftSessionNotClaim->address_organizer ?? '' }}" type="hidden">
+                        <input id="address_nft" value="{{ $nftSessionNotClaim->address_nft ?? '' }}" type="hidden">
+                        <input id="seed" value="{{ $nftSessionNotClaim->seed ?? '' }}" type="hidden">
+                        <input id="user_address" value="{{ auth()->user()->wallet_address }}" type="hidden">
+                        <input id="nft_id" value="{{ $nftSessionNotClaim->task_event_detail_nft_mint_id ?? '' }}" type="hidden">
+                        <input id="session_id" value="{{ $nftSessionNotClaim->task_event_detail_id ?? '' }}" type="hidden">
+                        <input id="task_id" value="{{ $nftSessionNotClaim->task_id ?? '' }}" type="hidden">
+                        <input id="booth_id" value="{{ $nftSessionNotClaim->booth_id ?? '' }}" type="hidden">
+                        <input id="email_login" value="{{ auth()->user()->email ?? '' }}" type="hidden">
+                        <input id="address_nft_min" value="{{ $nftSessionNotClaim->address_nft ?? '' }}" type="hidden">
+                        <input id="contract_event_id" value="{{ $event->contract_event_id }}" type="hidden">
+                        <input id="contract_task_events_details_id" value="{{ $nftSessionNotClaim->contract_task_events_details_id }}" type="hidden">
+                        
                         {{--  <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>  --}}
                         {{--  <button id="button-claim-test" type="button" class="btn btn-primary btn--order">Claim test</button>  --}}
                         
@@ -168,8 +183,6 @@
 
                 <div class="tab-content mt-2">
                     <div id="sesion" class="tab-pane fade in active">
-                       
-                        @foreach($travelSessions as $k => $session)
                       
                             @php
                                 //$codes = $userCode->where('user_id', $userId)
@@ -180,12 +193,10 @@
                                     //->implode(',');
                                 //$sTests = [];
 //                                dd($codes);
-                                if ($session->note) {
-                                    $sTests = explode('-', $session->note);
-                                }
+                               
                             @endphp
                             <div class="item">
-                                <h3 class="text-center">{{$session->name}}</h3>
+                                <h3 class="text-center">{{ $sessions->name }}</h3>
                                 <p>
                                     <strong>Missions: Scan the QR to receive a Lucky Draw Code.</strong>
                                 </p>
@@ -195,7 +206,7 @@
 
                                 <p><strong>Joined: <span style="color:green">{{$totalCompleted}}</span> / {{  count($sessions['detail']) }}
                                         sessions</strong></p>
-                                @if(false)
+                                {{--  @if(false)
                                     <p><strong>Prize drawing time:</strong> {{dateFormat($session->prize_at)}}</p>
                                     <p><strong>Position:</strong> Main Stage</p>
                                     <p><strong>Reward:</strong></p>
@@ -207,9 +218,10 @@
                                             @endif
                                         @endforeach
                                     </p>
-                                @endif
+                                @endif  --}}
                             </div>
                             <div class="timeline-container">
+                               
                                 @foreach($groupSessions as  $itemDatas)
 
                                     <div id="day{{($loop->index+1)}}">&nbsp;</div>
@@ -238,7 +250,6 @@
                                     </ul>
                                 @endforeach
                             </div>
-                        @endforeach
                     </div>
                 </div>
 

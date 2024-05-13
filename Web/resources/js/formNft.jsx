@@ -13,7 +13,7 @@ function NftForm() {
             nft_id: 0,
             nft_name: "",
             nft_symbol: "",
-            image_file: "/imgs/no-image.png",
+            image_file: "/imgs/defaulticket.png",
             nft_category: "Standard",
             nft_amount: 1
         }
@@ -42,7 +42,7 @@ function NftForm() {
                 nft_id: items.length,
                 nft_name: "",
                 nft_symbol: "",
-                image_file: "/imgs/no-image.png",
+                image_file: "/imgs/defaulticket.png",
                 nft_category: "Standard",
                 nft_amount: "1"
             }
@@ -88,6 +88,7 @@ function NftForm() {
         }
     };
     const _setMinted = (data, key) => {
+        console.log('dataMinft Ticket', data);
         setNftMinted(data);
     };
 
@@ -119,6 +120,7 @@ function NftForm() {
                     />)}
                 </div>
                 <div className="col-6 append-nft-detail" id={"append-nft-detail"}>
+                    <input type='hidden' name='list-ticket-item' value={JSON.stringify(nftMinted)} />
                     {nftMinted.map((item, key) => <NftItemMinted
                         key={item}
                         nftData={item}

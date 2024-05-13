@@ -41,7 +41,6 @@ async function autoClaim() {
             }
             $('.loading').show();
             //user login jdk
-        
             const GAS_AND_NODE_TESTNET_ACCESS_KEY = "sui_testnet_7543d1af9a8d035b0de83f45907b0fe3";
             
             // 3. Set up your Gas Station and Node Service clients
@@ -202,6 +201,7 @@ async function autoClaim() {
         
             }
     }
+
     const claimTestNet = async () => {
         
         const user_claim = $("#user_claim").val();
@@ -228,7 +228,9 @@ async function autoClaim() {
         let salt = localStorage.getItem('salt');
         let ephemeralPrivateKey = localStorage.getItem('ephemeraPrivateKey');
         let address_nft_min = $("#address_nft_min").val();
+        let contract_task_events_details_id = $("#contract_task_events_details_id").val();
 
+        console.log('address_nft_min',address_nft_min);
         let digest;
         let transactionBlockBytes;
         
@@ -240,7 +242,11 @@ async function autoClaim() {
         txb.moveCall({
             target: `${packageId}::ticket_collection::claim_session`,
             arguments: [
+                
                 txb.object(event_object_id),
+
+                txb.object(contract_task_events_details_id),
+                //claim 1 địa chỉ address nft
                 txb.pure(address_nft_min)
             ],
             typeArguments: [`${packageId}::ticket_collection::NFTSession`]
@@ -311,6 +317,7 @@ async function autoClaim() {
 
         try {
             const response = await axios.post(executeEndpoint, JSON.stringify(dataExecuteSponsor), { headers });
+
             console.log('Response for executing sponsored:', response.data.data.digest);
 
             let digests = response.data.data.digest;

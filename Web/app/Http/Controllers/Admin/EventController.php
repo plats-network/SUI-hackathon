@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\Ticket;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use App\Services\UserService;
@@ -29,9 +30,11 @@ use App\Models\{NFT\NFT,
     TravelGame,
     Sponsor,
     SponsorDetail,
+    TicketCollection,
     Url,
     UserSponsor,
     User};
+use App\Models\NFT\TicketNftMint;
 use App\Services\Admin\{EventService, TaskService};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -594,13 +597,14 @@ class EventController extends Controller
         $sessions = TaskEvent::where('task_id', $id)->with('detail')
             ->where('type', 0)
             ->first();
+        
         if ($sessions) {
+
             foreach ($sessions['detail'] as $session) {
                 $session['totalUserJob']  = totalUserJob($session['id']);
             }
         }
-
-
+        
         $sponsor = $this->sponsor->whereTaskId($id)->first();
 
         $taskEventDiscords = $task->taskEventDiscords;
@@ -725,7 +729,14 @@ class EventController extends Controller
             'task_id' => $task->id,
             'type' => 2
         ])->get();
-
+        
+        $ticketCollection = TicketCollection::where('task_id', $task->id)->orderBy('ticket_collection.id','ASC')->get();
+        
+        $ticketNftMint = TicketNftMint::join('ticket_collection','ticket_collection.id','=','ticket_nft_mint.ticket_id')
+            ->where('ticket_collection.task_id', $task->id)
+            ->orderBy('ticket_nft_mint.ticket_id','ASC')
+            ->get();
+        
         $data = [
             'eventId' => $eventId,
             'allNetwork' => $allNetwork,
@@ -755,8 +766,10 @@ class EventController extends Controller
             'countNFT' => $countNFT,
             'countNFTBooth' => $countNFTBooth,
             'countNFTSession' => $countNFTSession,
+            'ticketCollection'=>$ticketCollection,
+            'ticketNftMint'=>$ticketNftMint,
         ];
-
+        
         return view('cws.event.edit-custom', $data);
     }
 

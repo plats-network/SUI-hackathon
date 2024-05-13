@@ -30,7 +30,7 @@ export default function App() {
 
             const nameSession = $(this).find('.name_session').val() ?? 'name_session';
             const descriptionSession = $(this).find('.description_session').val() ?? 'description_session';
-            const fileSession = $(this).find('.image-file').attr('link-img') ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
+            const fileSession = $(this).find('.image-file').attr('link-img') ?? '/imgs/defaultsession.webp';
             const mintftSession = $(this).find('.mintft_session').val() ?? 'mintft_session';
             const sessionObj = {
                 nameSession: nameSession,
@@ -103,7 +103,7 @@ export default function App() {
         let event_id = $('meta[name="nft_hash_id"]').attr('content');
 
         let totalNftTicket = $('input[name^="nft-ticket-name-"]').length;
-        
+
         console.log('totalNftTickets',totalNftTicket);
 
         tx.moveCall({
@@ -139,6 +139,13 @@ export default function App() {
             }
             console.log(result);
             console.log(data);
+            const sessionCollectionIds = result.objectChanges.filter(
+                    (o) =>
+                        o.type === "created" &&
+                        o.objectType.includes("::ticket_collection::SessionCollection")
+                ).map(item => item.objectId);
+    
+            console.log(`Sessions collection id :`,sessionCollectionIds);
 
             // đoạn này là user claim
             let sessionIds =  result.objectChanges.filter((o) =>
@@ -159,17 +166,42 @@ export default function App() {
             // console.log('resultUserClaim',resultUserClaim);
             // hết đoạn này là user claim
 
+            // Số mảng con bạn muốn tạo
+            const numChunks = data.length;
+
+            // Hàm để cắt mảng thành các mảng con
+            function chunkArray(array, numChunks) {
+                let result = [];
+                const chunkSize = Math.ceil(array.length / numChunks);
+                for (let i = 0; i < array.length; i += chunkSize) {
+                    result.push(array.slice(i, i + chunkSize));
+                }
+                return result;
+            }
+
+            // Gọi hàm để cắt mảng
+            let newArray = chunkArray(sessionIds, numChunks);
+
+            let newArraySessionCollectionIds = chunkArray(sessionCollectionIds, numChunks);
+
+            console.log('newArray',newArray);
+            console.log('newArraySessionCollectionIds',newArraySessionCollectionIds);
             // Lặp qua mỗi đối tượng trong mảng data
             data.forEach((obj, index) => {
                 console.log('line 164',obj);
+                console.log('index line: 165',index);
                 // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
                 obj.txhash = result.digest;
 
                 //mint lại data
                 $('.itemSessionDetailMint').eq(index).find('.nft_address_session').val(sessionIds[index]);
                 $('.itemSessionDetailMint').eq(index).find('.nft_uri_session').val(obj.fileSession);
-                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(sessionIds));
+                $('.itemSessionDetailMint').eq(index).find('.nft_amount_session').val(totalNftTicket);
+                $('.itemSessionDetailMint').eq(index).find('.nft_digest_session').val(result.digest);
+                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(newArray[index]));
                 $('.itemSessionDetailMint').eq(index).find('.image-file').val();
+                $('.itemSessionDetailMint').eq(index).find('.nft_contract_task_events_details_id').val(newArraySessionCollectionIds[index]);
+
             });
 
             appendNftSessionDetail(data);

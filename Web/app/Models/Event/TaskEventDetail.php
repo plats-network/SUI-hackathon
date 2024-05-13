@@ -42,6 +42,10 @@ class TaskEventDetail extends Model
         'question',
         'a1', 'a2', 'a3', 'a4',
         'is_a1', 'is_a2', 'is_a3', 'is_a4',
+        'amount',
+        'avaliable_amount',
+        'photo',
+        'contract_task_events_details_id'
     ];
 
     //Get qr url

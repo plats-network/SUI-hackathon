@@ -9,6 +9,7 @@ function NftInput({nftData}) {
             <input type="hidden" name={`nft-ticket-uri-[]`} value={nftData.image_file}/>
             <input type="hidden" name={`nft-ticket-res-[]`} value={nftData.res}/>
             <input type="hidden" name={`nft-ticket-[]`} value={nftData.tickets}/>
+            <input type="hidden" name={`nft-amount-[]`} value={nftData.tickets}/>
         </>
     )
 }

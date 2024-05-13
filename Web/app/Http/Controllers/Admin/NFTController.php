@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Event\TaskEventDetail as EventTaskEventDetail;
 use App\Models\NFT;
 use App\Models\NFT\UserNft;
 use App\Models\User;
@@ -12,6 +13,12 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Models\NFT\TicketNftMint;
+use App\Models\NFT\TaskEventDetailNftMint;
+use App\Models\TaskEventDetail;
+use App\Models\TicketCollection;
+use \DB;
 
 class NFTController extends Controller
 {
@@ -121,46 +128,100 @@ class NFTController extends Controller
 
     public function updateNftClaim(Request $request)
     {
-        $nft = NFT\NFTMint::find($request->nft_id);
+        $data = $request->only(['digest','nft_mint_id','task_id']);
         
-        if (auth()->user() == null) {
-            // check login and auth
-            $existingUser = User::where('email', $request->email)->first();
-            if ($existingUser) {
-                Auth::login($existingUser);
-            } else {
-                $newUser = new User();
-                $newUser->name = $request->email;
-                $newUser->email = $request->email;
-//                $newUser->wallet_address = $request->address;
-                $newUser->email_verified_at = now();
-                $newUser->status = USER_ACTIVE;
-                $newUser->save();
-
-                Auth::login($newUser);
-            }
-        }
-        if (!empty($nft)) {
-
-            // update nft
-            $nft->status = 3;
-            $nft->save();
-
-            $userNft = new UserNft();
-            $userNft->user_id = \auth()->user()->id;
-            $userNft->nft_mint_id = $nft->id;
-            $userNft->type = $nft->type;
-            $userNft->booth_id = $nft->booth_id;
-            $userNft->task_id = $nft->task_id;
-            $userNft->digest = $request->digest ?? '';
-            $userNft->save();
-//            $nft = NFT\NFTMint::find($request->nft_id);
-//            $nft->status = 3;
-//            $nft->save();
-        }
-        return [
-            "code" => 200
+        $validator = [
+           
+            'digest'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            'nft_mint_id'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+            
+            'task_id'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
         ];
+
+        $messages = [
+
+        ];
+
+        $validator = Validator::make($data, $validator,$messages);
+
+        // validate data
+        if ($validator->fails()) {
+
+            return response()->json([
+                'status' => false,
+                'message' =>  $validator->messages()->first()
+            ], 400);
+        }
+
+        $userClaimtNft = UserNft::where('user_id',auth()->user()->id)
+            ->whereNull('booth_id')
+            ->whereNull('session_id')
+            ->where('task_id',$data['task_id'])
+            ->where('nft_mint_id',$data['nft_mint_id'])
+            ->first();
+       
+        // nếu user này chưa claim thì claim có rồi thì thôi
+        if(!empty($userClaimtNft)){
+
+            return response()->json([
+                'status' => false,
+                'message' =>  'Your User Claimed NFT already'
+            ], 400);
+        }
+        
+        $responses = null;
+
+        DB::transaction(function () use ($data, &$responses) {
+
+            $data['type'] = 1;
+            $data['id'] = Str::uuid();
+            $data['user_id'] = auth()->user()->id;
+
+            $ticketNftMint = TicketNftMint::where('id', $data['nft_mint_id'])->first();
+
+            $ticketCollection = TicketCollection::where('id', $ticketNftMint['ticket_id'])->first();
+
+           
+            $ticketCollection->available_amount = $ticketCollection->available_amount + 1;
+            
+            if($ticketCollection->available_amount > $ticketCollection['amount']){
+
+                $responses = [
+                    'status' => false,
+                    'message' => 'The number of tickets has exceeded the specified number'
+                ];
+                return;
+            }
+
+            //lưu người dùng nào claim
+            $createUserNft = UserNft::create($data);
+
+            $ticketCollection->timestamps = false; // Disable updating the updated_at column
+            
+            $ticketCollection->save();
+
+            // Gán kết quả trả về vào biến $response
+            $responses = [
+                'status' => true,
+                'message' => 'Your User Claim NFT success',
+                'data' => $createUserNft
+            ];
+            
+        });
+
+        return response()->json($responses, 200);
     }
 
     public function updateSessionBoothClaim(Request $request)
@@ -207,18 +268,22 @@ class NFTController extends Controller
         if(isset($data['session_id'])){
 
             $userClaimtNft = UserNft::where('user_id',auth()->user()->id)
+                ->where('nft_mint_id', $data['nft_mint_id'])
                 ->where('session_id', $data['session_id'])
                 ->where('task_id', $data['task_id'])->first();
+            $data['type'] = 2;
+
         }
         
         if(isset($data['booth_id'])){
             
             $userClaimtNft = UserNft::where('user_id',auth()->user()->id)
-            ->where('booth_id', $data['booth_id'])
-            ->where('task_id', $request['task_id'])->first();
-            
+                ->where('nft_mint_id', $data['nft_mint_id'])
+                ->where('booth_id', $data['booth_id'])
+                ->where('task_id', $request['task_id'])->first();
+            $data['type'] = 3;
         }
-
+       
         // nếu user này chưa claim thì claim có rồi thì thôi
         if(!empty($userClaimtNft)){
 
@@ -227,16 +292,49 @@ class NFTController extends Controller
                 'message' =>  'Your User Claimed NFT already'
             ], 400);
         }
+           
+        $responses = null;
+        
+        DB::transaction(function () use ($data, &$responses) {
 
-        $data['type'] = 2;
-        $data['user_id'] = auth()->user()->id;
-        $createUserNft = UserNft::create($data);
+            $data['id'] = Str::uuid();
 
-        return response()->json([
-            'status' => true,
-            'message' =>  'Your User Claim NFT success',
-            'data'=>$createUserNft
-        ], 200);
+            $data['user_id'] = auth()->user()->id;
+
+            $taskEventDetailNftMint = TaskEventDetailNftMint::where('id', $data['nft_mint_id'])->first();
+            
+            $eventTaskEventDetail = EventTaskEventDetail::where('id', $taskEventDetailNftMint['task_event_detail_id'])->first();
+
+           
+            $eventTaskEventDetail->avaliable_amount = $eventTaskEventDetail->avaliable_amount + 1;
+            
+            //claim hết số lượng thì hiển thị thông báo
+            if($eventTaskEventDetail->avaliable_amount > $eventTaskEventDetail['amount']){
+
+                $responses = [
+                    'status' => false,
+                    'message' => 'The number of tickets has exceeded the specified number'
+                ];
+                return;
+            }
+
+            //lưu người dùng nào claim
+            $createUserNft = UserNft::create($data);
+
+            $eventTaskEventDetail->timestamps = false; // Disable updating the updated_at column
+            
+            $eventTaskEventDetail->save();
+
+            // Gán kết quả trả về vào biến $response
+            $responses = [
+                'status' => true,
+                'message' => 'Your User Claim NFT success',
+                'data' => $createUserNft
+            ];
+            
+        });
+        
+        return response()->json($responses, 200);
     }
 
     public function uploadImageNft(Request $request)

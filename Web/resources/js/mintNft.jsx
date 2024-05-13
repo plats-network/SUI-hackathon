@@ -102,7 +102,7 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
                 },
             });
 
-            console.log("create ticket tx", JSON.stringify(txs, null, 2));
+            console.log("create ticket tx", txs);
 
             const ticketCollectionId = (
                 txs.objectChanges.filter(
@@ -111,13 +111,15 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
                         o.objectType.includes("::ticket_collection::EventTicket")
                 )[0]
             ).objectId;
+            console.log(`ticket  id : `,ticketCollectionId);
+  
 
-            if(!ticketCollectionId || ticketCollectionId == ""){
+            if(!ticketCollectionId || ticketCollectionId == "" ){
                 alert('Failed to create ticket collection');
                 return;
             }
             localStorage.setItem('contract_event_id',ticketCollectionId);
-            console.log(`ticket  id : `,ticketCollectionId);
+
             setTotalMin(1);
         }
 
@@ -141,16 +143,16 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
                     ).map(item => item.objectId);
                 console.log('ticketIds :', ticketIds);
 
-
                 // Add a new NftInput for each successful mint
                 for (let j = 0; j < Number(nftData[i].nft_amount); j++) {
                     setNftInputs(prevInputs => [...prevInputs, {
                         ...nftData[i],
-                        res: JSON.stringify(res),
+                        res: res.digest,
                         tickets: ticketIds[j]
                     }]);
                 }
-                nftMints.push({...nftData[i], res: JSON.stringify(res)});
+                console.log('nftData line 152',nftData);
+                nftMints.push({...nftData[i], res: res.digest, address_nft:JSON.stringify(ticketIds)});
                 newItems.push(nftData[i].nft_id);
                 newDatas.push({...nftData[i]});
             } catch (e) {
@@ -158,6 +160,7 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
                 console.error("nft mint failed", e);
             }
         }
+        console.log('nftMints line 161',nftMints);
         _setMinted([...nftMinted, ...nftMints]);
         let difference = itemCopy.filter(x => !newItems.includes(x));
         const differenceData = datas.filter(nftItem =>
@@ -167,7 +170,6 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
         setItems([...difference]);
         setNftData([...differenceData]);
         setIsLoading(false);
-
     }
 
     return (

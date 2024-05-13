@@ -52,12 +52,12 @@ export default function StatusEvent({ payload }) {
                     setValueCheckBox((prev) => !prev)
                     console.log(data);
                     $.notify("Success.", "success");
-                    location.reload();
+                    // location.reload();
                 },
                 error: function (data) {
                     console.log(data);
                     $.notify("Success", "error");
-                    location.reload();
+                    // location.reload();
                 }
             });
             console.log("lock event  tx", txs);

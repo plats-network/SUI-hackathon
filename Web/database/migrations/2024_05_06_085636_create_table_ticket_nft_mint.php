@@ -14,12 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ticket_nft_mint', function (Blueprint $table) {
-            $table->bigIncrements('id')->comment('id tự động tăng');
+            $table->uuid('id')->primary()->comment('id tự động tăng');
             $table->string('address_nft', 255)->comment('địa chỉ address nhận nft');
-            $table->bigInteger('ticket_id')->comment('id tự động tăng của bảng ticket collection');
+            $table->uuid('ticket_id')->nullable()->comment('id tự động tăng của bảng ticket collection');
             $table->timestamp('created_at')->useCurrent()->comment('Ngày tạo');
-            $table->text('digest')->comment('response của contract');
-            $table->string('tx_hash', 255)->comment('hash của transaction khi mint');
+            $table->text('digest')->comment('digest response của contract');
         });
     }
 

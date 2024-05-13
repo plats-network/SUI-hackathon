@@ -16,6 +16,7 @@ use App\Models\Event\{
     UserCode,
 };
 use App\Models\{NFT\NFTMint, NFT\UserNft, Task, User, TravelGame, Sponsor, SponsorDetail, UserSponsor};
+use App\Models\NFT\TaskEventDetailNftMint;
 use App\Services\{CodeHashService, TaskService};
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -131,7 +132,7 @@ class Job extends Controller
 
                 return redirect()->route('web.formLoginGuest');
             }
-        
+          
             if ($task) {
                 $checkUserEvent = $this->userEvent
                     ->whereTaskId($task->id)
@@ -338,6 +339,7 @@ class Job extends Controller
      */
     public function getTravelGame(Request $request, $taskId)
     {   
+       
         try {
             
             $event = $this->task->find($taskId);
@@ -356,6 +358,7 @@ class Job extends Controller
                 
             $travelSessions = [];
             $session = $this->taskEvent->whereTaskId($taskId)->whereType(TASK_SESSION)->first();
+
             $travelSessionIds = $this->eventDetail
                 ->select('travel_game_id')
                 ->distinct()
@@ -376,7 +379,7 @@ class Job extends Controller
 //                ->whereIn('id', $travelSessionIds)
                 ->orderBy('created_at', 'desc')
                 ->get();
-//dd($travelSessions);
+
             $travelBooths = $this->travelGame->whereIn('id', $travelBootsIds)->get();
 
             // Start
@@ -604,15 +607,34 @@ class Job extends Controller
      
         $nftMint =  NFTMint::where('session_id',$session->id ?? '')->first();
         
-        #sesssion đã được mint bên web3
-        $sessionMintweb3 = TaskEventDetail::join('nft_mints','nft_mints.session_id','=','task_event_details.id')->where(['task_event_details.code'=> $request['id'] ?? $request['code_task_event_details']])->first();
+        //lấy danh sách các nft session đã claim
+        $nftMint = UserNft::select('nft_mint_id')->where('type',2)->where('task_id',$taskId)->pluck('nft_mint_id');
         
+        //lấy danh sách địa chỉ ví đã dùng rồi các nft đã mint
+        $claimedNfts = TaskEventDetailNftMint::whereIn('id', $nftMint)->pluck('address_nft');
+
+        #lấy sesssion đã được mint bên web3
+        $sessionMintweb3 = TaskEventDetail::join(
+            'task_event_detail_nft_mint',
+            'task_event_detail_nft_mint.task_event_detail_id','=','task_event_details.id')
+                ->where(['task_event_details.code'=> $request['id'] ?? $request['code_task_event_details']]);
+
+        //lấy ra những nft chưa claim
+        $nftSessionNotClaim = TaskEventDetailNftMint::select('*','task_event_detail_nft_mint.id as task_event_detail_nft_mint_id')
+            ->join('task_event_details','task_event_details.id','=','task_event_detail_nft_mint.task_event_detail_id')
+            ->whereNotIn('task_event_detail_nft_mint.address_nft',$claimedNfts)
+            ->whereIn('task_event_detail_nft_mint.id',$sessionMintweb3->pluck('task_event_detail_nft_mint.id'))
+            ->where(['task_event_detail_nft_mint.task_id'=>$taskId])
+            ->first();
+
         #user đã claim nft session
-        $nftUserClaimSession =  UserNft::where([
-                'session_id'=>$sessionMintweb3->session_id ?? '',
-                'task_id'=>$sessionMintweb3->task_id ?? '',
-                'user_id'=>auth()->user()->id,
-        ])->first();
+        $nftUserClaimSession =  UserNft::join('task_event_detail_nft_mint','task_event_detail_nft_mint.id','=','user_nft.nft_mint_id')
+            ->where([
+                'task_event_detail_nft_mint.task_event_detail_id'=>$nftSessionNotClaim['task_event_detail_id'] ?? '',
+                'user_nft.task_id'=>$taskId ?? '',
+                'user_nft.user_id'=>auth()->user()->id,
+                'user_nft.type'=>2,
+            ])->first();
         
         foreach ($groupSessions[""] as $item) {
             if ($item['flag'] === true) {
@@ -621,21 +643,12 @@ class Job extends Controller
         }
         
         $listLuckyCode =  $this->userCode
-            ->where('task_event_id', $sessionMintweb3->task_event_id)
+            ->where('task_event_id', $sessionMintweb3->first()->task_event_id)
             ->whereNotNull('task_event_details_id')
             ->where('user_id',auth()->user()->id)
             ->get();
 
-        if(!empty($listLuckyCode)){
-            
-            foreach ($listLuckyCode as $item) {
-
-                if(isset($item['number_code'])){
-                    
-                    $numberCodes[] = $item['number_code'];
-                }
-            }
-        }
+        $numberCodes = $listLuckyCode->pluck('number_code')->toArray();
 
         $data = [
             'event' => $event,
@@ -656,6 +669,7 @@ class Job extends Controller
             'nftUserClaimSession'=>$nftUserClaimSession,
             'code_task_event_details'=>$request['code_task_event_details'],
             'sessionMintWeb3'=>$sessionMintweb3,
+            'nftSessionNotClaim'=>$nftSessionNotClaim,//địa chỉ ví còn lại chưa claim
             // 'luckyCode'=>$checkCode,
             'listLuckyCode'=> !empty($numberCodes) ? implode(',', $numberCodes) : []
         ];

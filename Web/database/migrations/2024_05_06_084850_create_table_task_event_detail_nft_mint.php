@@ -12,13 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('task_event_detail_nft_mint', function (Blueprint $table) {
-            $table->bigIncrements('id')->comment('id tự động tăng');
-            $table->string('address_nft', 255)->comment('địa chỉ nft');
-            $table->unsignedBigInteger('task_event_detail_id')->comment('id của bảng task_event_details');
+            $table->uuid('id')->primary()->comment('id tự động tăng');
+            $table->text('address_nft')->comment('địa chỉ address nhận nft');
+            $table->uuid('task_event_detail_id')->nullable()->comment('id của bảng task_event_details');
             $table->timestamp('created_at')->useCurrent()->comment('ngày tạo');
-            $table->unsignedBigInteger('task_id')->comment('id của bảng tasks');
-            $table->string('tx_hash', 255)->comment('hash của transaction khi mint');
-            $table->text('digest')->comment('response của contract');
+            $table->uuid('task_id')->nullable()->comment('id của bảng tasks');
+            $table->text('digest')->comment('digest response của contract');
         });
     }
 
