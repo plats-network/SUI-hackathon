@@ -145,6 +145,11 @@
             color: white;
             font-weight: bold;
         }
+        .btn-register-event:hover{
+            background: #2c75c0;
+            color: white;
+            font-weight: bold;
+        }
     </style>
     @vite('resources/js/claim.js')
 
