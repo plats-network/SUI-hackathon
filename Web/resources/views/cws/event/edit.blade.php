@@ -1293,13 +1293,11 @@
             });
 
             $(document).on('click', '.min-save-btn', function (event) {
-                console.log('Save');
                 let ticketCollectionId = localStorage.getItem("contract_event_id");
-                let sessionCollectionId = localStorage.getItem("contract_session_id");
-                let boothCollectionId = localStorage.getItem("contract_booth_id");
 
-                if(!ticketCollectionId || !sessionCollectionId || !boothCollectionId){
+                if(!ticketCollectionId){
                     alert('Please create NFT before save');
+                    return;
                 }
                 
                 console.log('ticketCollectionId',ticketCollectionId);
@@ -1309,22 +1307,9 @@
                 inputTicketCollectionId.setAttribute('name', 'ticket_collection_id');
                 inputTicketCollectionId.setAttribute('value', ticketCollectionId);
 
-                // Tạo input hidden cho sessionCollectionId
-                let inputSessionCollectionId = document.createElement('input');
-                inputSessionCollectionId.setAttribute('type', 'hidden');
-                inputSessionCollectionId.setAttribute('name', 'session_collection_id');
-                inputSessionCollectionId.setAttribute('value', sessionCollectionId);
-
-                // Tạo input hidden cho boothCollectionId
-                let inputBoothCollectionId = document.createElement('input');
-                inputBoothCollectionId.setAttribute('type', 'hidden');
-                inputBoothCollectionId.setAttribute('name', 'booth_collection_id');
-                inputBoothCollectionId.setAttribute('value', boothCollectionId);
 
                 let form = document.getElementById('post_form');
                 form.appendChild(inputTicketCollectionId);
-                form.appendChild(inputSessionCollectionId);
-                form.appendChild(inputBoothCollectionId);
 
                 let idForm = '#post_form';
                 $(idForm).removeAttr('onsubmit');
