@@ -16,24 +16,27 @@ const NFTSessionType = `${packageId}::ticket_nft::NFTSession`;
 const NFTBoothType = `${packageId}::ticket_nft::NFTBooth`;
 const CoinType = "0x2::sui::SUI";
 
-async function mint() {
-    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
+async function addClient() {
+    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_PUBLISHER);
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+        url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
+    let packageId = process.env.PACKAGE_ID;
+    const collectionId= process.env.EVENT_OBJECT_ID;
 
 
     tx.moveCall({
-        target: `${packageId}::client::create_new_collection`,
+        target: `${packageId}::admin::batch_add_client`,
         arguments: [
-            tx.pure("https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"),
-            tx.pure("SUI Hackathon 2024"),
-            tx.pure("This is a ticket to join SUI Hackathon 2024"),
-            tx.pure("0"),
+            // ticket event id 
+            tx.object(collectionId),
+            // clients address 
+            tx.pure(["0xb9941d47ba2a5583b89d8399a646251cb9bc8ad0004ec70c5bb8088f6f5356b7", "0xcdeec99b1786a614d9ddcf016222fdc30c17ead921d80a0dcbead5c6e6a616b3"]),  
+            // publisher id -> hiện tại giữ nguyên hey
+            tx.pure(process.env.PUBLISHER_ID)
         ],
 
-        typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
 
     const txs = await client.signAndExecuteTransactionBlock({
@@ -47,19 +50,9 @@ async function mint() {
         },
     });
 
+    console.log("add client  tx", JSON.stringify(txs, null, 2));
 
-    console.log("create collection tx", JSON.stringify(txs, null, 2));
-
-    const ticketCollectionId = (
-        txs.objectChanges.filter(
-          (o) =>
-            o.type === "created" &&
-            o.objectType.includes("::ticket_collection::TicketCollection")
-        )[0]
-      ).objectId;
-      console.log(`ticket collection id : ${ticketCollectionId}`);
-    // get collection object id 
 
 }
 
-mint();
+addClient();

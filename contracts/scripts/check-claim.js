@@ -15,24 +15,28 @@ async function mint() {
         url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
-
+    //let packageId = "0x769941cd7b338429e9ada6f6e697e47461971c6bc2c8c45d8a1f3e412c4767ea";
+    let packageId = process.env.PACKAGE_ID;
+    let collectionId = process.env.EVENT_OBJECT_ID;
     tx.moveCall({
-        target: `${process.env.PACKAGE_ID}::sui_nft::mint_to_sender`,
+        target: `${packageId}::ticket_collection::check_claimed_ticket`,
         arguments: [
-            tx.pure("SUI Hackathon"),
-            tx.pure("This is a ticket yo join SUI Hackathon"),
-            tx.pure("https://picsum.photos/id/237/200/300"),
+            //  event object id 
+            tx.object(collectionId),
+            // ticket id
+            tx.pure.id("0xfc8111d61ffc53a7dcf8707718252674cc93cc12b3cd4b6356479baad8fcf7cb"),
+
         ],
-        //typeArguments: [`${packageId}::minter::NFT`]
+        //typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });
 
-    const result = await client.signAndExecuteTransactionBlock({
-        signer: keypair,
+    const result = await client.devInspectTransactionBlock({
+        sender: keypair.toSuiAddress(),
         transactionBlock: tx,
     });
 
-    console.log({ result });
+    console.log("Result:",result.results[0].returnValues[0][0]);
+
 }
 
 mint();
-

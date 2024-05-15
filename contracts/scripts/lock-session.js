@@ -9,34 +9,44 @@ if (!process.env.PACKAGE_ID) {
     process.exit(1);
   }
 
-async function claim() {
-    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_USER);
+
+async function lockSession() {
+    const keypair = Ed25519Keypair.deriveKeypair(process.env.MNEMONIC_CLIENT);
     const client = new SuiClient({
         url: getFullnodeUrl(process.env.NETWORK),
     });
     const tx = new TransactionBlock();
     let packageId = process.env.PACKAGE_ID;
-    let collectionId = process.env.EVENT_OBJECT_ID;
+    const collectionId= process.env.EVENT_OBJECT_ID;
 
-    // claim ticket by user
+
     tx.moveCall({
-        target: `${packageId}::ticket_collection::claim_session`,
+        target: `${packageId}::client::lock_session`,
         arguments: [
+            // ticket event id 
             tx.object(collectionId),
             // session collection id 
-            tx.object("0xa5626b2f554c0ec4f4e0b4efff337a84d0d1e0de1a6a1290176224190fd0bb3a"),
-            // session object id 
-            tx.pure("0x9b72adcf519c28c8d2009b6d1ef5eeb3ecee742a10a567cc7cac57a6d9e3a716")
+            tx.pure("0xa5626b2f554c0ec4f4e0b4efff337a84d0d1e0de1a6a1290176224190fd0bb3a"),
+            // bật on = false , off = true        
+            tx.pure(true),  
         ],
-        typeArguments: [`${packageId}::ticket_collection::NFTSession`]
+
     });
-    const result = await client.signAndExecuteTransactionBlock({
+
+    const txs = await client.signAndExecuteTransactionBlock({
         signer: keypair,
         transactionBlock: tx,
+        options: {
+            showInput: true,
+            showEffects: true,
+            showEvents: true,
+            showObjectChanges: true,
+        },
     });
 
+    console.log("lock session  tx", JSON.stringify(txs, null, 2));
 
-    console.log({ result });
+
 }
 
-claim();
+lockSession();

@@ -2,7 +2,7 @@ const { getFullnodeUrl, SuiClient } = require('@mysten/sui.js/client');
 
 const getNfts = async () => {
     const client = new SuiClient({
-        url: getFullnodeUrl('testnet'),
+        url: getFullnodeUrl(process.env.NETWORK),
     });
     let address = "0xb9941d47ba2a5583b89d8399a646251cb9bc8ad0004ec70c5bb8088f6f5356b7";
 
