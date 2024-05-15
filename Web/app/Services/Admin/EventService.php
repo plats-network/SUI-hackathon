@@ -510,7 +510,6 @@ class EventService extends BaseService
                 'description' => $sessions['description'],
                 'type' => 0,
                 'code' => Str::random(35),
-                'contract_task_events_id'=>$dataParam['session_collection_id']	
             ]);
             if (isset($sessions['detail']) && $sessions['detail']) {
 
@@ -680,8 +679,7 @@ class EventService extends BaseService
                 'max_job' => $booths['max_job'] ?? 1,
                 'description' => $booths['description'],
                 'type' => 1,
-                'code' => Str::random(35),
-                'contract_task_events_id'=>$data['booth_collection_id']
+                'code' => Str::random(35)
             ]);
 
             if (isset($booths['detail']) && $booths['detail']) {
