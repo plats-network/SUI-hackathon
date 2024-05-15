@@ -137,8 +137,8 @@ export default function App() {
                 alert('nft minted Session fails!');
                 return;
             }
-            console.log(result);
-            console.log(data);
+            console.log('result',result);
+            console.log('data',data);
             const sessionCollectionIds = result.objectChanges.filter(
                     (o) =>
                         o.type === "created" &&

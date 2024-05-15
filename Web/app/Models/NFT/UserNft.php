@@ -4,7 +4,7 @@ namespace App\Models\NFT;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\NFT\NFTMint;
 class UserNft extends Model
 {
     use SoftDeletes;

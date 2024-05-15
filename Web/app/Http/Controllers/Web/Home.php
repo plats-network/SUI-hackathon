@@ -477,17 +477,17 @@ class Home extends Controller
                     'ticket_collection.task_id' => $id,
                 ])->first();
 
-            if (\auth()->user()) {
-                $check = UserNft::with('nftMint')
-                    ->where([
-                        'user_id' => \auth()->user()->id,
-                        'task_id' => $id,
-                        'type'=>1
-                    ])
-                    ->whereNull('session_id')
-                    ->whereNull('booth_id')
-                    ->first();
-            }
+            // if (\auth()->user()) {
+            //     $check = UserNft::with('nftMint')
+            //         ->where([
+            //             'user_id' => \auth()->user()->id,
+            //             'task_id' => $id,
+            //             'type'=>1
+            //         ])
+            //         ->whereNull('session_id')
+            //         ->whereNull('booth_id')
+            //         ->first();
+            // }
         } catch (\Exception $e) {
 //            dd($e->getMessage());
             notify()->error('Error show event');
@@ -499,6 +499,7 @@ class Home extends Controller
 //            ])->get();
 //            dd($taskDetail);
 //        }
+
         $data = [
             'event' => $event ?? [],
             'user' => $user ?? [],
