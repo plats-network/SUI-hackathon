@@ -250,16 +250,31 @@ class Home extends Controller
         $has_checkin = 0;
         //url download ticket
         $url_download_ticket = route('ticket.pdf', ['id' => $id]);
+
+           
+        //lấy thông tin người dùng tạo ticket sukien
+
         try {
             $user = Auth::user();
 
             $event = $this->taskService->find($id);
+
             //Check event is null
             if (!$event) {
                 notify()->error('Sự kiện không tồn tại.');
 
                 return redirect()->route('web.home');
             }
+            
+            //lấy thông tin người tạo sự  kiện
+            $userSubmited = $this->user->find($event->creator_id);
+            
+            //danh sách những người tham gia sự kiện
+            $eventUserTicket = $this->eventUserTicket->where('event_user_tickets.task_id',$event->id)->orderBy('event_user_tickets.id','DESC')->get()->toArray();
+            
+            // danh sách user bình thường sss, aa and 2 others
+            $displayString = $this->createDisplayString(array_column($eventUserTicket, 'name'));
+            
             //Increase view
             /*$this->taskService->update($id, [
                 'view_count' => $event->view + 1
@@ -504,6 +519,9 @@ class Home extends Controller
             'countEventDetailBooth' => $countEventDetailBooth ?? [],
             'checkMint' => $check ?? [],
             'nft' => $nft ?? [],
+            'userSubmited'=>$userSubmited,
+            'eventUserTicket'=>$eventUserTicket,
+            'displayString'=>$displayString
         ];
         return view('web.events.show', $data);
     }
@@ -888,4 +906,20 @@ class Home extends Controller
         return redirect()->to('/');
     }
 
+    // example : Rose Duong, Thomas Le and 13 others
+    private function createDisplayString($userNames)
+    {
+        $count = count($userNames);
+
+        switch ($count) {
+            case 0:
+                return '';
+            case 1:
+                return $userNames[0];
+            case 2:
+                return implode(' and ', $userNames);
+            default:
+                return $userNames[0] . ', ' . $userNames[1] . ' and ' . ($count - 2) . ' others';
+        }
+    }
 }

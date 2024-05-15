@@ -244,9 +244,10 @@ class EventService extends BaseService
                         }
                     }
                 }
-
+                
                 // lưu vào bảng ticket_collection
                 if(!empty($saveTkCollection)){
+
                     TicketCollection::insert($saveTkCollection);
                 }
                 
@@ -255,7 +256,7 @@ class EventService extends BaseService
                     TicketNftMint::insert($saveTicketNftMint);
                 }
             }
-         
+            
             // create nft table nft_mints
             // if (isset($data['nft-ticket-name-'])) {
                 

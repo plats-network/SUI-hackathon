@@ -1,3 +1,41 @@
+<style>
+    .sp-hidden {
+        {{--  position: absolute; 
+        top: 0px; 
+        left: 0px; 
+        width: 420px; 
+        height: 93px; 
+        padding: 0 12px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-family: Lexend; 
+        font-size: 40px; 
+        line-height: 56px; 
+        font-weight: 400; 
+        color: #FFFFFFFF;
+        background: #00659FFF; 
+        opacity: 1; 
+        border: none; 
+        border-radius: 8px;  --}}
+    }
+    .text-white{
+        color: #FFFFFFFF !important;
+    }
+    .create-event{
+        border-radius: 5px;
+        color: #FFFFFFFF;
+        background: #00659FFF; 
+    }
+    .user-name{
+        border-radius: 5px;
+        background: #5dbff6;
+        color: #FFFFFFFF;
+    }
+    .user-name a{
+        color: #131314 !important;
+    }
+</style>
 <header class="header-area">
     <div class="classy-nav-container breakpoint-off">
         <div class="container">
@@ -24,7 +62,32 @@
                     <div class="classynav">
                         <ul id="nav">
                             @if (auth()->check() && auth()->user()->role == GUEST_ROLE)
-                                <li class="sp-hidden">Hi! {{auth()->user()->name}}</li>
+                                <li class="sp-hidden create-event">
+                                    <a class="text-white" href="{{ route('cws.eventList') }}">Create Event</a>
+                                </li>
+                                <li class="sp-hidden user-name">
+                                    <a href="#">
+                                        {{Str::limit(auth()->user()->name, 15)}}
+                                    </a>
+                                </li>
+                                <li class="pl-5">
+                                    @php
+                                        $avatar = optional(auth()->user())->avatar_path;
+                                    @endphp
+                                    <div class="dropdown">
+                                        <button id="info"
+                                                class="dropbtn"
+                                                style="
+                                            background-image: url({{imgAvatar($avatar)}});
+                                            background-position: center;
+                                            background-size: contain;"
+                                        ></button>
+                                        <div id="e-menu" class="dropdown-content">
+                                            <a href="{{route('web.profile')}}">Profile</a>
+                                            <a href="{{route('web.logout')}}">Logout</a>
+                                        </div>
+                                    </div>
+                                </li>
                             @else
                                 <li class="sp-hidden"><a href="https://{{config('plats.cws')}}">Create Event</a></li>
                             @endif
@@ -53,26 +116,7 @@
                                 {{--                                    <a class="btn btn-info" href="{{route('web.formLogin')}}">Sign Up for Free</a>--}}
                                 {{--                                </li>--}}
                             @else
-                                <li class="pl-5">
-                                    @php
-                                        $avatar = optional(auth()->user())->avatar_path;
-                                    @endphp
-                                    <div class="dropdown">
-                                        <button id="info"
-                                                class="dropbtn"
-                                                style="
-                                            background-image: url({{imgAvatar($avatar)}});
-                                            background-position: center;
-                                            background-size: contain;"
-                                        ></button>
-                                        <div id="e-menu" class="dropdown-content">
-                                            <a href="{{route('web.profile')}}">Profile</a>
-                                            <a href="#" class="wallet-user" style="display: none!important;">Wallet</a>
-                                            {{-- <a href="#">Link 2</a> --}}
-                                            <a href="{{route('web.logout')}}">Logout</a>
-                                        </div>
-                                    </div>
-                                </li>
+                            
                             @endif
                         </ul>
                     </div>
