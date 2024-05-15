@@ -61,7 +61,7 @@
                     </div>
                     <div class="classynav">
                         <ul id="nav">
-                            @if (auth()->check() && auth()->user()->role == GUEST_ROLE)
+                            @if (auth()->check())
                                 <li class="sp-hidden create-event">
                                     <a class="text-white" href="{{ route('cws.eventList') }}">Create Event</a>
                                 </li>
