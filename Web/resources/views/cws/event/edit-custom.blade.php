@@ -85,6 +85,11 @@
         overflow-x: auto;
         height: 450px;
     }
+
+    .append-nft-ticket{
+        overflow-x: auto;
+        height: 450px;
+    }
 </style>
 <div class="container-fluid">
         <div class="row">
@@ -105,7 +110,6 @@
                     @endif
                     <a class="btn btn-info btn-sm mb-2 mr-5 none" target="_blank" style="margin-right: 10px;"
                        href="https://platsevent.web.app/reward-nft?id={{$event->id}}">Reward</a>  --}}
-
 
                 </div>
                 <div class="col-md-3 text-end">

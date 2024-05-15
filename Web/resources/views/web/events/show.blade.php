@@ -8,6 +8,143 @@
             pointer-events: none;
             cursor: default;
         }
+        .post-author-area{
+            border: 2px solid #21aeff6e;
+            border-radius: 5px;
+            padding: 24px 20px;
+            box-shadow: none !important;
+        }
+        .tanger{
+            width: 5px;
+            background: #6bbbe8;
+            position: absolute;
+            height: 45px;
+            left: 20px;
+            top: 25px;
+        }
+        
+        .size-submited{
+            font-weight: bold;
+            font-size: 30px;
+            left: 15px;
+            position: relative;
+        }
+        .line {
+            height: 0px;
+            border-width: 1px;
+            border-color: #15ABFFFF;
+            border-style: solid;
+            transform: rotate(180deg);
+            margin-top: 10px;
+        }
+        .verry-blue {
+            width: 25px;
+            fill: #3ea2ff;
+          }
+        .btn-follow{
+            padding: 8px;
+            /* background: red; */
+            /* height: 20px; */
+            width: 120px;
+            border: 1px solid #3ea2ff;
+            border-radius: 5px;
+        }
+        .avatar-submited{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .flex-submited{
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .mr-15{
+            margin-right: 10px;
+        }
+        .sort-avatar-0{
+            background: #f5d2d2;
+        }
+        .sort-avatar-1{
+            right: 15px;
+            position: relative;
+            background: #59f2fd;
+        }
+        .sort-avatar-2{
+            right: 30px;
+            position: relative;
+            background: #fd597a;
+        }
+        .sort-avatar-3{
+            right: 45px;
+            position: relative;
+            background: #fffe16;
+        }
+        .register-by{
+            display: flex;
+            align-content: flex-start;
+            flex-direction: column;
+        }
+        .all-member{
+            position: relative;
+            right: 60px;
+            height: 40px;
+            background: #898989;
+            padding: 10px;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+        }
+        .list-name-member{
+            margin-top: 10px;
+        }
+        .btn-register-event{
+            padding: 10px 50px;
+            background-color: #187fe2;
+            color: #fff;
+            margin-top: 20px;
+        }
+        .infor-event{
+            padding: 20px;
+            border: 1px solid #11b2ff;
+            border-radius: 5px;
+        }
+        .location{
+            color:#11b2ff;
+        }
+        .icon-address{
+            width: 40px;
+            text-align: center;
+            height: 40px;
+            border-radius: 5px;
+            background: #bee8ff;
+            border: 1px solid #c2c2c2;
+        }
+        .svg-icon-address{
+            margin-top: 10px;
+        }
+        .text-address{
+            margin-left: 10px;
+        }
+        .btn-claim-id{
+            background: #3ea2ff;
+            color: white;
+        }
+        .post-details-content img {
+               padding: 0 !important;
+        }
+        .mt-25{
+            margin-top: 25px;
+        }
+        .align-content-center{
+            align-items: center;
+        }
+        .btn-register-event{
+            background: #2c75c0;
+            color: white;
+            font-weight: bold;
+        }
     </style>
     @vite('resources/js/claim.js')
 
@@ -20,16 +157,15 @@
     @endphp
     <section class="confer-blog-details-area section-padding-100-0">
         <div class="container">
-            <div class="row justify-content-center">
-
-                <div class="col-lg-8">
-
+            <div class="row justify-content-center mt-25">
+                <div class="col-lg-6">
                     <div class="pr-lg-4 mb-100">
                         <div class="post-details-content">
+                            
                             <div class="post-blog-thumbnail mb-30">
                                 <img src="{{$event->banner_url ?? ''}}" alt="">
                             </div>
-                            <h4 class="post-title">{{$event->name ?? ''}}</h4>
+                            {{--  <h4 class="post-title">{{$event->name ?? ''}}</h4>
                             <div class="post-meta">
                                 <a class="post-date" href="#">
                                     <i class="zmdi zmdi-alarm-check"></i> {{dateFormat($event->created_at)}}
@@ -38,7 +174,7 @@
                                         class="zmdi zmdi-account"></i> {{optional($event->author)->name}}</a>
                                 <a class="post-author" href="#"><i class="zmdi zmdi-favorite-outline"></i> 8 Likes</a>
                             </div>
-                            {!! $event->description !!}
+                            {!! $event->description !!}  --}}
                         </div>
                         @if (request()->hasAny('check-in'))
                             @if($session)
@@ -54,8 +190,9 @@
                                 </div>
                             @endif
                         @endif
-
-                        <div class="post-tags-social-area mt-30 pb-5 d-flex flex-wrap align-items-center">
+                        
+                        {{--  share  --}}
+                        {{--  <div class="post-tags-social-area mt-30 pb-5 d-flex flex-wrap align-items-center">
                             <div class="popular-tags d-flex align-items-center">
                                 <p><i class="zmdi zmdi-label"></i></p>
                                 <ul class="nav">
@@ -70,19 +207,70 @@
                                         ->linkedin($event->name)
                                         ->whatsapp()
                                         ->telegram()
-//                                !!}
+                                !!}
                             </div>
-                        </div>
-                        <div class="post-author-area d-flex align-items-center my-5">
-                            <div class="author-avatar">
+                        </div>  --}}
+
+                        <div class="post-author-area  align-items-center my-5">
+                            <h2>
+                                <span  class="tanger"></span> <b class="size-submited">Submited by</b>
+                            </h2>
+                            
+                            <div class="line">
+
+                            </div>
+                            <div class="flex-submited mt-3">
+                                <img class="avatar-submited mr-15" src="{{  $userSubmited->avatar_path  }}">
+                                <div class="mr-15">
+                                    <b> {{Str::limit($userSubmited->name, 26)}}</b>
+                                </div>
+                                <div class="mr-15">
+                                    <svg data-v-2c3852b6="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="verry-blue"><path data-v-2c3852b6="" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>
+                                </div class="mr-15">
+                                <button class="btn-follow">
+                                    Follow
+                                </button>
+                            </div>
+                            {{--  <div class="author-avatar">
                                 <img src="{{imgAvatar(optional($event->author)->avatar_path)}}"
                                      alt="{{optional($event->author)->name}}">
                             </div>
                             <div class="author-content">
                                 <h5>{{optional($event->author)->name}}</h5>
                                 <span>Client Service</span>
-                                {{-- <p>OK</p> --}}
+                            </div>  --}}
+                        </div>
+                        <div class="post-author-area  align-items-center my-5">
+                            <h2>
+                                <span  class="tanger"></span> <b class="size-submited">Registered by</b>
+                            </h2>
+                            
+                            <div class="line">
+
                             </div>
+                            <div class="register-by mt-3 ">
+                                <div class="d-flex align-items-center">
+                                    <img class="avatar-submited sort-avatar-0" src="{{ asset('/imgs/users/A1.jpg') }}">
+                                    <img class="avatar-submited sort-avatar-1"  src="{{ asset('/imgs/users/B1.jpg') }}">
+                                    <img class="avatar-submited sort-avatar-2"  src="{{ asset('/imgs/users/C1.jpg') }}">
+                                    <img class="avatar-submited sort-avatar-3"  src="{{ asset('/imgs/users/D1.jpg') }}">
+                                    <div class="all-member">
+                                        +{{ count($eventUserTicket) }}
+                                    </div>
+                                </div>
+                                <div class="list-name-member">
+                                    
+                                    <h3>By: {{ $displayString }}</h3>
+                                </div>
+                            </div>
+                            {{--  <div class="author-avatar">
+                                <img src="{{imgAvatar(optional($event->author)->avatar_path)}}"
+                                     alt="{{optional($event->author)->name}}">
+                            </div>
+                            <div class="author-content">
+                                <h5>{{optional($event->author)->name}}</h5>
+                                <span>Client Service</span>
+                            </div>  --}}
                         </div>
                     </div>
                 </div>
@@ -91,24 +279,56 @@
                 <input type="hidden" id="contract_event_id" value="{{ $event->contract_event_id }}">
                 <input type="hidden" id="collection_id" value="{{ env('COLLECTION_ID')}}">
                 <input type="hidden" id="ticket_id" value="{{ !empty($nft) ? $nft->address_nft : ''}}">
-                <div id="fixed" class="col-lg-4">
+
+                <div id="fixed" class="col-lg-6">
                     <div class="confer-sidebar-area mb-100">
                         <div class="single-widget-area">
-                            <div class="post-author-widget">
+                            <div class="infor-event">
+                                <h1 class="text-center size-submited">{{$event->name ?? ''}}</h1>
+                                <div class="view text-right">
+                                    <svg width="15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/></svg> 
+                                    {{  rand(100,1000); }}
+                                </div>
+                                <div class="start-time d-flex align-content-center">
+                                    <div class="icon-address">
+                                        <svg width="15" class="svg-icon-address" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 32V64H48C21.5 64 0 85.5 0 112v48H448V112c0-26.5-21.5-48-48-48H352V32c0-17.7-14.3-32-32-32s-32 14.3-32 32V64H160V32c0-17.7-14.3-32-32-32S96 14.3 96 32zM448 192H0V464c0 26.5 21.5 48 48 48H400c26.5 0 48-21.5 48-48V192z"/></svg>
+                                    </div>
+                                    <div class="text-address w-100">
+                                        <b>{{ $event->start_at }} - {{ $event->end_at }}</b>
+                                        <br>
+                                        {{--  <span class="location">Asia/Vietnam</span>  --}}
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="start-time d-flex align-content-center">
+                                    <div class="icon-address">
+                                        <svg width="15" class="svg-icon-address" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+                                    </div>
+                                    <div class="text-address w-100">
+                                        <b>{{ $event->address }}</b>
+                                        <br>
+                                        {{--  <span class="location">Vietnam</span>  --}}
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="line"></div>
+                                <br>
                                 @if ($checkMint)
-                                    <a  class="btn btn-info" style="display: block" href="#">Claim already</a>
+                                    <a  class="btn btn-info" style="display: block;margin-bottom: 20px;color: #0fff0f;border: 1px solid #0fff0f;" href="#">Claim already</a>
                                     <a style="
                                             border: none;
                                             background: none;
                                             color: blue;
                                             margin-top: 20px;
+                                            text-align: center;
                                             display: block;
+                                            text-decoration: revert;
                                         " class="link-primary" target="_blank" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$checkMint->digest ?? ''}}">
                                         Suiet Explorer Link
                                     </a>
-                                @else
-                                   
-                                @if ($nft)
+                                @endif
+                                <div class="text-center">
+                                    @if ($nft)
 
                                     <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
                                     <input id="digest_nft" value="{{ isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : ''}}" type="hidden">
@@ -118,18 +338,30 @@
                                     <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">
                                     <input id="nft_id" value="{{ $nft->id_ticket_nft_mint }}" type="hidden">
                                     <input id="email_login" value="{{ auth()->user() ? auth()->user()->email : '' }}" type="hidden">
-                                    <a style="display:none; margin-bottom: 20px" class="btn btn-info claim-success" href="#">Claim already</a>
-                                    <a style="border: none;display:none;background: none;color: blue;" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/devnet/tx/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
+                                    <a style="display:none; margin-bottom: 20px;color: #0fff0f;border: 1px solid #0fff0f;" class="btn btn-info claim-success" href="#">Claim already</a>
+                                    <a style="border: none;display:none;background: none;color: blue;text-align: center;    text-decoration: revert;" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/devnet/{{ env('TYPE_NETWORK') }}/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
                                         Suiet Explorer Link
                                     </a>
                                 @endif
-
-{{--                               <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'showModal'}} {{ !$nft ? 'disabled' : '' }}" href="#" >Register event</a>--}}
-                                   <a class="btn btn-info {{auth()->user() != null ? 'btn-claim-id' : 'zklogin'}} {{ !$nft ? 'disabled' : '' }}" href="#" data-url="{{route('web.formLogin')}}" >Register event</a>
-
+                                </div>
+                                @if(!$checkMint)
+                                    <a class="w-100 btn-register-event btn btn-primary  btn-info {{auth()->user() != null ? 'btn-claim-id' : 'zklogin'}} {{ !$nft ? 'disabled' : '' }}" href="#" data-url="{{route('web.formLogin')}}">Register</a>
                                 @endif
-                                <hr>
+                                <br>
                             </div>
+                            <div class="post-author-area  align-items-center my-5">
+                                <h2>
+                                    <span class="tanger"></span> <b class="size-submited">About the event</b>
+                                </h2>
+                                <div class="line">
+                                </div>
+                                <div class="flex-submited mt-3">
+                                    {!! $event->description !!}
+                                </div>
+                            </div>
+                            {{--  <div class="post-author-widget">
+                                
+                            </div>  --}}
                             {{--                            <div class="post-author-widget">--}}
                             {{--                                <a id="showModal" class="btn btn-info" href="#">Get Ticket</a>--}}
                             {{--                                <hr>--}}

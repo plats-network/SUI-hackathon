@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Task;
 use App\Models\Traits\Uuid;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 class EventUserTicket extends Model
@@ -56,5 +57,12 @@ class EventUserTicket extends Model
         $eventUserTicket = $this->find($id);
         $eventUserTicket->hash_code = Str::random(32);
         $eventUserTicket->save();
+    }
+    
+
+    //người dùng đăng kí sự kiện
+    public function user()
+    {
+        return $this->hasMany(User::class, 'id', 'user_id');
     }
 }
