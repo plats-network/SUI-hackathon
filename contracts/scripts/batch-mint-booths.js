@@ -24,9 +24,9 @@ async function mintBooths() {
             // event_id
             tx.pure("8ba9148d4e85e4a6862e8fa613f6cf6b"),
             // name: vector<vector<u8>>,
-            tx.pure(["SUI booth 1","SUI booth 2"]),
+            tx.pure([tx.pure.toString("SUI booth số 1"),tx.pure.toString("SUI booth số 2")]),
             // description: vector<vector<u8>>,
-            tx.pure(["This is booth 1","This is booth 2"]),
+            tx.pure([tx.pure.toString("This is booth 1"),tx.pure.toString("This is booth 2")]),
             // url: vector<vector<u8>>,
             tx.pure(["https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos","https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"]),
             // max supply 
@@ -49,7 +49,7 @@ async function mintBooths() {
                 o.type === "created" &&
                 o.objectType.includes("::ticket_collection::BoothCollection")
         ).map(item => item.objectId);
-    console.log(`Booths id : ${boothCollectionIds}`);
+    console.log(`Booths collection id : ${boothCollectionIds}`);
 
     const boothIds = 
         txs.objectChanges.filter(
