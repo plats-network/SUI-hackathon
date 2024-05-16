@@ -24,9 +24,9 @@ async function mintSessions() {
             // event_id
             tx.pure("8ba9148d4e85e4a6862e8fa613f6cf6b"),
             // name: vector<vector<u8>>,
-            tx.pure(["SUI session 1", "SUI session 2"]),
+            tx.pure([tx.pure.toString("SUI session số 1"), tx.pure.toString("SUI session số 2")]),
             // description: vector<vector<u8>>,
-            tx.pure(["This is session 1", "This is session 2"]),
+            tx.pure([tx.pure.toString("This is session số  1"), tx.pure.toString("This is session số 2")]),
             // url: vector<vector<u8>>,
             tx.pure(["https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos", "https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"]),
             // max supply 
