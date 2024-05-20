@@ -15,7 +15,7 @@ export default function MyComponentConnectWallet() {
         const timeoutId = setTimeout(() => {
             setConnectedChangeCount(1);
             isFirstRender.current = false; // Mark the first render as complete
-        }, 1000);
+        }, 2000);
 
         return () => clearTimeout(timeoutId); // Cleanup function to prevent leaks
     }, []);
