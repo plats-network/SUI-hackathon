@@ -1,6 +1,8 @@
 import React from 'react';
+import {ConnectButton, useWallet, addressEllipsis} from "@suiet/wallet-kit";
 
 function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey, upload}) {
+    const wallet = useWallet();
     return (
         <div className="row mb-3 nft-ticket-div">
             <div className="col-4">

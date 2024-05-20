@@ -68,6 +68,7 @@
         user-select: none;
         cursor: pointer;
         transition: all 1s;
+        border: 2px dashed #999;
     }
 
     .img-preview:hover{
@@ -674,9 +675,9 @@
                                                         <th>Avatar</th>
                                                         <th>Name</th>
                                                         <th>Email</th>
-                                                        <th>Phone</th>
-                                                        <th>Task Done</th>
-                                                        <th>Set Vip</th>
+                                                        <!-- <th>Phone</th> -->
+                                                        <!-- <th>Task Done</th> -->
+                                                        <!-- <th>Set Vip</th> -->
                                                         <th>Created</th>
                                                     </tr>
                                                     </thead>
@@ -702,15 +703,15 @@
                                                                 <p class="text-success"
                                                                    style="font-size: 11px">{{$userItem->email}}</p>
                                                             </td>
-                                                            <td class="fw-semibold" style="width: 10%;">
+                                                            <!-- <td class="fw-semibold" style="width: 10%;">
                                                                 <p class="text-success"
                                                                    style="font-size: 11px">{{$userItem->phone}}</p>
-                                                            </td>
-                                                            <td class="fw-semibold" style="width: 10%;">
+                                                            </td> -->
+                                                            <!-- <td class="fw-semibold" style="width: 10%;">
                                                                 <p class="text-success"
                                                                    style="font-size: 11px">{{$userItem->taskDoneEvent($userItem->id, $select_session_id)}}</p>
-                                                            </td>
-                                                            <td>
+                                                            </td> -->
+                                                            <!-- <td>
 
                                                                 <input
                                                                     type="checkbox"
@@ -724,7 +725,7 @@
                                                                     data-on-label="On"
                                                                     data-off-label="Off"
                                                                     data-url="{{route('cws.setTicketVip', ['id' => $userInfo->id])}}"></label>
-                                                            </td>
+                                                            </td> -->
                                                             <td>
                                                                 {{dateFormat($userItem->created_at)}}
                                                             </td>
@@ -801,7 +802,7 @@
                                             </div>
 
                                             {{-- danh sách user --}}
-                                            <div class="col-12 mt-4">
+                                            <!-- <div class="col-12 mt-4">
                                                 <h2>User Reward</h2>
                                                 <div class="row">
                                                     <div class="table-responsive small col-lg-12 col-md-12 ms-sm-auto col-lg-12">
@@ -869,7 +870,7 @@
                                                         </table>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>

@@ -27,6 +27,7 @@
        'resources/js/mint.js',
 //        'resources/js/connect_suit.jsx',
         'resources/js/formNft.jsx',
+        'resources/js/connect-sui-wallet.jsx',
         'resources/js/testReactjs.jsx'
     ])
     <div class="page-title-box align-self-center d-none d-md-block">
@@ -81,6 +82,7 @@
             user-select: none;
             cursor: pointer;
             transition: all 1s;
+            border: 2px dashed #999;
         }
 
         .img-preview:hover {
@@ -101,15 +103,21 @@
         }
 
         #button_connect_suit {
-            margin-bottom: 20px;
+            margin-right: 20px;
+            right: 0px !important;
         }
         .btn-hiden-create{
             display: none;
         }
+        .btn-connect-wallet{
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: nowrap;
+            margin-top: 10px;
+        }
     </style>
     <div class="text-end">
-        <div id="button_connect_suit" style="display: inline-block"></div>
-        {{--  <button id="connectSUi">Connect</button>  --}}
+        <!-- <button  id="connectSUi">Connect</button> -->
     </div>
     <div class="container-fluid">
         <div class="row">
@@ -155,6 +163,10 @@
                     <div class="card-header plats-step">
                         <h4 class="card-title mb-0">Forms Steps</h4>
                     </div>
+                    <div class="btn-connect-wallet">
+                        <div></div>
+                        <div id="button_connect_suit"  class="text-right"></div>
+                    </div>
                     <div class="card-body">
                         <form method="POST"
                               id="post_form"
@@ -171,6 +183,7 @@
                             @endif
 
                             @if(true)
+
                                 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link navItemTab active" id="navItemTab0" data-step="0"
@@ -371,11 +384,13 @@
                                                 <div class="col-lg-12">
                                                     <div class="mb-3">
                                                         <label for="event_description" class="form-label">Description
-                                                            <span class="text-danger">*</span></label>
 
-                                                        <div id="editor"></div>
-                                                        <input type="hidden" id="description" name="description"
-                                                               value="{{ $event->description }}">
+                                                            <span class="text-danger">*</span></label>
+                                                        
+                                                            <div id="editor"></div>
+
+                                                            <textarea type="hidden" id="description" name="description"
+                                                               value="{{ $event->description }}"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1281,9 +1296,9 @@
                 var content = editor.getHTML();//editor.getHTML(); getMarkdown
                 var content2 = editor2.getHTML();//editor.getHTML();
                 var content3 = editor3.getHTML();//editor.getHTML();
-                $('[name=description]').attr('value', editor.getHTML());
-                $('[id=sessions-description]').attr('value', editor2.getHTML());
-                $('[id=booths-description]').attr('value', editor3.getHTML());
+                $('[name=description]').val(content);
+                $('[id=sessions-description]').val(content2);
+                $('[id=booths-description]').val(content3);
                 $(window).off('beforeunload');
             });
 

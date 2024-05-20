@@ -99,7 +99,7 @@
         .list-name-member{
             margin-top: 10px;
         }
-        .btn-register-event{
+        .btn-register-event,.btn-get-ticket{
             padding: 10px 50px;
             background-color: #187fe2;
             color: #fff;
@@ -140,7 +140,7 @@
         .align-content-center{
             align-items: center;
         }
-        .btn-register-event{
+        .btn-register-event,.btn-get-ticket{
             background: #2c75c0;
             color: white;
             font-weight: bold;
@@ -149,6 +149,20 @@
             background: #2c75c0;
             color: white;
             font-weight: bold;
+        }
+        .btn-get-ticket:hover{
+            background: #2c75c0;
+            color: white;
+            font-weight: bold;
+        }
+        .ticket--sp{
+            display: none !important;
+        }
+        .btn-danger{
+            background: red;
+        }
+        .btn-danger:hover{
+            background: red;
         }
     </style>
     @vite('resources/js/claim.js')
@@ -318,7 +332,7 @@
                                 <br>
                                 <div class="line"></div>
                                 <br>
-                                @if ($checkMint)
+                                @if ($checkMint && !$link_check_in)
                                     <a  class="btn btn-info" style="display: block;margin-bottom: 20px;color: #0fff0f;border: 1px solid #0fff0f;" href="#">Claim already</a>
                                     <a style="
                                             border: none;
@@ -333,26 +347,39 @@
                                     </a>
                                 @endif
                                 <div class="text-center">
-                                    @if ($nft)
 
-                                    <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
-                                    <input id="digest_nft" value="{{ isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : ''}}" type="hidden">
-                                    <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">
-                                    <input id="seed" value="{{ $nft->seed }}" type="hidden">
-                                    <input id="task_id" value="{{ $nft->task_id }}" type="hidden">
-                                    <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">
-                                    <input id="nft_id" value="{{ $nft->id_ticket_nft_mint }}" type="hidden">
-                                    <input id="email_login" value="{{ auth()->user() ? auth()->user()->email : '' }}" type="hidden">
-                                    <a style="display:none; margin-bottom: 20px;color: #0fff0f;border: 1px solid #0fff0f;" class="btn btn-info claim-success" href="#">Claim already</a>
-                                    <a style="border: none;display:none;background: none;color: blue;text-align: center;    text-decoration: revert;" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/devnet/{{ env('TYPE_NETWORK') }}/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
-                                        Suiet Explorer Link
-                                    </a>
-                                @endif
+                                @if ($nft && !$link_check_in)
+
+                                        <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
+                                        <input id="digest_nft" value="{{ isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : ''}}" type="hidden">
+                                        <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">
+                                        <input id="seed" value="{{ $nft->seed }}" type="hidden">
+                                        <input id="task_id" value="{{ $nft->task_id }}" type="hidden">
+                                        <input id="user_address" value="{{ auth()->user() ? auth()->user()->wallet_address : '' }}" type="hidden">
+                                        <input id="nft_id" value="{{ $nft->id_ticket_nft_mint }}" type="hidden">
+                                        <input id="email_login" value="{{ auth()->user() ? auth()->user()->email : '' }}" type="hidden">
+                                        <a style="display:none; margin-bottom: 20px;color: #0fff0f;border: 1px solid #0fff0f;" class="btn btn-info claim-success" href="#">Claim already</a>
+                                        <a style="border: none;display:none;background: none;color: blue;text-align: center;    text-decoration: revert;" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/devnet/{{ env('TYPE_NETWORK') }}/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
+                                            Suiet Explorer Link
+                                        </a>
+                                    @endif
                                 </div>
-                                @if(!$checkMint)
-                                    <a class="w-100 btn-register-event btn btn-primary  btn-info {{auth()->user() != null ? 'btn-claim-id' : 'zklogin'}} {{ !$nft ? 'disabled' : '' }}" href="#" data-url="{{route('web.formLogin')}}">Register</a>
+                                
+                                {{-- đang ở link checkin mà chưa claim nft thì hiển thị--}}
+                                @if($link_check_in && !$checkMint)
+                                    <a  class="w-100 btn-get-ticket btn btn-danger btn-info" href="https://{{ env('SUB_EVENT') }}.{{ env('APP_URL') }}/event/{{ $event->id }}">Please register event</a> 
+                                @endif
+
+                                {{--  đang ở link checkin và đã claim nft thì checkin  --}}
+                                @if($link_check_in && $checkMint)
+                                    <button  class="w-100 btn-get-ticket get-exploder-checkin btn btn-primary  btn-info">Explorer checkin</button> 
+                                @endif
+
+                                @if(!$checkMint && !$link_check_in)
+                                    <a class="w-100 btn-register-event btn btn-primary  btn-info {{auth()->user() != null ? 'btn-claim-id' : 'zklogin'}} {{ !$nft ? 'disabled' : '' }}" href="#" data-url="{{route('web.formLogin')}}">Register event</a>
                                 @endif
                                 <br>
+                                {{--  <button id="click-event">ok</button>  --}}
                             </div>
                             <div class="post-author-area  align-items-center my-5">
                                 <h2>
@@ -360,7 +387,7 @@
                                 </h2>
                                 <div class="line">
                                 </div>
-                                <div class="flex-submited mt-3">
+                                <div class="mt-3">
                                     {!! $event->description !!}
                                 </div>
                             </div>
@@ -595,8 +622,6 @@
 
 @endsection
 
-
-
 @section('scripts')
     @uploadFileJS
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
@@ -612,6 +637,58 @@
             integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
             crossorigin="anonymous"></script>
 {{--    <script src="dashboard.js"></script>--}}
+    
+    <script>
+        $(".get-exploder-checkin").click(function(){
+            alert('update in the feature');
+        });
+        //Check has param sucess_checkin
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        
+        @if($link_check_in && $checkMint)
+            var url = window.location.href;
+            if (url.indexOf('sucess_checkin') != -1) {
+
+
+                setTimeout(function(e) {
+                    //Show toast
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Checkin success 😀',
+                    })
+                }, 1500);
+            }
+        @endif
+        
+        $("#click-event").click(function(){
+            
+            let data = {
+                first:"first",
+                last:"last",
+                task_id:"9c0daab2-13f1-45b0-bf61-b30556a9a12a",
+                email:"cifow69607@bsomek.com",
+                phone:"admin1234567"
+            }
+          
+            $.ajax({
+                type: "POST",
+                url: "{{ route('order.ticket') }}",
+                data: data,
+            }).then(function(data){
+                console.log(data)
+            });
+        })
+    </script>
 
     <script>
         var _token = $('meta[name="csrf-token"]').attr('content');
@@ -714,6 +791,6 @@
 @endsection
 @push('custom-scripts')
     <script src="{{ url('js/index.umd.js') }}"></script>
-    <script src="https://auth.magic.link/sdk"></script>
-    <script type="text/javascript" src="https://auth.magic.link/sdk/extension/solana"></script>
+    {{--  <script src="https://auth.magic.link/sdk"></script>
+    <script type="text/javascript" src="https://auth.magic.link/sdk/extension/solana"></script>  --}}
 @endpush

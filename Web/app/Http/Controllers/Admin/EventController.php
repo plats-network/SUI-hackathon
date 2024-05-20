@@ -81,7 +81,6 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
-
         $limit = $request->get('limit') ?? PAGE_SIZE;
         $clientUser = Auth::user();
         $condition = [
@@ -91,17 +90,34 @@ class EventController extends Controller
         if (Auth::user()->role != ADMIN_ROLE) {
             $condition['creator_id'] = $clientUser->id;
         }
-        $events = $this->taskService->search($condition);
-
-        foreach ($events as $event) {
-            if ($event->code == null || $event->code == '') {
-                $event->update(['code' => genCodeTask()]);
-            }
+        
+        // $events = $this->taskService->search($condition);
+        $events = $this->task->select('*');
+        // foreach ($events as $event) {
+        //     if ($event->code == null || $event->code == '') {
+        //         $event->update(['code' => genCodeTask()]);
+        //     }
+        // }
+        if (!empty($request)) {
+            $events->when(!empty($request->name), function ($query) use ($request) {
+                $query->where('name', 'LIKE', "%{$request->name}%");
+                })
+                ->when(!empty($request->status), function ($query) use ($request) {
+                $query->where('status', 'LIKE', "%{$request->status}%");
+                })
+                ->when(!empty($request->start_at) && !empty($request->end_at), function ($query) use ($request) {
+                $query->whereBetween('start_at', [$request->start_at, $request->end_at]);
+                })
+                ->when(!empty($request->start_at), function ($query) use ($request) {
+                $query->where('start_at', '>=', $request->start_at);
+                })
+                ->when(!empty($request->end_at), function ($query) use ($request) {
+                $query->where('end_at', '<=', $request->end_at);
+            });
         }
-
         $tab = $request->get('tab') ?? 0;
         $data = [
-            'events' => $events,
+            'events' => $events->orderBy('id','DESC')->paginate(10),
             'tab' => $tab,
         ];
 
@@ -488,7 +504,7 @@ class EventController extends Controller
         //New Code
         //05.12.2023 - Url Check In event
         $userCheckIn = $this->listUsers($id); //List user check in event
-
+        
         //$urlAnswers = route('quiz-name.answers', $eventId);
         $urlAnswers = route('web.events.show', ['id' => $eventId ?? 1, 'check_in' => true]);
         $qrCode = QrCode::format('png')->size(250)->generate($urlAnswers);
@@ -667,11 +683,16 @@ class EventController extends Controller
         //Is preview
         $isPreview = $request->get('preview') ?? '0';
         $travelGames = $this->travelGame->whereUserId($userId)->whereStatus(true)->get();
-
+    
         //New Code
         //05.12.2023 - Url Check In event
         $userCheckIn = $this->listUsers($id); //List user check in event
+        
+        // user check in
+        $user_id =  $this->eventUserTicket->select('user_id')->where('task_id', $id)->pluck('user_id');
+        $userCheckIn = $this->user->select('*')->whereIn('id', $user_id)->paginate(100);
 
+        
         //$urlAnswers = route('quiz-name.answers', $eventId);
 //        $urlAnswersFull = route('web.events.show', ['id' => $eventId, 'check_in' => true]);
         $urlAnswersFull = 'https://' .config('plats.event').'/event/'.$eventId.'?check_in=1';
@@ -736,7 +757,7 @@ class EventController extends Controller
             ->where('ticket_collection.task_id', $task->id)
             ->orderBy('ticket_nft_mint.ticket_id','ASC')
             ->get();
-        
+            
         $data = [
             'eventId' => $eventId,
             'allNetwork' => $allNetwork,
@@ -778,10 +799,11 @@ class EventController extends Controller
         $users = [];
         try {
             $userIds = $this->eventUserTicket->select('user_id')->whereTaskId($id)->get();
-
+           
             $userIds = $userIds->pluck('user_id')->toArray();
 
             $userIds = array_unique($userIds);
+
             $users = $this->userService->search([
                 'limit' => 100,
                 'userIds' => $userIds
