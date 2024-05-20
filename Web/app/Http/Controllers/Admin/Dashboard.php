@@ -22,6 +22,8 @@ class Dashboard extends Controller
      */
     public function index(Request $request)
     {
+        return redirect()->route('cws.dashboard');
+
         $limit = $request->get('limit') ?? 10;
         $events = $this->taskService->search([
             'limit' => $limit,
