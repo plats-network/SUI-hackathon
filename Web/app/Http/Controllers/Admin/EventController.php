@@ -117,7 +117,7 @@ class EventController extends Controller
         }
         $tab = $request->get('tab') ?? 0;
         $data = [
-            'events' => $events->orderBy('id','DESC')->paginate(10),
+            'events' => $events->where('creator_id',Auth::user()->id)->orderBy('id','DESC')->paginate(10),
             'tab' => $tab,
         ];
 
