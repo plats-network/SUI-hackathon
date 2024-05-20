@@ -13,7 +13,7 @@ function NftForm() {
             nft_id: 0,
             nft_name: "",
             nft_symbol: "",
-            image_file: "/imgs/defaulticket.png",
+            image_file: window.location.origin+"/imgs/defaulticket.png",
             nft_category: "Standard",
             nft_amount: 1
         }
@@ -42,7 +42,7 @@ function NftForm() {
                 nft_id: items.length,
                 nft_name: "",
                 nft_symbol: "",
-                image_file: "/imgs/defaulticket.png",
+                image_file: window.location.origin+"/imgs/defaulticket.png",
                 nft_category: "Standard",
                 nft_amount: "1"
             }
