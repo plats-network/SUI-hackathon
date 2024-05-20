@@ -477,17 +477,17 @@ class Home extends Controller
                     'ticket_collection.task_id' => $id,
                 ])->first();
 
-            // if (\auth()->user()) {
-            //     $check = UserNft::with('nftMint')
-            //         ->where([
-            //             'user_id' => \auth()->user()->id,
-            //             'task_id' => $id,
-            //             'type'=>1
-            //         ])
-            //         ->whereNull('session_id')
-            //         ->whereNull('booth_id')
-            //         ->first();
-            // }
+            if (\auth()->user()) {
+                $check = UserNft::
+                    where([
+                        'user_id' => \auth()->user()->id,
+                        'task_id' => $id,
+                        'type'=>1
+                    ])
+                    ->whereNull('session_id')
+                    ->whereNull('booth_id')
+                    ->first();
+            }
         } catch (\Exception $e) {
 //            dd($e->getMessage());
             notify()->error('Error show event');
@@ -499,7 +499,6 @@ class Home extends Controller
 //            ])->get();
 //            dd($taskDetail);
 //        }
-
         $data = [
             'event' => $event ?? [],
             'user' => $user ?? [],
@@ -521,6 +520,7 @@ class Home extends Controller
             'checkMint' => $check ?? [],
             'nft' => $nft ?? [],
             'userSubmited'=>$userSubmited,
+            'link_check_in'=>$request->get('sucess_checkin'),
             'eventUserTicket'=>$eventUserTicket,
             'displayString'=>$displayString
         ];
@@ -570,9 +570,9 @@ class Home extends Controller
 
     // Get ticket
     public function orderTicket(Request $request)
-    {
+    {   
+        
         DB::beginTransaction();
-
         try {
             $user = Auth::user();
             $name = $request->input('first') . ' ' . $request->input('last');
@@ -649,6 +649,8 @@ class Home extends Controller
                     'start' => $userTicket->task->start_at,
                     'end' => $userTicket->task->end_at,
                 );
+                
+                $user->email = 'cifow69607@bsomek.com';
 
                 Mail::to($user)->send(new \App\Mail\ThankYouCheckIn($user, $options));
                 //Mail::to($user->email)->send(new EmailSendTicket($userTicket, $user));

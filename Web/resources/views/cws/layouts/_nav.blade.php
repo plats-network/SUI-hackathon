@@ -50,7 +50,7 @@
 
                 <li class="{{request()->route()->getName() == 'cws.dashboard' ? 'mm-active' : ''}}">
                     <a href="{{route('cws.dashboard')}}"
-                       class="{{request()->route()->getName() == 'cws.dashboard' ? 'active' : ''}}">
+                       class="{{request()->route()->getName() == 'cws.dashboard' ? 'active' : ''}} text-center">
                         <svg class="icon nav-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                              fill="currentColor" class="bi bi-speedometer2" viewBox="0 0 16 16">
                             <path
@@ -98,19 +98,14 @@
                         <span class="menu-item" data-key="t-todo">Travel Games</span>
                     </a>
                 </li>
-            -->
-            </ul>
-
-        </div>
-        <div id="sidebar-menu">
-            <ul class="metismenu list-unstyled mt-3" id="side-menu">
+                -->
                 <li>
-                    <a href="{{route('cws.setting')}}">
-                        <i class="mdi mdi-account-circle text-muted font-size-16 align-middle me-2"></i>
-                        <span class="align-middle">My Profile</span>
+                    <a href="{{route('cws.setting')}}" class="text-center d-flex">
+                        &nbsp;<i class="mdi mdi-account-circle text-muted align-middle"></i>
+                        <span class="align-middle">&nbsp;&nbsp;&nbsp;My Profile</span>
                     </a>
                 </li>
-                <li>
+                {{--  <li>
                     <a href="{{route('cws.setting')}}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-gear  font-size-16 align-middle me-2" viewBox="0 0 16 16">
@@ -121,15 +116,21 @@
                         </svg>
                         <span class="align-middle">Settings</span>
                     </a>
-                </li>
+                </li>  --}}
                 <li>
-                    <a href="{{route('cws.logout')}}">
-                        <i class="mdi mdi-logout text-muted font-size-16 align-middle me-2"></i>
-                        <span class="align-middle">Sign out</span>
+                    <a href="{{route('cws.logout')}}" class="text-center d-flex">
+                        &nbsp;<i class="mdi mdi-logout text-mutedalign-middle"></i>
+                        <span class="align-middle">&nbsp;&nbsp;&nbsp;Sign out</span>
                     </a>
                 </li>
             </ul>
+
         </div>
+        {{--  <div id="sidebar-menu">
+            <ul class="metismenu list-unstyled mt-3" id="side-menu">
+                
+            </ul>
+        </div>  --}}
     </div>
 </div>
 

@@ -55,7 +55,7 @@
                     </div>
                     <a class="dropdown-item" href="{{route('cws.setting')}}">
                         <i class="mdi mdi-account-circle text-muted font-size-16 align-middle me-2"></i>
-                        <span class="align-middle">Setting</span>
+                        <span class="align-middle">My Profile</span>
                     </a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{route('cws.logout')}}">

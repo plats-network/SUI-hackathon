@@ -105,7 +105,7 @@
                                 <th>No</th>
                                 <th>Img</th>
                                 <th>Name</th>
-                                <th>Star<br>End</th>
+                                <th>Start - End</th>
                                 <th>View</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -128,10 +128,11 @@
                                             title="{{$event->name}}"
                                             target="_blank">{{$event->name}}</a>
                                     </td>
-                                    <td style="width: 15%;">
-                                        {{ dateFormat($event->start_at) }}
-                                        <br>
-                                        {{ dateFormat($event->end_at) }}
+                                    <td class="d-flex">
+                                                <b class="text-success">{{ dateFormat($event->start_at) }}</b>
+                                        &nbsp;
+                                        -
+                                        &nbsp;    <b class="text-danger">{{ dateFormat($event->end_at) }}</b>
                                     </td>
                                     <td>{{rand(100,1000)}}</td>
                                     <td>
@@ -185,7 +186,7 @@
                                                     aria-label="Show">
                                                         <i class="bx bx-show font-size-18"></i>
                                                 </a> --}}
-                                                <a href="{{ route('cws.eventDelete', $event->id) }}"
+                                                {{--  <a href="{{ route('cws.eventDelete', $event->id) }}"
                                                     data-bs-toggle="tooltip"
                                                     data-bs-placement="top"
                                                     class="px-2 text-danger btnDeleteRow"
@@ -194,7 +195,7 @@
                                                     data-id="{{ $event->id}}"
                                                     aria-label="Delete">
                                                     <i class="bx bx-trash-alt font-size-18"></i>
-                                                </a>
+                                                </a>  --}}
                                             </li>
                                         </ul>
                                     </td>

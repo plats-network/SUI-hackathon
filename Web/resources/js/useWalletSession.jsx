@@ -7,6 +7,16 @@ import {TransactionBlock} from "@mysten/sui.js/transactions";
 import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
 import {getFullnodeUrl, SuiClient} from '@mysten/sui.js/client';
 
+// Hàm để cắt mảng thành các mảng con
+function chunkArray(array, numChunks){
+    let result = [];
+    const chunkSize = Math.ceil(array.length / numChunks);
+    for (let i = 0; i < array.length; i += chunkSize) {
+        result.push(array.slice(i, i + chunkSize));
+    }
+    return result;
+}
+
 export default function App() {
 
     const wallet = useWallet();
@@ -46,6 +56,7 @@ export default function App() {
     }
 
     const appendNftSessionDetail = async (details) => {
+
         let typenetwork = $('meta[name="type_network"]').attr('content');
 
         console.log('details',details);
@@ -79,13 +90,80 @@ export default function App() {
         $('.append-nft-session-detail').empty().append(html);
     };
     
+    const hasDuplicateNFTDescriptionSession = async(data) =>{
+
+        // Create a set to store unique NFT names encountered
+        const uniqueNames = new Set();
+    
+        // Iterate through the data array
+        for (const nft of data) {
+    
+            const nftName = nft.descriptionSession;
+    
+            // Check if the name already exists in the set
+            if (uniqueNames.has(nftName)) {
+                uniqueNames.clear();
+                return true; // Duplicate found, return true
+            }
+    
+            // Add the name to the set if not found
+            uniqueNames.add(nftName);
+        }
+    
+        // No duplicates found, return false
+        return false;
+    }
+
+    const hasDuplicateNFTNameSession = async(data) =>{
+
+        // Create a set to store unique NFT names encountered
+        const uniqueNames = new Set();
+    
+        // Iterate through the data array
+        for (const nft of data) {
+    
+            const nftName = nft.nameSession;
+    
+            // Check if the name already exists in the set
+            if (uniqueNames.has(nftName)) {
+                uniqueNames.clear();
+                return true; // Duplicate found, return true
+            }
+    
+            // Add the name to the set if not found
+            uniqueNames.add(nftName);
+        }
+    
+        // No duplicates found, return false
+        return false;
+    }
+
+
     const mint = async (wallet,data) => {
+
+  
+        // const hasDuplicateNFTName = hasDuplicateNFTNameSession(data);
+        
+        // if (hasDuplicateNFTName) {
+        //     alert("Data NFTNameSession is duplicated, please check again!");
+        //     return;
+        // }
+
+        // const hasDuplicateNFTDescription = hasDuplicateNFTDescriptionSession(data);
+
+        // if (hasDuplicateNFTDescription) {
+        //     alert("Data NFTDescriptionSession is duplicated, please check again!");
+        //     return;
+        // }
+
         let newData = {
             nameSession: data.map(item => item.nameSession),
             descriptionSession: data.map(item => item.descriptionSession),
             fileSession: data.map(item => item.fileSession),
             totalNftTicket: data.map(item => item.totalNftTicket)
         };
+
+        
         console.log('newData',newData);
         console.log('wallet',wallet);
 
@@ -120,7 +198,7 @@ export default function App() {
                 
                 tx.pure(newData.fileSession),
 
-                tx.pure(newData.totalNftTicket[0] ?? 1),
+                tx.pure(totalNftTicket),
               
             ],
         });
@@ -168,16 +246,6 @@ export default function App() {
 
             // Số mảng con bạn muốn tạo
             const numChunks = data.length;
-
-            // Hàm để cắt mảng thành các mảng con
-            function chunkArray(array, numChunks) {
-                let result = [];
-                const chunkSize = Math.ceil(array.length / numChunks);
-                for (let i = 0; i < array.length; i += chunkSize) {
-                    result.push(array.slice(i, i + chunkSize));
-                }
-                return result;
-            }
 
             // Gọi hàm để cắt mảng
             let newArray = chunkArray(sessionIds, numChunks);
@@ -228,18 +296,22 @@ export default function App() {
     }, [sessionData]);
 
     return (
-        <div className="App">
-            <ConnectButton label={'Connect Wallet'} />
+        // <div className="App">
+            /* <ConnectButton label={'Connect Wallet'} /> */
             <section>
-            
-                {wallet.status === "connected" && (
+                {wallet.status === "connected" ? (
+                    <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
+                ) : (
+                    <p>Please login to mint your Session.</p>
+                )}
+                {/* {wallet.status === "connected" && (
                     <>
                         <p>
                             <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
                         </p>
                     </>
-                )}
+                )} */}
             </section>
-        </div>
+        // </div>
     );
 }
