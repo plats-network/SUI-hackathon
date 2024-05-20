@@ -109,10 +109,10 @@ class EventController extends Controller
                 $query->whereBetween('start_at', [$request->start_at, $request->end_at]);
                 })
                 ->when(!empty($request->start_at), function ($query) use ($request) {
-                $query->where('start_at', '>=', $request->start_at);
+                $query->where('start_at', '=', $request->start_at);
                 })
                 ->when(!empty($request->end_at), function ($query) use ($request) {
-                $query->where('end_at', '<=', $request->end_at);
+                $query->where('end_at', '=', $request->end_at);
             });
         }
         $tab = $request->get('tab') ?? 0;

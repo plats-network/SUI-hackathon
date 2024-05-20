@@ -40,7 +40,7 @@ export default function App() {
 
             const nameSession = $(this).find('.name_session').val() ?? 'name_session';
             const descriptionSession = $(this).find('.description_session').val() ?? 'description_session';
-            const fileSession = $(this).find('.image-file').attr('link-img') ?? '/imgs/defaultsession.webp';
+            const fileSession = $(this).find('.image-file').attr('link-img') ?? window.location.origin+'/imgs/defaultsession.png';
             const mintftSession = $(this).find('.mintft_session').val() ?? 'mintft_session';
             const sessionObj = {
                 nameSession: nameSession,

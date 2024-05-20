@@ -8,7 +8,7 @@
                name="file-image-nft"
         />
         <label for="image-file{{$indexImageItem}}">
-            <img class="image-label img-preview" src="{{ asset('/imgs/defaultsession.webp') }}">
+            <img class="image-label img-preview" src="{{ asset('/imgs/defaultsession.png') }}">
         </label>
     </div>
     <div class="col-5">
