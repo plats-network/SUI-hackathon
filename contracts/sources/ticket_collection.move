@@ -861,6 +861,7 @@ module sui_nft::ticket_collection {
 
         test_scenario::next_tx(scenario, client1);
         {
+
             let event_ticket = test_scenario::take_shared<EventTicket>(scenario);
             let mut session_collection = test_scenario::take_shared<SessionCollection>(scenario);
             lock_session(&event_ticket, &mut session_collection, false, ctx(scenario));
@@ -879,6 +880,7 @@ module sui_nft::ticket_collection {
             test_scenario::return_shared<EventTicket>(event_ticket);
             test_scenario::return_to_address<NFTTicket>(user2, ticket);
 
+
         };
 
         // user 2 claim session 
@@ -888,6 +890,7 @@ module sui_nft::ticket_collection {
             let session_collection = test_scenario::take_shared<SessionCollection>(scenario);
             let sessions = session_collection.sessions;
             let session_id_1 = *vector::borrow(&sessions, 0);
+
             let ticket = test_scenario::take_from_address<NFTTicket>(scenario, user2);
             claim_session<NFTSession>(&mut event_ticket,&ticket,&session_collection,  session_id_1, ctx(scenario));
 

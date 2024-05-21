@@ -26,20 +26,6 @@ $(document).ready(function() {
     }
   });
 
-    //Check has param sucess_checkin
-    var url = window.location.href;
-    if (url.indexOf('sucess_checkin') != -1) {
-
-
-        setTimeout(function(e) {
-            //Show toast
-            Toast.fire({
-                icon: 'success',
-                title: 'Checkin success 😀',
-            })
-        }, 1500);
-    }else{
-    }
 
   confer_window.on('load', function() {
     $('#preloader').fadeOut('1000', function() {
@@ -381,15 +367,6 @@ $(document).ready(function() {
   var openCloseSpeed = 500;
   var megaopenCloseSpeed = 800;
   var sideMenu = true;
-  //Check has param sucess_checkin
-    var url = window.location.href;
-    if (url.indexOf('success_checkin') != -1) {
-        //Show toast
-        Toast.fire({
-          icon: 'success',
-          title: 'Checkin success 😀'
-        })
-    }
 
   navbarToggler.on('click', function() {
     navToggler.toggleClass('active');

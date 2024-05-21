@@ -31,6 +31,7 @@ use Magic;
 use MagicAdmin\Exception\DIDTokenException;
 use MagicAdmin\Exception\RequestException;
 use Illuminate\Support\Facades\Validator;
+use App\Models\NFT\TicketNftMint;
 
 class Home extends Controller
 {
@@ -249,16 +250,31 @@ class Home extends Controller
         $has_checkin = 0;
         //url download ticket
         $url_download_ticket = route('ticket.pdf', ['id' => $id]);
+
+           
+        //lấy thông tin người dùng tạo ticket sukien
+
         try {
             $user = Auth::user();
 
             $event = $this->taskService->find($id);
+
             //Check event is null
             if (!$event) {
                 notify()->error('Sự kiện không tồn tại.');
 
                 return redirect()->route('web.home');
             }
+            
+            //lấy thông tin người tạo sự  kiện
+            $userSubmited = $this->user->find($event->creator_id);
+            
+            //danh sách những người tham gia sự kiện
+            $eventUserTicket = $this->eventUserTicket->where('event_user_tickets.task_id',$event->id)->orderBy('event_user_tickets.id','DESC')->get()->toArray();
+            
+            // danh sách user bình thường sss, aa and 2 others
+            $displayString = $this->createDisplayString(array_column($eventUserTicket, 'name'));
+            
             //Increase view
             /*$this->taskService->update($id, [
                 'view_count' => $event->view + 1
@@ -423,7 +439,7 @@ class Home extends Controller
 
 
             $booths = $booth->detail;
-//dd($travelBooths, $booths);
+            //dd($travelBooths, $booths);
             $totalCompletedBooth = 0;
 
             foreach ($booths as $booth) {
@@ -432,20 +448,45 @@ class Home extends Controller
                     $totalCompletedBooth++;
                 }
             }
-
+    
             // check claim nft
             $check = false;
-            $nft = NFTMint::where([
-                'task_id' => $id,
-                'status' => 1,
-                'type' => 1,
-            ])->first();
+          
+            //lấy danh sách các nft đã claim
+            $nftMint = UserNft::select('nft_mint_id')->where('type',1)->where('task_id',$id)->pluck('nft_mint_id');
+                
+            //lấy danh sách địa chỉ ví đã dùng rồi các nft đã mint
+            $claimedNfts = TicketNftMint::whereIn('id', $nftMint)->pluck('address_nft');
+
+            $nft = TicketNftMint::select(
+                'ticket_nft_mint.id as id_ticket_nft_mint',
+                'ticket_nft_mint.address_nft',
+                'ticket_nft_mint.ticket_id',
+                'ticket_nft_mint.created_at',
+                'ticket_nft_mint.txt_hash',
+                'ticket_collection.id',
+                'ticket_collection.title',
+                'ticket_collection.description',
+                'ticket_collection.group',
+                'ticket_collection.amount',
+                'ticket_collection.photo',
+                'ticket_collection.available_amount',
+                'ticket_collection.task_id')->join('ticket_collection','ticket_collection.id','=','ticket_nft_mint.ticket_id')
+                ->whereNotIn('ticket_nft_mint.address_nft',$claimedNfts)
+                ->where([
+                    'ticket_collection.task_id' => $id,
+                ])->first();
+
             if (\auth()->user()) {
-                $check = UserNft::with('nftMint')
-                    ->where([
+                $check = UserNft::
+                    where([
                         'user_id' => \auth()->user()->id,
-                        'task_id' => $id
-                    ])->first();
+                        'task_id' => $id,
+                        'type'=>1
+                    ])
+                    ->whereNull('session_id')
+                    ->whereNull('booth_id')
+                    ->first();
             }
         } catch (\Exception $e) {
 //            dd($e->getMessage());
@@ -478,6 +519,10 @@ class Home extends Controller
             'countEventDetailBooth' => $countEventDetailBooth ?? [],
             'checkMint' => $check ?? [],
             'nft' => $nft ?? [],
+            'userSubmited'=>$userSubmited,
+            'link_check_in'=>$request->get('sucess_checkin'),
+            'eventUserTicket'=>$eventUserTicket,
+            'displayString'=>$displayString
         ];
         return view('web.events.show', $data);
     }
@@ -525,9 +570,9 @@ class Home extends Controller
 
     // Get ticket
     public function orderTicket(Request $request)
-    {
+    {   
+        
         DB::beginTransaction();
-
         try {
             $user = Auth::user();
             $name = $request->input('first') . ' ' . $request->input('last');
@@ -604,6 +649,8 @@ class Home extends Controller
                     'start' => $userTicket->task->start_at,
                     'end' => $userTicket->task->end_at,
                 );
+                
+                $user->email = 'cifow69607@bsomek.com';
 
                 Mail::to($user)->send(new \App\Mail\ThankYouCheckIn($user, $options));
                 //Mail::to($user->email)->send(new EmailSendTicket($userTicket, $user));
@@ -862,4 +909,20 @@ class Home extends Controller
         return redirect()->to('/');
     }
 
+    // example : Rose Duong, Thomas Le and 13 others
+    private function createDisplayString($userNames)
+    {
+        $count = count($userNames);
+
+        switch ($count) {
+            case 0:
+                return '';
+            case 1:
+                return $userNames[0];
+            case 2:
+                return implode(' and ', $userNames);
+            default:
+                return $userNames[0] . ', ' . $userNames[1] . ' and ' . ($count - 2) . ' others';
+        }
+    }
 }

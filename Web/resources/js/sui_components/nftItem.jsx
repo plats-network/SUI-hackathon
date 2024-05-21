@@ -1,6 +1,8 @@
 import React from 'react';
+import {ConnectButton, useWallet, addressEllipsis} from "@suiet/wallet-kit";
 
 function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey, upload}) {
+    const wallet = useWallet();
     return (
         <div className="row mb-3 nft-ticket-div">
             <div className="col-4">
@@ -14,7 +16,7 @@ function NftItem({onDelete, onInputChange, onFileChange, nftData, itemKey, uploa
                 <label htmlFor={`image-file-${itemKey}`}>
                     {upload === itemKey ?
                         <img src="/imgs/loading/loading-upfile.webp" alt="loading"/> :
-                        <img className="image-label img-preview" src={nftData.image_file || "/imgs/no-image.png"}/>
+                        <img className="image-label img-preview" src={nftData.image_file || window.location.origin+"/imgs/defaulticket.png"}/>
                     }
                 </label>
             </div>

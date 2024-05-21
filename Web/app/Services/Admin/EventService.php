@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\NFT\NFTMint;
+use App\Models\TicketCollection;
+use App\Models\NFT\TicketNftMint;
+use App\Models\NFT\TaskEventDetailNftMint;
+
 
 class EventService extends BaseService
 {
@@ -186,7 +190,7 @@ class EventService extends BaseService
             $data['reward'] = $data['reward'] ?? 0;
             $data['contract_event_id'] = $data['ticket_collection_id'] ?? 0;
             $dataBaseTask = $this->taskRepository->create($data);
-
+           
             //Save NFT Info 06.12.2023
             if (isset($data['nft']) && $data['nft']) {
                 //Model NFT
@@ -206,26 +210,76 @@ class EventService extends BaseService
                 ]);
             }
 
-            // create nft free
-            if (isset($data['nft-ticket-name-'])) {
-                foreach ($data['nft-ticket-name-'] as $key => $nftFree) {
-                    $nft = new NFTMint();
-                    $nft->nft_title = $nftFree ?? '';
-                    $nft->nft_symbol = $data['nft-ticket-symbol-'][$key] ?? '';
-                    $nft->nft_uri = $data['nft-ticket-uri-'][$key] ?? '';
-                    $nft->nft_res = $data['nft-ticket-res-'][$key] ?? '';
-                    $nft->nft_category = $data['nft-ticket-category-'][$key] ?? '';
-                    $nft->address_nft = $data['nft-ticket-'][$key] ?? '';
-//                    $nft->seed = $data['nft-ticket-seed-'][$key] ?? '';
-//                    $nft->address_nft = $data['nft-ticket-address-nft-'][$key] ?? '';
-//                    $nft->address_organizer = $data['nft-ticket-address-organizer-'][$key] ?? '';
-//                    $nft->secret_key = $data['nft-ticket-secret-key-'][$key] ?? '';
-                    $nft->type = 1;
-                    $nft->task_id = $dataBaseTask->id;
-//                    dd(json_decode($data['nft-ticket-list-'][$key], true)[0], $nft);
-                    $nft->save();
+            // lưu data ticket
+            if(isset($data['list-ticket-item']) && !empty($data['list-ticket-item'])){
+                
+                $listDataTicket = json_decode($data['list-ticket-item'], true);
+
+                $ticketIds = [];
+
+                foreach ($listDataTicket as $item) {
+                    
+                    //data lưu vào bảng ticket_collection
+                    $dataTicketCollection['title'] = $item['nft_name'];
+                    $dataTicketCollection['description'] = $item['nft_symbol'];
+                    $dataTicketCollection['group'] = $item['nft_category'];
+                    $dataTicketCollection['amount'] = $item['nft_amount'];
+                    $dataTicketCollection['available_amount'] = 0;
+                    $dataTicketCollection['photo'] = $item['image_file'];
+                    $dataTicketCollection['task_id'] = $dataBaseTask->id;
+                    $dataTicketCollection['id'] = Str::uuid();
+                    $saveTkCollection[] = $dataTicketCollection;
+                    $ticketIds[] = $dataTicketCollection['id'];
+
+                    if(isset($item['address_nft']) && !empty($item['address_nft'])){
+
+                        $listDataAddress = json_decode($item['address_nft'],true);
+
+                        foreach ($listDataAddress as $address) {
+                            $dataTicketNftMint['address_nft'] = $address;
+                            $dataTicketNftMint['ticket_id'] = $dataTicketCollection['id'];
+                            $dataTicketNftMint['id'] = Str::uuid();
+                            $dataTicketNftMint['txt_hash'] = $item['res'];
+                            $saveTicketNftMint[] = $dataTicketNftMint;
+                        }
+                    }
+                }
+                
+                // lưu vào bảng ticket_collection
+                if(!empty($saveTkCollection)){
+
+                    TicketCollection::insert($saveTkCollection);
+                }
+                
+                // lưu vào bảng ticket_nft_mint
+                if(!empty($saveTicketNftMint)){
+                    TicketNftMint::insert($saveTicketNftMint);
                 }
             }
+            
+            // create nft table nft_mints
+            // if (isset($data['nft-ticket-name-'])) {
+                
+            //     $nftMints = [];
+                
+            //     foreach ($data['nft-ticket-name-'] as $key => $nftFree) {
+
+            //         $nftMint = [
+            //             'nft_title' => $nftFree ?? '',
+            //             'nft_symbol' => $data['nft-ticket-symbol-'][$key] ?? '',
+            //             'nft_uri' => $data['nft-ticket-uri-'][$key] ?? '',
+            //             'nft_res' => $data['nft-ticket-res-'][$key] ?? '',
+            //             'nft_category' => $data['nft-ticket-category-'][$key] ?? '',
+            //             'address_nft' => $data['nft-ticket-'][$key] ?? '',
+            //             'type' => 1,
+            //             'task_id' => $dataBaseTask->id
+            //         ];
+            //         $nftMints[] = $nftMint;
+            //     }
+
+                
+            //     NFTMint::insert($nftMints);
+            // }
 
             // Save session
             if ($sessions && !empty($sessions['name'])) {
@@ -428,7 +482,7 @@ class EventService extends BaseService
                                 'is_a4' => $is_a4
                             ]);
                         }
-
+                       
                         if (isset($dataParam['nft-ticket-name-session'])) {
                             $nft = new NFTMint();
                             $nft->nft_title = $dataParam['nft-ticket-name-session'][$index] ?? '';
@@ -455,12 +509,12 @@ class EventService extends BaseService
                 'max_job' => $sessions['max_job'] ?? 1,
                 'description' => $sessions['description'],
                 'type' => 0,
-                'code' => Str::random(35)
+                'code' => Str::random(35),
             ]);
-          
             if (isset($sessions['detail']) && $sessions['detail']) {
 
                 foreach ($sessions['detail'] as $key => $item) {
+                  
                     if (isset($item['is_delete']) && $item['is_delete'] == 1) {
                         continue;
                     } else {
@@ -483,40 +537,63 @@ class EventService extends BaseService
                                 'is_a1' => isset($item['is_a1']) && $item['is_a1'] == '1' ? true : false,
                                 'is_a2' => isset($item['is_a2']) && $item['is_a2'] == '1' ? true : false,
                                 'is_a3' => isset($item['is_a3']) && $item['is_a3'] == '1' ? true : false,
-                                'is_a4' => isset($item['is_a4']) && $item['is_a4'] == '1' ? true : false
+                                'is_a4' => isset($item['is_a4']) && $item['is_a4'] == '1' ? true : false,
+                                'amount' => $item['nft-amount'] ?? 1,
+                                'avaliable_amount' => 0,
+                                'photo' => $item['nft-uri'] ?? '',
+                                'contract_task_events_details_id'=>$item['nft-contract_task_events_details_id']
                             ]);
+
                         }
                     }
-                    // nếu có address nft nghĩa là user đã mint sang bên mạng của web 3 rồi
-                    if(isset($item['nft-address'])){
+                    
+                    // nếu có address nft nghĩa là user đã mint sang bên mạng của web 3 rồi mới lưu lên database của web2
+                    if(isset($item['nft-address']) && !empty($item['nft-address'])){
                         
-                        $arrNFTMint = [
-                            'task_id' => $task->id,
-                            'session_id' => $sessionTask->id,
-                            'nft_uri' => $item['nft-uri'] ?? '',
-                            'address_nft' => $item['nft-address'] ?? '',
-                            'nft_res' => $item['nft-res'] ?? '',
-                            'nft_title' => $item['description'] ?? '',
-                            'nft_symbol' => $item['name'] ?? '',
-                            'type'=>2,//session,
-                            'status'=>1
-                        ];
-                        NFTMint::create($arrNFTMint);
+                        // $arrNFTMint = [
+                        //     'task_id' => $task->id,
+                        //     'session_id' => $sessionTask->id,
+                        //     'nft_uri' => $item['nft-uri'] ?? '',
+                        //     'address_nft' => $item['nft-address'] ?? '',
+                        //     'nft_res' => $item['nft-res'] ?? '',
+                        //     'nft_title' => $item['description'] ?? '',
+                        //     'nft_symbol' => $item['name'] ?? '',
+                        //     'type'=>2,//session,
+                        //     'status'=>1
+                        // ];
+                        // NFTMint::create($arrNFTMint);
+
+                        // =========================
+                        $item['nft-res'] = json_decode($item['nft-res'], true);
+                            
+                        foreach ($item['nft-res'] as $resItem) {
+                            
+                            $arrTaskEventDetailsNft = [
+                                'id' => Str::uuid(),
+                                'address_nft' => $resItem,
+                                'task_event_detail_id' => $sessionTask->id,
+                                'task_id' => $task->id,
+                                'txt_hash' => $item['nft-digest']
+                            ];
+
+                            TaskEventDetailNftMint::insert($arrTaskEventDetailsNft);
+                        }
+                       
                     }
 
                     if (isset($dataParam['nft-ticket-name-session'])) {
-                        $nft = new NFTMint();
-                        $nft->nft_title = $dataParam['nft-ticket-name-session'][$index] ?? '';
-                        $nft->nft_symbol = $dataParam['nft-ticket-symbol-session'][$index] ?? '';
-                        $nft->nft_uri = $dataParam['nft-ticket-uri-session'][$index] ?? '';
-                        $nft->seed = $dataParam['nft-ticket-seed-session'][$index] ?? '';
-                        $nft->address_nft = $dataParam['nft-ticket-address-nft-session'][$index] ?? '';
-                        $nft->address_organizer = $dataParam['nft-ticket-address-organizer-session'][$index] ?? '';
-                        $nft->secret_key = $dataParam['nft-ticket-secret-key-session'][$index] ?? '';
-                        $nft->type = 2;
-                        $nft->task_id = $task->id;
-                        $nft->session_id = $sessionTask->id;
-                        $nft->save();
+                        // $nft = new NFTMint();
+                        // $nft->nft_title = $dataParam['nft-ticket-name-session'][$index] ?? '';
+                        // $nft->nft_symbol = $dataParam['nft-ticket-symbol-session'][$index] ?? '';
+                        // $nft->nft_uri = $dataParam['nft-ticket-uri-session'][$index] ?? '';
+                        // $nft->seed = $dataParam['nft-ticket-seed-session'][$index] ?? '';
+                        // $nft->address_nft = $dataParam['nft-ticket-address-nft-session'][$index] ?? '';
+                        // $nft->address_organizer = $dataParam['nft-ticket-address-organizer-session'][$index] ?? '';
+                        // $nft->secret_key = $dataParam['nft-ticket-secret-key-session'][$index] ?? '';
+                        // $nft->type = 2;
+                        // $nft->task_id = $task->id;
+                        // $nft->session_id = $sessionTask->id;
+                        // $nft->save();
                     }
                     $index++;
                 }

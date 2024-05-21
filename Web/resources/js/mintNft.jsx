@@ -5,6 +5,7 @@ import NftInput from "./sui_components/nftInput";
 import React, {useState} from 'react';
 import ReactDOM from "react-dom";
 import {getFullnodeUrl, SuiClient} from '@mysten/sui.js/client';
+import { atom,useSetRecoilState,useRecoilState  } from 'recoil';
 
 function createMintNftTxnBlock(data) {
     // define a programmable transaction block
@@ -19,7 +20,7 @@ function createMintNftTxnBlock(data) {
     const nftAmount = data.nft_amount;
     const nftCategory = data.nft_category;
     const nftDescription = data.nft_symbol;
-    const nftImgUrl = data.image_file ?? "https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4";
+    const nftImgUrl = data.image_file ?? window.location.origin+'/imgs/defaulticket.png';
     // const nftCollectionId = import.meta.env.VITE_COLLECTION_ID;
     const nftCollectionId = $('#event_object_id').val();
     const event_hash_id = $('meta[name="nft_hash_id"]').attr('content');
@@ -50,32 +51,105 @@ function createMintNftTxnBlock(data) {
     return txb;
 }
 
-const createEvent = async () => {
+function hasDuplicateNFTName(data) {
 
+    // Create a set to store unique NFT names encountered
+    const uniqueNames = new Set();
 
-};
+    // Iterate through the data array
+    for (const nft of data) {
+
+        const nftName = nft.nft_name;
+
+        // Check if the name already exists in the set
+        if (uniqueNames.has(nftName)) {
+            uniqueNames.clear();
+            return true; // Duplicate found, return true
+        }
+
+        // Add the name to the set if not found
+        uniqueNames.add(nftName);
+    }
+
+    // No duplicates found, return false
+    return false;
+}
+
+function hasDuplicateNFTDescription(data) {
+
+    // Create a set to store unique NFT names encountered
+    const uniqueNames = new Set();
+
+    // Iterate through the data array
+    for (const nft of data) {
+
+        const nftName = nft.nft_symbol;
+
+        // Check if the name already exists in the set
+        if (uniqueNames.has(nftName)) {
+            uniqueNames.clear();
+            return true; // Duplicate found, return true
+        }
+
+        // Add the name to the set if not found
+        uniqueNames.add(nftName);
+    }
+
+    // No duplicates found, return false
+    return false;
+}
 
 export default function mintNft({nftData, _setMinted, nftMinted, setNftData, setItems, items}) {
+
     const wallet = useWallet();
-    const [nftInputs, setNftInputs] = useState([]);
+
     const mnemonic_client = import.meta.env.VITE_MNEMONIC_CLIENT;
+    const [nftInputs, setNftInputs] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [totalMin, setTotalMin] = useState(0);
+    let typenetwork = $('meta[name="type_network"]').attr('content');
     const datas = JSON.parse(JSON.stringify(nftData));
     const itemCopy = JSON.parse(JSON.stringify(items));
-    let typenetwork = $('meta[name="type_network"]').attr('content');
-    async function mintNft(event) {
-        event.preventDefault();
-        if (!wallet.connected) return;
+    const [totalMin, setTotalMin] = useState(0);
+    
 
+    async function mintNftTicket(event) {
+       
+
+        console.log('datas',datas);
+        console.log('wallet file mint.js',wallet);
+
+        const resultDuplicateNftName = hasDuplicateNFTName(datas);
+        const resultDuplicateNftDescription = hasDuplicateNFTDescription(datas);
+
+        if (resultDuplicateNftName) {
+            setIsLoading(false);
+            alert("Data NftName is duplicated, please check again!");
+            return;
+        }
+
+        if (resultDuplicateNftDescription) {
+            setIsLoading(false);
+            alert("Data NftDescription is duplicated, please check again!");
+            return;
+        }
+
+        event.preventDefault();
         setIsLoading(true);
+        if (!wallet.connected){
+            alert("Please connect your wallet first");
+            setIsLoading(false);
+            return;
+        
+        };
         const nftMints = [];
         const newItems = [];
         const newDatas = [];
-        if(nftData.length === 0) {
+        if(datas.length === 0) {
             alert('No NFT to mint');
+            setIsLoading(false);
             return;
         }
+
 
         //nếu tootal min = 0 là click mint lần đầu tiên thì sẽ tạo ticket_collectionId
         if(totalMin == 0){
@@ -102,7 +176,7 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
                 },
             });
 
-            console.log("create ticket tx", JSON.stringify(txs, null, 2));
+            console.log("create ticket tx", txs);
 
             const ticketCollectionId = (
                 txs.objectChanges.filter(
@@ -111,19 +185,23 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
                         o.objectType.includes("::ticket_collection::EventTicket")
                 )[0]
             ).objectId;
+            console.log(`ticket  id : `,ticketCollectionId);
+  
 
-            if(!ticketCollectionId || ticketCollectionId == ""){
+            if(!ticketCollectionId || ticketCollectionId == "" || ticketCollectionId == undefined){
                 alert('Failed to create ticket collection');
+                setIsLoading(false);
                 return;
             }
             localStorage.setItem('contract_event_id',ticketCollectionId);
-            console.log(`ticket  id : `,ticketCollectionId);
+
             setTotalMin(1);
         }
 
         for (let i = 0; i < nftData.length; i++) {
-            const txb = createMintNftTxnBlock(nftData[i]);
             try {
+                const txb = createMintNftTxnBlock(nftData[i]);
+
                 const res = await wallet.signAndExecuteTransactionBlock({
                     transactionBlock: txb,
                     options: {
@@ -141,23 +219,25 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
                     ).map(item => item.objectId);
                 console.log('ticketIds :', ticketIds);
 
-
                 // Add a new NftInput for each successful mint
                 for (let j = 0; j < Number(nftData[i].nft_amount); j++) {
                     setNftInputs(prevInputs => [...prevInputs, {
                         ...nftData[i],
-                        res: JSON.stringify(res),
+                        res: res.digest,
                         tickets: ticketIds[j]
                     }]);
                 }
-                nftMints.push({...nftData[i], res: JSON.stringify(res)});
+                console.log('nftData line 152',nftData);
+                nftMints.push({...nftData[i], res: res.digest, address_nft:JSON.stringify(ticketIds)});
                 newItems.push(nftData[i].nft_id);
                 newDatas.push({...nftData[i]});
             } catch (e) {
                 alert("Oops, nft minting failed");
                 console.error("nft mint failed", e);
+                setIsLoading(false);
             }
         }
+        console.log('nftMints line 161',nftMints);
         _setMinted([...nftMinted, ...nftMints]);
         let difference = itemCopy.filter(x => !newItems.includes(x));
         const differenceData = datas.filter(nftItem =>
@@ -167,17 +247,16 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
         setItems([...difference]);
         setNftData([...differenceData]);
         setIsLoading(false);
-
     }
 
     return (
         <div className="App">
-            <ConnectButton label={'Connect Wallet'}/>
+            {/* <ConnectButton label={'Connect Wallet'}/> */}
             <section style={{marginTop: '15px', textAlign: 'right'}}>
-                {wallet.status === "connected" && (
-                    <>
-                        <button className="btn btn-primary" onClick={mintNft}> Mint Your NFT !</button>
-                    </>
+                {wallet.status === "connected" ? (
+                    <button className="btn btn-primary" onClick={mintNftTicket}> Mint Your NFT !</button>
+                ) : (
+                    <p>Please login to mint your NFT.</p>
                 )}
             </section>
             {isLoading && <div className={'loading'}></div>}

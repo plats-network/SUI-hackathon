@@ -42,6 +42,7 @@ export default defineConfig({
                 'resources/js/admin.js',
                 'resources/js/zklogin.js',
                 'resources/js/event.js',
+                'resources/js/connect-sui-wallet.jsx',
                 'resources/js/game.js',
                 'resources/js/profile-nft.js',
                 //'resources/css/mail.css',

@@ -4,7 +4,7 @@ namespace App\Models\NFT;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\NFT\NFTMint;
 class UserNft extends Model
 {
     use SoftDeletes;
@@ -12,6 +12,7 @@ class UserNft extends Model
     protected $table = 'user_nft';
 
     protected $fillable = [
+        'id',
         'user_id',
         'nft_mint_id',
         'type',

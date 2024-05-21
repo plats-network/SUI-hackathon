@@ -6,11 +6,13 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.1.1/dist/select2-bootstrap-5-theme.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
     {{--Editor--}}
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor-viewer.min.css"/>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.min.css"/>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
 @endsection
 
 @section('name_page')
@@ -34,53 +36,63 @@
 @endsection
 
 @section('content')
-    <style type="text/css">
-        .qr {
-            margin: 0 auto;
-            display: block;
-            width: 50px;
-            height: 50px;
-        }
+<style type="text/css">
+    .qr {
+        margin: 0 auto;
+        display: block;
+        width: 50px;
+        height: 50px;
+    }
 
-        .se-donw, .bo-donw {
-            cursor: pointer;
-        }
-        .user-event{
-            padding: 35px;
-            border: 1px solid #b4cae5;
-            border-radius: 10px;
-        }
-        .user-event p {
-            font-size: 15px;
-            color: black;
-            font-weight: bold;
-        }
+    .se-donw, .bo-donw {
+        cursor: pointer;
+    }
+    .user-event{
+        padding: 35px;
+        border: 1px solid #b4cae5;
+        border-radius: 10px;
+    }
+    .user-event p {
+        font-size: 15px;
+        color: black;
+        font-weight: bold;
+    }
 
-        .img-preview {
-            width: 150px;
-            min-height: 150px;
-            max-height: auto;
-            float: left;
-            margin: 3px;
-            padding: 3px;
-            user-select: none;
-            cursor: pointer;
-            transition: all 1s;
-        }
+    .img-preview {
+        width: 150px;
+        min-height: 150px;
+        max-height: auto;
+        float: left;
+        margin: 3px;
+        padding: 3px;
+        user-select: none;
+        cursor: pointer;
+        transition: all 1s;
+        border: 2px dashed #999;
+    }
 
-        .img-preview:hover{
-            color: #18ac1c;
-        }
+    .img-preview:hover{
+        color: #18ac1c;
+    }
 
-        .mt-20 {
-            margin-top: 20px;
-        }
+    .mt-20 {
+        margin-top: 20px;
+    }
 
-        .mt-25 {
-            margin-top: 35px;
-        }
-    </style>
-    <div class="container-fluid">
+    .mt-25 {
+        margin-top: 35px;
+    }
+    .append-nft-detail{
+        overflow-x: auto;
+        height: 450px;
+    }
+
+    .append-nft-ticket{
+        overflow-x: auto;
+        height: 450px;
+    }
+</style>
+<div class="container-fluid">
         <div class="row">
             @if($event->id)
                 <input id="eventIdHidden" value="{{ $event->id }}" type="hidden">
@@ -100,25 +112,24 @@
                     <a class="btn btn-info btn-sm mb-2 mr-5 none" target="_blank" style="margin-right: 10px;"
                        href="https://platsevent.web.app/reward-nft?id={{$event->id}}">Reward</a>  --}}
 
-
                 </div>
                 <div class="col-md-3 text-end">
-                    {{--  <a href="{{ route('cws.eventEdit', ['id' => $event->id]) }}"
-                       class="btn btn-sm mb-2 btn-primary d-inline-flex align-items-center me-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor" class="icon icon-xs me-2 mt-1">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
-                        </svg>
-
-                        Edit Event</a>  --}}
+                        
                         <div class="d-flex">
-                            <a href="#" class="btn btn-sm mb-2 btn-primary d-inline-flex align-items-center me-2" onclick="editEvent()">
+                            <a href="{{ route('cws.eventEdit', ['id' => $event->id]) }}"
+                                class="btn btn-sm mb-2 btn-primary d-inline-flex align-items-center me-2">
+                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                         stroke="currentColor" class="icon icon-xs me-2 mt-1">
+                                         <path stroke-linecap="round" stroke-linejoin="round"
+                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
+                                     </svg>
+                                 Edit Event</a>
+                            {{--  <a href="#" class="btn btn-sm mb-2 btn-primary d-inline-flex align-items-center me-2" onclick="editEvent()">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon icon-xs me-2 mt-1">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
                                 </svg>
                                 Edit Event
-                            </a>
+                            </a>  --}}
                             <a href="https://{{ env('SUB_EVENT') }}.{{ env('APP_URL') }}/event/{{ $event->id }}" class="btn btn-sm mb-2 btn-primary d-inline-flex align-items-center me-2" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi icon-total-event bi-megaphone icon-total-event" viewBox="0 0 16 16">
                                     <path d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0v-.214c-2.162-1.241-4.49-1.843-6.912-2.083l.405 2.712A1 1 0 0 1 5.51 15.1h-.548a1 1 0 0 1-.916-.599l-1.85-3.49-.202-.003A2.014 2.014 0 0 1 0 9V7a2.02 2.02 0 0 1 1.992-2.013 75 75 0 0 0 2.483-.075c3.043-.154 6.148-.849 8.525-2.199zm1 0v11a.5.5 0 0 0 1 0v-11a.5.5 0 0 0-1 0m-1 1.35c-2.344 1.205-5.209 1.842-8 2.033v4.233q.27.015.537.036c2.568.189 5.093.744 7.463 1.993zm-9 6.215v-4.13a95 95 0 0 1-1.992.052A1.02 1.02 0 0 0 1 7v2c0 .55.448 1.002 1.006 1.009A61 61 0 0 1 4 10.065m-.657.975 1.609 3.037.01.024h.548l-.002-.014-.443-2.966a68 68 0 0 0-1.722-.082z"></path>
@@ -355,13 +366,33 @@
                                         <div class="col-lg-12">
                                             <div class="row">
                                                 <div class="col-lg-12">
+                                                   
                                                     <div class="mb-3">
+
                                                         <label for="event_description" class="form-label">Description
                                                             <span class="text-danger">*</span></label>
+                                                        <!-- <div id="editor">
 
-                                                        <div id="editor"></div>
-                                                        <input type="hidden" id="description" name="description"
-                                                               value="{{ $event->description }}">
+                                                        </div> -->
+                                                        @if($isPreview)
+                                                            {!! $event->description !!}
+                                                        @else
+                                                        <textarea id="description" readonly  name="description">
+                                                            {{$event->description}}
+                                                        </textarea>
+                                                        <script>
+                                                            var editor = document.querySelector('#description');
+
+                                                                ClassicEditor.create(editor)
+                                                                .then(editor => { 
+                                                                    
+                                                                } ) .catch( error => { 
+                                                                    console.error( error ); 
+                                                                } );
+                                                        </script>
+                                                        @endif
+                                                        <!-- <input type="hidden" id="description" name="description"
+                                                               value="{{ $event->description }}"> -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -382,83 +413,90 @@
                                     </div>
                                 </div>
                                 <div class="row" style="height: auto; min-height: 400px">
+                                   
                                     <div class="col-6 append-nft-ticket" style="border-left: 1px;border-right: 1px solid;">
-                                        {{--                                        <div class="row mb-3 nft-ticket-div">--}}
-                                        {{--                                            <div class="col-4">--}}
-                                        {{--                                                <input type="file"--}}
-                                        {{--                                                       accept="image/x-png, image/jpeg"--}}
-                                        {{--                                                       style="display: none"--}}
-                                        {{--                                                       class="image-file"--}}
-                                        {{--                                                       id="image-file"--}}
-                                        {{--                                                       name="file-image-nft"--}}
-                                        {{--                                                />--}}
-                                        {{--                                                <label for="image-file">--}}
-                                        {{--                                                    <img class="image-label img-preview" src="https://static.vecteezy.com/system/resources/previews/007/567/154/original/select-image-icon-vector.jpg">--}}
-                                        {{--                                                </label>--}}
-                                        {{--                                            </div>--}}
-                                        {{--                                            <div class="col-4">--}}
-                                        {{--                                                <div class="col-10 mt-20">--}}
-                                        {{--                                                    <input type="text" required--}}
-                                        {{--                                                           class="form-control nft_symbol"--}}
-                                        {{--                                                           value="Standard">--}}
-                                        {{--                                                </div>--}}
-                                        {{--                                                <div class="col-10 mt-20">--}}
-                                        {{--                                                    <input type="text" required--}}
-                                        {{--                                                           class="form-control nft_name"--}}
-                                        {{--                                                           placeholder="NFT Title"--}}
-                                        {{--                                                           name="nft_name">--}}
-                                        {{--                                                </div>--}}
-                                        {{--                                            </div>--}}
-                                        {{--                                            <div class="col-2" style="margin-top: 50px">--}}
-                                        {{--                                                <input type="number" required--}}
-                                        {{--                                                       class="form-control nft_amount"--}}
-                                        {{--                                                       value="1"--}}
-                                        {{--                                                       name="nft_amount">--}}
-                                        {{--                                            </div>--}}
-                                        {{--                                            <div class="col-2" style="margin-top: 50px">--}}
-                                        {{--                                                <button type="button" class="btn-delete-nft-ticket btn btn-danger">Delete</button>--}}
-                                        {{--                                            </div>--}}
-                                        {{--                                        </div>--}}
+                                        @if ($ticketCollection)
+                                            @foreach($ticketCollection as $key => $value)
+                                            <div class="row mb-3 nft-ticket-div">
+                                                <div class="col-4">
+                                                    <input type="file"
+                                                            accept="image/x-png, image/jpeg"
+                                                            style="display: none"
+                                                            class="image-file"
+                                                            id="image-file"
+                                                            disabled 
+                                                            name="file-image-nft"
+                                                    />
+                                                    <label for="image-file">
+                                                        <img class="image-label img-preview" src="{{ !empty($value->photo) ? $value->photo : asset('/imgs/no-image.png') }}">
+                                                    </label>
+                                                </div>
+                                                <div class="col-4">
+                                                    
+                                                    <div class="col-10 mt-20">
+                                                        <span>Title:</span>
+                                                        <input type="text" required
+                                                                class="form-control nft_name"
+                                                                placeholder="NFT Title"
+                                                                disabled
+                                                                value="{{ $value->title }}"
+                                                                name="nft_name">
+                                                    </div>
+                                                    <div class="col-10 mt-20">
+                                                        <span>Description:</span>
+                                                        <input type="text" required
+                                                                disabled
+                                                                class="form-control nft_symbol"
+                                                                value="{{ $value->description }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-4" style="margin-top: 50px">
+                                                    <span>Amount:</span>
+                                                    <input type="number" required
+                                                            class="form-control nft_amount"
+                                                            value="{{ $value->amount }}"
+                                                            disabled
+                                                            name="nft_amount">
+                                                </div>
+                                                {{--  <div class="col-2" style="margin-top: 50px">
+                                                    <button type="button" class="btn-delete-nft-ticket btn btn-danger">Delete</button>
+                                                </div>  --}}
+                                            </div>
+                                             
+                                            @endforeach
+                                        @endif
                                     </div>
                                     <div class="col-6 append-nft-detail">
-                                        @if ($countNFT)
-                                            @foreach($countNFT as $name)
-                                                @php
-                                                    $countNFTData = App\Models\NFT\NFTMint::where([
-                                                        'task_id' => $eventId,
-                                                        'type' => 1,
-                                                        'nft_symbol' => $name
-                                                    ])->get();
-                                                    $digest = json_decode($countNFTData[0]->nft_res, true)['digest'];
-                                                @endphp
-                                                @if ($countNFTData)
-                                                    <div class="row mb-3">
-                                                        <div class="col-4">
-                                                            <label for="image-file">
-                                                                <img class="img-preview img-preview-nft" src="{{ !empty($countNFTData[0]->nft_uri) ? $countNFTData[0]->nft_uri : asset('/imgs/no-image.png') }}">
-                                                            </label>
+                                        @if ($ticketNftMint)
+                                            @foreach($ticketNftMint as $key => $value)
+                                                <div class="row mb-3">
+                                                    <div class="col-4">
+                                                        <label for="image-file">
+                                                            <img class="img-preview img-preview-nft" src="{{ !empty($value->photo) ? $value->photo : asset('/imgs/no-image.png') }}">
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <div class="col-10 mt-25">
+                                                            <p class="class-ticket">{{ $value->title }}</p>
                                                         </div>
-                                                        <div class="col-3">
-                                                            <div class="col-10 mt-25">
-                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_title }}</p>
-                                                            </div>
-                                                            <div class="col-10 mt-20">
-                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_symbol }}</p>
-                                                            </div>
+                                                        <div class="col-10 mt-20">
+                                                            <p class="class-ticket">{{ $value->description }}</p>
                                                         </div>
-                                                        <div class="col-3">
+                                                    </div>
+                                                    <div class="col-3">
 {{--                                                            <div class="col-10 mt-25">--}}
 {{--                                                                <p class="class-ticket">{{ $countNFTData[0]->nft_category }}</p>--}}
 {{--                                                            </div>--}}
-                                                            <div class="col-10" style="margin-top: 60px;">
-                                                                <p class="class-ticket">1</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-2" style="margin-top: 50px">
-                                                            <p class="class-ticket"><a href="https://suiscan.xyz/devnet/tx/{{$digest}}">TxHash</a></p>
+                                                        <div class="col-10" style="margin-top: 60px;">
+                                                            <p class="class-ticket">1</p>
                                                         </div>
                                                     </div>
-                                                @endif
+                                                    <div class="col-2" style="margin-top: 50px">
+                                                        <p class="class-ticket">
+                                                            <a target="_blank" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$value->txt_hash}}">TxHash</a>
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             @endforeach
                                         @endif
                                     </div>
@@ -485,7 +523,8 @@
                                 'event' => $event,
                                 'countNFTSession'=>$countNFTSession
                             ])
-
+                          
+                            
                             <!-- Booth -->
 {{--                            @include('cws.event.forms._booth-preview', [--}}
 {{--                                'booths' => $booths,--}}
@@ -636,9 +675,9 @@
                                                         <th>Avatar</th>
                                                         <th>Name</th>
                                                         <th>Email</th>
-                                                        <th>Phone</th>
-                                                        <th>Task Done</th>
-                                                        <th>Set Vip</th>
+                                                        <!-- <th>Phone</th> -->
+                                                        <!-- <th>Task Done</th> -->
+                                                        <!-- <th>Set Vip</th> -->
                                                         <th>Created</th>
                                                     </tr>
                                                     </thead>
@@ -664,15 +703,15 @@
                                                                 <p class="text-success"
                                                                    style="font-size: 11px">{{$userItem->email}}</p>
                                                             </td>
-                                                            <td class="fw-semibold" style="width: 10%;">
+                                                            <!-- <td class="fw-semibold" style="width: 10%;">
                                                                 <p class="text-success"
                                                                    style="font-size: 11px">{{$userItem->phone}}</p>
-                                                            </td>
-                                                            <td class="fw-semibold" style="width: 10%;">
+                                                            </td> -->
+                                                            <!-- <td class="fw-semibold" style="width: 10%;">
                                                                 <p class="text-success"
                                                                    style="font-size: 11px">{{$userItem->taskDoneEvent($userItem->id, $select_session_id)}}</p>
-                                                            </td>
-                                                            <td>
+                                                            </td> -->
+                                                            <!-- <td>
 
                                                                 <input
                                                                     type="checkbox"
@@ -686,7 +725,7 @@
                                                                     data-on-label="On"
                                                                     data-off-label="Off"
                                                                     data-url="{{route('cws.setTicketVip', ['id' => $userInfo->id])}}"></label>
-                                                            </td>
+                                                            </td> -->
                                                             <td>
                                                                 {{dateFormat($userItem->created_at)}}
                                                             </td>
@@ -743,15 +782,15 @@
                                             {{-- biểu đồ --}}
                                             <div class="col-12 mt-4">
                                                 <div class="row">
-                                                    <div class="col-6 col-md-6">
+                                                    {{--  <div class="col-6 col-md-6">
                                                         @if(!empty($booths['detail']))
                                                             <h2>Booth</h2>
                                                             <canvas class="my-4 w-100" id="boothChart" width="900"
                                                                     height="380">
                                                             </canvas>
                                                         @endif
-                                                    </div>
-                                                    <div class="col-6 col-md-6">
+                                                    </div>  --}}
+                                                    <div class="col-12 col-md-12">
                                                         @if(!empty($sessions['detail']))
                                                             <h2>Session</h2>
                                                             <canvas class="my-4 w-100" id="sessionChart" width="900"
@@ -763,7 +802,7 @@
                                             </div>
 
                                             {{-- danh sách user --}}
-                                            <div class="col-12 mt-4">
+                                            <!-- <div class="col-12 mt-4">
                                                 <h2>User Reward</h2>
                                                 <div class="row">
                                                     <div class="table-responsive small col-lg-12 col-md-12 ms-sm-auto col-lg-12">
@@ -831,7 +870,7 @@
                                                         </table>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -872,9 +911,9 @@
                                     <div id="subForm" class="w-sm ms-auto d-none">
                                         <a class="btn btn-secondary w-sm ms-auto" href="{{route('cws.eventList')}}">Cancel</a>
                                         @if($event->id)
-                                            <button type="button" class="min-edit-btn btn btn-primary w-sm ms-auto">Save</button>
+                                            <button type="submit" class="min-edit-btn btn btn-primary w-sm ms-auto">Save</button>
                                         @else
-                                            <button type="button" class="submit-btn btn btn-primary w-sm ms-auto">Mint</button>
+                                            <button type="submit" class="submit-btn btn btn-primary w-sm ms-auto">Mint</button>
                                         @endif
                                     </div>
                                 @endif
@@ -929,7 +968,7 @@
             $("#lng-address").addClass("d-none");
         });
     </script>
-    <script>
+    <!-- <script>
         google.maps.event.addDomListener(window, 'load', initialize);
 
         function initialize() {
@@ -948,7 +987,7 @@
                 //$("#longtitudeArea").removeClass("d-none");
             });
         }
-    </script>
+    </script> -->
 
     @if($isPreview == false)
         <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
@@ -1336,12 +1375,12 @@
 
             $(document).on("submit", "#post_form", function (event) {
                 //Get Editor content
-                var content = editor.getHTML();//editor.getHTML(); getMarkdown
-                var content2 = editor2.getHTML();//editor.getHTML();
-                var content3 = editor3.getHTML();//editor.getHTML();
-                $('[name=description]').attr('value', editor.getHTML());
-                $('[id=sessions-description]').attr('value', editor2.getHTML());
-                $('[id=booths-description]').attr('value', editor3.getHTML());
+                <!-- var content = editor.getHTML();//editor.getHTML(); getMarkdown -->
+                <!-- var content2 = editor2.getHTML();//editor.getHTML(); -->
+                <!-- var content3 = editor3.getHTML();//editor.getHTML(); -->
+                <!-- $('[name=description]').attr('value', editor.getHTML()); -->
+                <!-- $('[id=sessions-description]').attr('value', editor2.getHTML()); -->
+                <!-- $('[id=booths-description]').attr('value', editor3.getHTML()); -->
                 $(window).off('beforeunload');
             });
 

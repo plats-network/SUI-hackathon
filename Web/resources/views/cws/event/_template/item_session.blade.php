@@ -1,5 +1,5 @@
 <div class="mb-3 row itemSessionDetail itemSessionDetailMint" id="itemSession{{$indexImageItem}}">
-    <div class="col-4">
+    <div class="col-5">
         <input type="file"
                accept="image/x-png, image/jpeg"
                style="display: none"
@@ -8,10 +8,10 @@
                name="file-image-nft"
         />
         <label for="image-file{{$indexImageItem}}">
-            <img class="image-label img-preview" src="{{ asset('/imgs/no-image.png') }}">
+            <img class="image-label img-preview" src="{{ asset('/imgs/defaultsession.png') }}">
         </label>
     </div>
-    <div class="col-6">
+    <div class="col-5">
         <div class="col-10 mt-20">
             <input
                 type="text"
@@ -21,6 +21,7 @@
                 placeholder="Name session"
                 value="">
         </div>
+        
         <div class="col-10 mt-20">
             <input
                 type="text"
@@ -33,10 +34,37 @@
         <div class="col-10 mt-20" hidden>
             <input
                 type="hidden"
+                class="form-control nft_contract_task_events_details_id"
+                id="sessions[detail][{{$indexImageItem}}][nft-contract_task_events_details_id]"
+                name="sessions[detail][{{$indexImageItem}}][nft-contract_task_events_details_id]"
+                placeholder="nft-contract_task_events_details_id"
+                value="">
+        </div>
+        <div class="col-10 mt-20" hidden>
+            <input
+                type="hidden"
                 class="form-control nft_address_session"
                 id="sessions[detail][{{$indexImageItem}}][nft-address]"
                 name="sessions[detail][{{$indexImageItem}}][nft-address]"
                 placeholder="nft-address"
+                value="">
+        </div>
+        <div class="col-10 mt-20" hidden>
+            <input
+                type="hidden"
+                class="form-control nft_digest_session"
+                id="sessions[detail][{{$indexImageItem}}][nft-digest]"
+                name="sessions[detail][{{$indexImageItem}}][nft-digest]"
+                placeholder="nft-digest"
+                value="">
+        </div>
+        <div class="col-10 mt-20" hidden>
+            <input
+                type="hidden"
+                class="form-control nft_amount_session"
+                id="sessions[detail][{{$indexImageItem}}][nft-amount]"
+                name="sessions[detail][{{$indexImageItem}}][nft-amount]"
+                placeholder="nft-amount"
                 value="">
         </div>
         <div class="col-10 mt-20" hidden>

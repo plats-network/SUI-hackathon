@@ -75,6 +75,11 @@ class TaskEvent extends Model
 
     public function detail()
     {
+        // return $this->hasMany(TaskEventDetail::class)
+        //     ->join('task_event_detail_nft_mint', 'task_event_details.id', '=', 'task_event_detail_nft_mint.task_event_detail_id')
+        //     ->orderBy('task_event_details.created_at', 'ASC')
+        //     ->orderBy('task_event_details.id', 'ASC');
+
         return $this->hasMany(TaskEventDetail::class)->orderBy('created_at', 'ASC')->orderBy('id', 'ASC');
     }
 

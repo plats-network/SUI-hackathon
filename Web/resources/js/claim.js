@@ -176,71 +176,70 @@ const claimTestNet = async () => {
     console.log('toSuiAddress',toSuiAddress);
 
     console.log('zkLoginUserAddress',zkLoginUserAddress);
-    
-    const client = new SuiClient({
-
-        url: getFullnodeUrl(typenetwork),
-    });
-
-    const transactionBlockKindBytes = await txb.build({ client, onlyTransactionKind: true });
-    const endpoint = 'https://api.enoki.mystenlabs.com/v1/transaction-blocks/sponsor';
-    const data = {
-        transactionBlockKindBytes: toB64(transactionBlockKindBytes),
-        network: typenetwork,
-        // with keypair 
-        sender: toSuiAddress,
-        allowedMoveCallTargets: [`${packageId}::ticket_collection::claim_ticket`]
-    };
-    const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer enoki_private_dadb3ac2919df99e92dbe6eac8b8d534`,
-    };
-    console.log(headers);
-    console.log(JSON.stringify(data));
     try {
+        const client = new SuiClient({
+
+            url: getFullnodeUrl(typenetwork),
+        });
+
+        const transactionBlockKindBytes = await txb.build({ client, onlyTransactionKind: true });
+        const endpoint = 'https://api.enoki.mystenlabs.com/v1/transaction-blocks/sponsor';
+        const data = {
+            transactionBlockKindBytes: toB64(transactionBlockKindBytes),
+            network: typenetwork,
+            // with keypair 
+            sender: toSuiAddress,
+            allowedMoveCallTargets: [`${packageId}::ticket_collection::claim_ticket`]
+        };
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer enoki_private_dadb3ac2919df99e92dbe6eac8b8d534`,
+        };
+        console.log(headers);
+        console.log(JSON.stringify(data));
+    
         const response = await axios.post(endpoint, JSON.stringify(data), { headers });
         console.log('Response:', response.data);
         digest = response.data.data.digest;
         transactionBlockBytes = response.data.data.bytes;
-    } catch (error) {
-        console.log('Error:', error);
-    }
 
-    console.log('Digest:', digest);
-    console.log('transactionBlockBytes:', transactionBlockBytes);
+        console.log('Digest:', digest);
+        console.log('transactionBlockBytes:', transactionBlockBytes);
 
-    // sign by user with keypair
-    const signature = await ephemeralKeyPairs.signTransactionBlock(fromB64(transactionBlockBytes));
+        // sign by user with keypair
+        const signature = await ephemeralKeyPairs.signTransactionBlock(fromB64(transactionBlockBytes));
 
 
-    console.log('Signature:', signature);
+        console.log('Signature:', signature);
 
-    //
-    const executeEndpoint = `https://api.enoki.mystenlabs.com/v1/transaction-blocks/sponsor/${digest}`;
+        //
+        const executeEndpoint = `https://api.enoki.mystenlabs.com/v1/transaction-blocks/sponsor/${digest}`;
 
-    console.log("Execute Endpoint:", executeEndpoint);
-    let dataExecuteSponsor = {
-        signature: signature.signature
-    };
+        console.log("Execute Endpoint:", executeEndpoint);
+        let dataExecuteSponsor = {
+            signature: signature.signature
+        };
 
-    console.log('Data executeSponsor:', dataExecuteSponsor);
+        console.log('Data executeSponsor:', dataExecuteSponsor);
 
-    try {
-        const response = await axios.post(executeEndpoint, JSON.stringify(dataExecuteSponsor), { headers });
-        console.log('Response for executing sponsored:', response.data.data.digest);
+        const responseExecuteSponsor = await axios.post(executeEndpoint, JSON.stringify(dataExecuteSponsor), { headers });
 
-        let digests = response.data.data.digest;
+        console.log('Response for executing sponsored:', responseExecuteSponsor.data.data.digest);
+
+        let digests = responseExecuteSponsor.data.data.digest;
         const nftId = $('#nft_id').val();
+        const task_id = $('#task_id').val();
 
         const body = {
-            nft_id: nftId,
+            nft_mint_id: nftId,
             digest: digests,
+            task_id:task_id
         }
 
         const res = await axios.post("/update_nft_status", body);
 
-
         alert(`Claim NFT is success. Please see on https://suiscan.xyz/${typenetwork}/tx/${digests}`);
+        
         $('.loading').hide();
         $('.claim-success').css('display', 'block');
         $('.sol-link').attr('href', `https://suiscan.xyz/${typenetwork}/tx/${digests}`);
@@ -250,8 +249,8 @@ const claimTestNet = async () => {
         $('.showModal').hide();
         
     } catch (error) {
-
         alert(error);
+        $('.loading').hide();
         console.error('Error executing sponsored transaction block:', error);
     }
 }

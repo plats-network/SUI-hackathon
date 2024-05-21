@@ -14,20 +14,20 @@ export default function StatusSession({payload}) {
     const wallet = useWallet();
     const [valueCheckBox, setValueCheckBox] = useState(payload.status)
     
-    const lockSession = async (packageId,contract_event_id,nftsessionid,status) => {
+    const lockSession = async (packageId,contract_event_id,nftsessionid,status,contracttaskeventid) => {
     
         console.log('wallet',wallet);
         let tx = new TransactionBlock();
     
         tx.moveCall({
-            target: `${packageId}::client::batch_lock_sessions`,
+            target: `${packageId}::client::lock_session`,
             arguments: [
-            // ticket event id 
-            tx.object(contract_event_id),
-            // tập hợp session object id - collection session 
-            tx.pure([nftsessionid]),
-            // bật on = false , off = true        
-            tx.pure(status),  
+                // ticket event id 
+                tx.object(contract_event_id),
+                // tập hợp session object id - collection session 
+                tx.pure(contracttaskeventid),
+                // bật on = false , off = true        
+                tx.pure(status),  
             ],
         
         });
@@ -75,8 +75,6 @@ export default function StatusSession({payload}) {
     }
     
 
-    
-
     const handleChange = (e) => {
 
         setValueCheckBox((prev) => !prev)
@@ -88,7 +86,7 @@ export default function StatusSession({payload}) {
         console.log('payload',payload);
         const contract_event_id = payload.contract_event_id;
         let packageId = $('meta[name="package_id"]').attr('content');
-        lockSession(packageId,contract_event_id,payload.nftsessionid,valueCheckBox);
+        lockSession(packageId,contract_event_id,payload.nftsessionid,valueCheckBox,payload.contracttaskeventid);
         
     }
     
@@ -128,14 +126,16 @@ Array.from(statusSessionElements).forEach(element => {
     const dataSessionId = element.dataset.sessionid;
     const dataDetailSessionId = element.dataset.detailsessionid;
     const dataContractEventId = element.dataset.contracteventid;
+    const dataContractTaskEventId = element.dataset.contracttaskeventid;
+
     const dataNftsessionid = element.dataset.nftsessionid;
     const dataNftRes = element.dataset.nftres;
     
-    let sessionIds =  JSON.parse(dataNftRes);
+    let sessionIds =  dataNftRes;
 
     console.log('sessionIds',sessionIds);
 
-    console.log('dataNftRes',JSON.parse(dataNftRes));
+    console.log('dataNftRes',dataNftRes);
     
     const payload = {
         contract_event_id:dataContractEventId,
@@ -144,9 +144,11 @@ Array.from(statusSessionElements).forEach(element => {
         id: dataId,
         status: dataStatus == 'true' ? true : false,
         detailid:dataDetailSessionId,
+        contracttaskeventid:dataContractTaskEventId
     }
 
     console.log('payload',payload);
+
     createRoot(element).render(
         <WalletProvider>
             <StatusSession payload={payload} />

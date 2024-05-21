@@ -7,6 +7,16 @@ import {TransactionBlock} from "@mysten/sui.js/transactions";
 import {Ed25519Keypair} from "@mysten/sui.js/keypairs/ed25519";
 import {getFullnodeUrl, SuiClient} from '@mysten/sui.js/client';
 
+// Hàm để cắt mảng thành các mảng con
+function chunkArray(array, numChunks){
+    let result = [];
+    const chunkSize = Math.ceil(array.length / numChunks);
+    for (let i = 0; i < array.length; i += chunkSize) {
+        result.push(array.slice(i, i + chunkSize));
+    }
+    return result;
+}
+
 export default function App() {
 
     const wallet = useWallet();
@@ -30,7 +40,7 @@ export default function App() {
 
             const nameSession = $(this).find('.name_session').val() ?? 'name_session';
             const descriptionSession = $(this).find('.description_session').val() ?? 'description_session';
-            const fileSession = $(this).find('.image-file').attr('link-img') ?? 'https://xc6fbqjny4wfkgukliockypoutzhcqwjmlw2gigombpp2ynufaxa.arweave.net/uLxQwS3HLFUailocJWHupPJxQsli7aMgzmBe_WG0KC4';
+            const fileSession = $(this).find('.image-file').attr('link-img') ?? window.location.origin+'/imgs/defaultsession.png';
             const mintftSession = $(this).find('.mintft_session').val() ?? 'mintft_session';
             const sessionObj = {
                 nameSession: nameSession,
@@ -46,6 +56,7 @@ export default function App() {
     }
 
     const appendNftSessionDetail = async (details) => {
+
         let typenetwork = $('meta[name="type_network"]').attr('content');
 
         console.log('details',details);
@@ -79,13 +90,80 @@ export default function App() {
         $('.append-nft-session-detail').empty().append(html);
     };
     
+    const hasDuplicateNFTDescriptionSession = async(data) =>{
+
+        // Create a set to store unique NFT names encountered
+        const uniqueNames = new Set();
+    
+        // Iterate through the data array
+        for (const nft of data) {
+    
+            const nftName = nft.descriptionSession;
+    
+            // Check if the name already exists in the set
+            if (uniqueNames.has(nftName)) {
+                uniqueNames.clear();
+                return true; // Duplicate found, return true
+            }
+    
+            // Add the name to the set if not found
+            uniqueNames.add(nftName);
+        }
+    
+        // No duplicates found, return false
+        return false;
+    }
+
+    const hasDuplicateNFTNameSession = async(data) =>{
+
+        // Create a set to store unique NFT names encountered
+        const uniqueNames = new Set();
+    
+        // Iterate through the data array
+        for (const nft of data) {
+    
+            const nftName = nft.nameSession;
+    
+            // Check if the name already exists in the set
+            if (uniqueNames.has(nftName)) {
+                uniqueNames.clear();
+                return true; // Duplicate found, return true
+            }
+    
+            // Add the name to the set if not found
+            uniqueNames.add(nftName);
+        }
+    
+        // No duplicates found, return false
+        return false;
+    }
+
+
     const mint = async (wallet,data) => {
+
+  
+        // const hasDuplicateNFTName = hasDuplicateNFTNameSession(data);
+        
+        // if (hasDuplicateNFTName) {
+        //     alert("Data NFTNameSession is duplicated, please check again!");
+        //     return;
+        // }
+
+        // const hasDuplicateNFTDescription = hasDuplicateNFTDescriptionSession(data);
+
+        // if (hasDuplicateNFTDescription) {
+        //     alert("Data NFTDescriptionSession is duplicated, please check again!");
+        //     return;
+        // }
+
         let newData = {
             nameSession: data.map(item => item.nameSession),
             descriptionSession: data.map(item => item.descriptionSession),
             fileSession: data.map(item => item.fileSession),
             totalNftTicket: data.map(item => item.totalNftTicket)
         };
+
+        
         console.log('newData',newData);
         console.log('wallet',wallet);
 
@@ -103,7 +181,7 @@ export default function App() {
         let event_id = $('meta[name="nft_hash_id"]').attr('content');
 
         let totalNftTicket = $('input[name^="nft-ticket-name-"]').length;
-        
+
         console.log('totalNftTickets',totalNftTicket);
 
         tx.moveCall({
@@ -120,7 +198,7 @@ export default function App() {
                 
                 tx.pure(newData.fileSession),
 
-                tx.pure(newData.totalNftTicket[0] ?? 1),
+                tx.pure(totalNftTicket),
               
             ],
         });
@@ -137,8 +215,15 @@ export default function App() {
                 alert('nft minted Session fails!');
                 return;
             }
-            console.log(result);
-            console.log(data);
+            console.log('result',result);
+            console.log('data',data);
+            const sessionCollectionIds = result.objectChanges.filter(
+                    (o) =>
+                        o.type === "created" &&
+                        o.objectType.includes("::ticket_collection::SessionCollection")
+                ).map(item => item.objectId);
+    
+            console.log(`Sessions collection id :`,sessionCollectionIds);
 
             // đoạn này là user claim
             let sessionIds =  result.objectChanges.filter((o) =>
@@ -159,17 +244,32 @@ export default function App() {
             // console.log('resultUserClaim',resultUserClaim);
             // hết đoạn này là user claim
 
+            // Số mảng con bạn muốn tạo
+            const numChunks = data.length;
+
+            // Gọi hàm để cắt mảng
+            let newArray = chunkArray(sessionIds, numChunks);
+
+            let newArraySessionCollectionIds = chunkArray(sessionCollectionIds, numChunks);
+
+            console.log('newArray',newArray);
+            console.log('newArraySessionCollectionIds',newArraySessionCollectionIds);
             // Lặp qua mỗi đối tượng trong mảng data
             data.forEach((obj, index) => {
                 console.log('line 164',obj);
+                console.log('index line: 165',index);
                 // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
                 obj.txhash = result.digest;
 
                 //mint lại data
                 $('.itemSessionDetailMint').eq(index).find('.nft_address_session').val(sessionIds[index]);
                 $('.itemSessionDetailMint').eq(index).find('.nft_uri_session').val(obj.fileSession);
-                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(sessionIds));
+                $('.itemSessionDetailMint').eq(index).find('.nft_amount_session').val(totalNftTicket);
+                $('.itemSessionDetailMint').eq(index).find('.nft_digest_session').val(result.digest);
+                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(newArray[index]));
                 $('.itemSessionDetailMint').eq(index).find('.image-file').val();
+                $('.itemSessionDetailMint').eq(index).find('.nft_contract_task_events_details_id').val(newArraySessionCollectionIds[index]);
+
             });
 
             appendNftSessionDetail(data);
@@ -196,18 +296,22 @@ export default function App() {
     }, [sessionData]);
 
     return (
-        <div className="App">
-            <ConnectButton label={'Connect Wallet'} />
+        // <div className="App">
+            /* <ConnectButton label={'Connect Wallet'} /> */
             <section>
-            
-                {wallet.status === "connected" && (
+                {wallet.status === "connected" ? (
+                    <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
+                ) : (
+                    <p>Please login to mint your Session.</p>
+                )}
+                {/* {wallet.status === "connected" && (
                     <>
                         <p>
                             <button id="btnGenItemSession" onClick={handleClick} type="button" className="btn btn-primary btn-rounded waves-effect waves-light mb-2 mt-2 me-2">Generate Session</button>
                         </p>
                     </>
-                )}
+                )} */}
             </section>
-        </div>
+        // </div>
     );
 }
