@@ -23,10 +23,12 @@ async function claim() {
         target: `${packageId}::ticket_collection::claim_session`,
         arguments: [
             tx.object(collectionId),
+            // ticket id mà user đó đã claim và đã check in 
+            tx.object("0x6e96fc2d67a8a5b8509efcd9394a5d207ec315f26ce2f42a2ea266441374c8f1"),
             // session collection id 
-            tx.object("0xa5626b2f554c0ec4f4e0b4efff337a84d0d1e0de1a6a1290176224190fd0bb3a"),
+            tx.object("0x6550ce0b06508af0b205e39c14dd5d6247aa26459020b2b868975fb5dfbe1748"),
             // session object id 
-            tx.pure("0x9b72adcf519c28c8d2009b6d1ef5eeb3ecee742a10a567cc7cac57a6d9e3a716")
+            tx.pure("0x1cbdb4109d9fd438cb273cc8aefa3279680cd7e7c9e0f67736c2e7f2f3ee3e0e")
         ],
         typeArguments: [`${packageId}::ticket_collection::NFTSession`]
     });

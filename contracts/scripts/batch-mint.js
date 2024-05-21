@@ -34,7 +34,7 @@ async function mint() {
             // catogory: vector<u8>,
             tx.pure.string("Standard"),
             // max_supply: u64,
-            tx.pure(1),
+            tx.pure(2),
         ],
         //typeArguments: [`${packageId}::ticket_collection::NFTTicket`]
     });

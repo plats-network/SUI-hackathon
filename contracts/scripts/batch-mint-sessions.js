@@ -30,7 +30,7 @@ async function mintSessions() {
             // url: vector<vector<u8>>,
             tx.pure(["https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos", "https://sui-hackathon.infura-ipfs.io/ipfs/QmTdrqauAgYPk9uxZjFUyQCBfhHLkCgjZixx5ZHQFAJcos"]),
             // max supply 
-            tx.pure(1),
+            tx.pure(5),
         ],
         //typeArguments: [`${process.env.PACKAGE_ID}::ticket_collection::NFTTicket`]
     });
@@ -43,7 +43,7 @@ async function mintSessions() {
         },
     });
 
-    const sessionCollectionIds = 
+    const sessionCollectionIds =
         txs.objectChanges.filter(
             (o) =>
                 o.type === "created" &&
@@ -51,14 +51,38 @@ async function mintSessions() {
         ).map(item => item.objectId);
 
     console.log(`Sessions collection id : ${sessionCollectionIds}`);
-    const sessionIds = 
-        txs.objectChanges.filter(
-            (o) =>
-                o.type === "created" &&
-                o.objectType.includes("::ticket_collection::NFTSession")
-        ).map(item => item.objectId);
-    console.log(`Sessions id : ${sessionIds}`);
 
+
+    const sessionIds = sessionCollectionIds.map(async (sessionCollectionId) => {
+        const sessionCollectionObject = await client.getObject({
+            id: sessionCollectionId,
+            options: {
+                showContent: true,
+                showType: true,
+            },
+        });
+        return sessionCollectionObject.data.content.fields.sessions
+
+    })
+    // const res = await Promise.all(sessionIds);
+    // console.log(res);
+
+    const res = await Promise.all(sessionIds)
+        .then((resolvedSessionIds) => {
+            const res = resolvedSessionIds;
+            //console.log(res);
+            return res;
+        })
+        .catch((error) => {
+            console.error("Error resolving:", error);
+        });
+    console.log(res);
 }
+
+// 2 array
+// 1 array session ID = [[],[]]
+// 1 array của session collection ID = []
+
+
 
 mintSessions();
