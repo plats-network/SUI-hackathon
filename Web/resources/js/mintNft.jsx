@@ -121,6 +121,29 @@ export default function mintNft({nftData, _setMinted, nftMinted, setNftData, set
         const resultDuplicateNftName = hasDuplicateNFTName(datas);
         const resultDuplicateNftDescription = hasDuplicateNFTDescription(datas);
 
+        let errors = [];
+
+        datas.forEach((nft, index) => {
+            if (!nft.nft_name || nft.nft_name.trim() === "") {
+                setIsLoading(false);
+                errors.push(`Error: nft_name is required for item at index ${index+1}`);
+                return;
+            }
+            if (!nft.nft_symbol || nft.nft_symbol.trim() === "") {
+                setIsLoading(false);
+                errors.push(`Error: nft_symbol is required for item at index ${index+1}`);
+                return;
+            }
+        });
+
+        //check data empty
+        if (errors.length > 0) {
+            alert(errors.join('\n'));
+            console.log(errors.join('\n'));
+            return;
+        }
+        
+        //check data dumplicate
         if (resultDuplicateNftName) {
             setIsLoading(false);
             alert("Data NftName is duplicated, please check again!");

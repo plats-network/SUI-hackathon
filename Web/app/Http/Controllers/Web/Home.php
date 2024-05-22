@@ -254,7 +254,7 @@ class Home extends Controller
            
         //lấy thông tin người dùng tạo ticket sukien
 
-        try {
+        // try {
             $user = Auth::user();
 
             $event = $this->taskService->find($id);
@@ -342,57 +342,21 @@ class Home extends Controller
             if ($request->session()->has('sponsor-' . optional($user)->id)) {
                 $request->session()->forget('sponsor-' . optional($user)->id);
             }
-            //05.12.2023
-            //Check param check_in then check user join event
-            if ($request->get('check_in') && $user) {
-                $check = $this->eventUserTicket
-                    ->whereUserId($user->id)
-                    ->whereTaskId($id)
-                    ->exists();
-
-                if (!$check) {
-                    $statusCreateCheckin = $this->eventUserTicket->create([
-                        'name' => $user->name,
-                        'phone' => $user->phone ? $user->phone : '0367158269',
-                        'email' => $user->email,
-                        'task_id' => $id,
-                        'user_id' => $user->id,
-                        'is_checkin' => true,
-                        'hash_code' => Str::random(35)
-                    ]);
-                    $show_message = 1;
-                } else {
-                    //Update is_checkin
-                    $statusCreateCheckin = $this->eventUserTicket
-                        ->whereUserId($user->id)
-                        ->whereTaskId($id)
-                        ->update([
-                            'is_checkin' => true,
-                        ]);
-
-                    $show_message = 1;
-                }
-                //Send NFT to user
-                $has_checkin = 1;
-                return redirect()->route('web.events.show', [
-                    'id' => $id,
-                    'sucess_checkin' => $has_checkin
-                ]);
-            }
+         
 
             //Case not login, redirect register. 06.12.2023
-            if ($request->get('check_in') && $user == null) {
-                //Set session checkin and event id
-                session()->put('checkin_event', [
-                    'id' => $id,
-                    'type' => 'checkin'
-                ]);
+            // if ($request->get('check_in') && $user == null) {
+            //     //Set session checkin and event id
+            //     session()->put('checkin_event', [
+            //         'id' => $id,
+            //         'type' => 'checkin'
+            //     ]);
 
-                return redirect()->route('web.formLoginGuest', [
-                    'id' => $id,
-                    'sucess_checkin' => 1
-                ]);
-            }
+            //     return redirect()->route('web.formLoginGuest', [
+            //         'id' => $id,
+            //         'sucess_checkin' => 1
+            //     ]);
+            // }
 
             // lay session
             $travelSessions = [];
@@ -488,10 +452,50 @@ class Home extends Controller
                     ->whereNull('booth_id')
                     ->first();
             }
-        } catch (\Exception $e) {
-//            dd($e->getMessage());
-            notify()->error('Error show event');
-        }
+
+            //lấy thông tin người vé người dùng đã claim checkin rồi
+            if ($request->get('check_in') && $user && $check) {
+
+                $eventUserClaimTicket = EventUserTicket::where('task_id',$id)->where('user_id',$user->id)->where('is_checkin',1)->first();
+                // $checkUserTicket = $this->eventUserTicket
+                //     ->whereUserId($user->id)
+                //     ->whereTaskId($id)
+                //     ->exists();
+
+                // if (!$checkUserTicket) {
+                    
+                //     $statusCreateCheckin = $this->eventUserTicket->create([
+                //         'name' => $user->name,
+                //         'phone' => $user->phone ? $user->phone : '0367158269',
+                //         'email' => $user->email,
+                //         'task_id' => $id,
+                //         'user_id' => $user->id,
+                //         'is_checkin' => true,
+                //         'hash_code' => Str::random(35)
+                //     ]);
+                //     $show_message = 1;
+                // } else {
+                //     //Update is_checkin
+                //     $statusCreateCheckin = $this->eventUserTicket
+                //         ->whereUserId($user->id)
+                //         ->whereTaskId($id)
+                //         ->update([
+                //             'is_checkin' => true,
+                //         ]);
+
+                //     $show_message = 1;
+                // }
+                // //Send NFT to user
+                // $has_checkin = 1;
+                // return redirect()->route('web.events.show', [
+                //     'id' => $id,
+                //     'sucess_checkin' => $has_checkin
+                // ]);
+            }
+//         } catch (\Exception $e) {
+// //            dd($e->getMessage());
+//             notify()->error('Error show event');
+//         }
 
 //        if ($request->check_in) {
 //            $taskDetail = TaskEventDetail::where([
@@ -499,6 +503,7 @@ class Home extends Controller
 //            ])->get();
 //            dd($taskDetail);
 //        }
+
         $data = [
             'event' => $event ?? [],
             'user' => $user ?? [],
@@ -520,7 +525,8 @@ class Home extends Controller
             'checkMint' => $check ?? [],
             'nft' => $nft ?? [],
             'userSubmited'=>$userSubmited,
-            'link_check_in'=>$request->get('sucess_checkin'),
+            'eventUserClaimTicket'=>$eventUserClaimTicket ?? [],
+            'link_check_in'=>$request->get('sucess_checkin') ?? $request->get('check_in'),
             'eventUserTicket'=>$eventUserTicket,
             'displayString'=>$displayString
         ];
@@ -568,6 +574,89 @@ class Home extends Controller
         ]);
     }
 
+    public function apiUserCheckin(Request $request){
+
+        $data = $request->only(['txt_hash','task_id']);
+        
+        $validator = [
+           
+            'txt_hash'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+          
+            'task_id'=>[
+                'required',
+                'min:1',
+                'string',
+            ],
+        ];
+
+        $messages = [
+
+        ];
+
+        $validator = Validator::make($data, $validator,$messages);
+
+        // validate data
+        if ($validator->fails()) {
+
+            return response()->json([
+                'status' => false,
+                'message' =>  $validator->messages()->first()
+            ], 400);
+        }
+        $user = Auth::user();
+        $check = UserNft::
+            where([
+                'user_id' => $user->id,
+                'task_id' => $data['task_id'],
+                'type'=>1
+            ])
+            ->whereNull('session_id')
+            ->whereNull('booth_id')
+            ->first();
+
+        $checkUserTicket = $this->eventUserTicket
+            ->whereUserId($user->id)
+            ->whereTaskId($data['task_id'])
+            ->exists();
+
+        if (!$checkUserTicket) {
+            
+            $statusCreateCheckin = $this->eventUserTicket->create([
+                'name' => $user->name,
+                'phone' => $user->phone ? $user->phone : '0367158269',
+                'email' => $user->email,
+                'task_id' => $data['task_id'],
+                'user_id' => $user->id,
+                'is_checkin' => true,
+                'hash_code' => Str::random(35),
+                'txt_hash'=>$data['txt_hash']
+            ]);
+            $show_message = 1;
+        } else {
+            //Update is_checkin
+            $statusCreateCheckin = $this->eventUserTicket
+                ->whereUserId($user->id)
+                ->whereTaskId($data['task_id'])
+                ->update([
+                    'is_checkin' => true,
+                ]);
+
+            $show_message = 1;
+        }
+        //Send NFT to user
+        $has_checkin = 1;
+        
+        // Gán kết quả trả về vào biến $response
+        $responses = [
+            'status' => true,
+            'message' => 'Your User Claim NFT checkin success',
+        ];
+        return response()->json($responses, 200);
+    }
     // Get ticket
     public function orderTicket(Request $request)
     {   

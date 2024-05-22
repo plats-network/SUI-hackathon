@@ -35,6 +35,7 @@ use App\Models\{NFT\NFT,
     UserSponsor,
     User};
 use App\Models\NFT\TicketNftMint;
+use App\Models\NFT\UserNft;
 use App\Services\Admin\{EventService, TaskService};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -727,13 +728,10 @@ class EventController extends Controller
             ->value('id');
 
         //tổng user tham gia sự kiện
-        $countUserJoinEvent = UserJoinEvent::where('task_id', $id)->count();
+        $countUserJoinEvent = EventUserTicket::where('task_id', $id)->where('is_checkin',1)->count();
 
         //tổng user đăng kí sự kiện
-        $countUserRegisterEvent = EventUserTicket::where('task_id', $id)->count();
-
-        //user vào sự kiện
-        $dataUserJoinEvent = UserJoinEvent::select('user_id', 'updated_at', 'type')->get();
+        $countUserRegisterEvent = UserNft::where('task_id', $id)->where('type',1)->whereNull('booth_id')->whereNull('session_id')->count();
 
         $countNFT = NFTMint::where([
             'task_id' => $task->id,

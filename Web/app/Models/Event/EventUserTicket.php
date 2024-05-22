@@ -36,6 +36,7 @@ class EventUserTicket extends Model
         'is_checkin',
         'hash_code',
         'is_vip',
+        'txt_hash'
     ];
 
     public function task()

@@ -141,6 +141,17 @@ export default function App() {
 
     const mint = async (wallet,data) => {
 
+        data.forEach((nft, index) => {
+            if (!nft.nameSession || nft.nameSession.trim() === "") {
+              
+                alert(`Error: nameSession is required for item at index ${index+1}`);
+                return;
+            }
+            if (!nft.descriptionSession || nft.descriptionSession.trim() === "") {
+                alert(`Error: nft_symbol is required for item at index ${index+1}`);
+                return;
+            }
+        });
   
         // const hasDuplicateNFTName = hasDuplicateNFTNameSession(data);
         
@@ -224,14 +235,31 @@ export default function App() {
                 ).map(item => item.objectId);
     
             console.log(`Sessions collection id :`,sessionCollectionIds);
-
-            // đoạn này là user claim
+       
             let sessionIds =  result.objectChanges.filter((o) =>
                     o.type === "created" &&
                     o.objectType.includes("::ticket_collection::NFTSession")
             ).map(item => item.objectId);
             
             console.log('sessionIds',sessionIds);
+
+            // const client = new SuiClient({
+            //     url: getFullnodeUrl(typenetwork),
+            // });
+            // const sessionIds = sessionCollectionIds.map(async (sessionCollectionId) => {
+            //     const sessionCollectionObject = await client.getObject({
+            //         id: sessionCollectionId,
+            //         options: {
+            //             showContent: true,
+            //             showType: true,
+            //         },
+            //     });
+            //     return sessionCollectionObject.data.content.fields.sessions
+            // })
+            console.log('sessionIds line 259',sessionIds);
+
+            // const res = await Promise.all(sessionIds);
+
             //user login jdk
             // const user = "0x70f94573c6cd732304f2c0fd9d80cf7d6206e4609c5c4b259972e90885fc3acb";
             // tx.transferObjects([tx.object(sessionIds)] , user);
@@ -246,7 +274,7 @@ export default function App() {
 
             // Số mảng con bạn muốn tạo
             const numChunks = data.length;
-
+      
             // Gọi hàm để cắt mảng
             let newArray = chunkArray(sessionIds, numChunks);
 
@@ -254,6 +282,11 @@ export default function App() {
 
             console.log('newArray',newArray);
             console.log('newArraySessionCollectionIds',newArraySessionCollectionIds);
+
+            sessionCollectionIds.sort((a, b) => {
+                return parseInt(b) - parseInt(a);
+            });
+
             // Lặp qua mỗi đối tượng trong mảng data
             data.forEach((obj, index) => {
                 console.log('line 164',obj);
@@ -268,7 +301,7 @@ export default function App() {
                 $('.itemSessionDetailMint').eq(index).find('.nft_digest_session').val(result.digest);
                 $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(newArray[index]));
                 $('.itemSessionDetailMint').eq(index).find('.image-file').val();
-                $('.itemSessionDetailMint').eq(index).find('.nft_contract_task_events_details_id').val(newArraySessionCollectionIds[index]);
+                $('.itemSessionDetailMint').eq(index).find('.nft_contract_task_events_details_id').val(sessionCollectionIds[index]);
 
             });
 

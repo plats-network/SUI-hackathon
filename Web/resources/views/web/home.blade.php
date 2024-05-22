@@ -2,7 +2,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name='type_network' content="{{ env('TYPE_NETWORK')}}">
-
+    
 </head>
 @section('content')
     @include('web.layouts.event')
@@ -141,7 +141,7 @@
                     <div class="section-heading-2 ">
                         <p class="color-white">Find your event!</p>
                     </div>
-                    <div class="schedule-tab">
+                    {{--  <div class="schedule-tab">
                         <div class="col-9">
                             <ul class="nav nav-tabs tab-m" id="conferScheduleTab" role="tablist">
                                 <li class="nav-item">
@@ -164,7 +164,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div>  --}}
                     <div class="tab-content" id="conferScheduleTabContent">
                         <div class="tab-pane fade show active" id="step-one" role="tabpanel" aria-labelledby="monday-tab">
                             <div class="row">

@@ -292,7 +292,7 @@
                                                             type="text"
                                                             class="form-control"
                                                             value="{{ dateFormat($event->start_at) }}"
-                                                            placeholder="{{ dateFormat($event->start_at) ?? '2023-06-19 17:30' }}"
+                                                            placeholder="{{ dateFormat($event->start_at) ?? dateFormat(now()) }}"
                                                             id="{{$isPreview ? '' : 'start_at'}}"
                                                             name="start_at">
                                                         <div class="valid-feedback"></div>
@@ -307,7 +307,7 @@
                                                             type="text"
                                                             class="form-control"
                                                             value="{{ dateFormat($event->end_at) }}"
-                                                            placeholder="{{ dateFormat($event->end_at) ?? '2023-06-19 17:30' }}"
+                                                            placeholder="{{ dateFormat($event->end_at ? $event->end_at->addDay() : now()->addDay()->format('Y-m-d')) }}"
                                                             id="{{$isPreview ? '' : 'end_at'}}"
                                                             name="end_at">
                                                         <div class="valid-feedback"></div>
@@ -389,7 +389,7 @@
                                                         
                                                             <div id="editor"></div>
 
-                                                            <textarea type="hidden" id="description" name="description"
+                                                            <textarea hidden id="description" name="description"
                                                                value="{{ $event->description }}"></textarea>
                                                     </div>
                                                 </div>
@@ -2048,7 +2048,13 @@
                         yii.validation.required(value, messages, {"message": "{{__('validation-inline.required') }}"});
                         //Validate date check grater than end_date
                         if (value && $('#start_at').val()) {
-                            if (value < $('#start_at').val()) {
+                            console.log('end_at',$('#end_at').val());
+                            console.log('start_at',$('#start_at').val());
+                          
+                            if(end_at == start_at){
+                                yii.validation.addMessage(messages, "The end date cannot be the same as the current date");
+                            }
+                            if (value <= $('#start_at').val()) {
                                 yii.validation.addMessage(messages, "{{__('validation-inline.end_date_greater_than_start_date') }}");
                             }
                         }

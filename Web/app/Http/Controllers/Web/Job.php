@@ -605,32 +605,23 @@ class Job extends Controller
             
         }
      
-        $nftMint =  NFTMint::where('session_id',$session->id ?? '')->first();
-        
         //lấy danh sách các nft session đã claim
-        $nftMint = UserNft::select('nft_mint_id')->where('type',2)->where('task_id',$taskId)->pluck('nft_mint_id');
+        $nftMint = UserNft::select('nft_mint_id')->where('type',2)->where('task_id',$taskId)->where('session_id',$taskEventDetail->id)->pluck('nft_mint_id');
         
-        //lấy danh sách địa chỉ ví đã dùng rồi các nft đã mint
-        $claimedNfts = TaskEventDetailNftMint::whereIn('id', $nftMint)->pluck('address_nft');
+        //lấy danh sách địa chỉ ví nft mà user đã claim rồi
+        $claimedNfts = TaskEventDetailNftMint::whereIn('id', $nftMint)->where('task_event_detail_id',$taskEventDetail->id)->pluck('address_nft');
 
-        #lấy sesssion đã được mint bên web3
-        $sessionMintweb3 = TaskEventDetail::join(
+        #lấy sesssion đã được mint bên web3 và chưa được user nào claim
+        $nftSessionNotClaim = TaskEventDetail::select('*','task_event_detail_nft_mint.id as task_event_detail_nft_mint_id')->join(
             'task_event_detail_nft_mint',
             'task_event_detail_nft_mint.task_event_detail_id','=','task_event_details.id')
-                ->where(['task_event_details.code'=> $request['id'] ?? $request['code_task_event_details']]);
+                ->where(['task_event_details.code'=> $request['id'] ?? $request['code_task_event_details'],'task_event_detail_nft_mint.task_event_detail_id'=>$taskEventDetail->id])
+                ->whereNotIn('task_event_detail_nft_mint.address_nft',$claimedNfts)->first();
 
-        //lấy ra những nft chưa claim
-        $nftSessionNotClaim = TaskEventDetailNftMint::select('*','task_event_detail_nft_mint.id as task_event_detail_nft_mint_id')
-            ->join('task_event_details','task_event_details.id','=','task_event_detail_nft_mint.task_event_detail_id')
-            ->whereNotIn('task_event_detail_nft_mint.address_nft',$claimedNfts)
-            ->whereIn('task_event_detail_nft_mint.id',$sessionMintweb3->pluck('task_event_detail_nft_mint.id'))
-            ->where(['task_event_detail_nft_mint.task_id'=>$taskId])
-            ->first();
-
-        #user đã claim nft session
+        #lấy ra nft address mà user đó đã claim session này rồi
         $nftUserClaimSession =  UserNft::join('task_event_detail_nft_mint','task_event_detail_nft_mint.id','=','user_nft.nft_mint_id')
             ->where([
-                'task_event_detail_nft_mint.task_event_detail_id'=>$nftSessionNotClaim['task_event_detail_id'] ?? '',
+                'user_nft.session_id'=>$taskEventDetail->id ?? '',
                 'user_nft.task_id'=>$taskId ?? '',
                 'user_nft.user_id'=>auth()->user()->id,
                 'user_nft.type'=>2,
@@ -643,7 +634,7 @@ class Job extends Controller
         }
         
         $listLuckyCode =  $this->userCode
-            ->where('task_event_id', $sessionMintweb3->first()->task_event_id)
+            ->where('task_event_id', $taskEventDetail->task_event_id)
             ->whereNotNull('task_event_details_id')
             ->where('user_id',auth()->user()->id)
             ->get();
@@ -668,7 +659,6 @@ class Job extends Controller
             'nftMint'=>$nftMint,
             'nftUserClaimSession'=>$nftUserClaimSession,
             'code_task_event_details'=>$request['code_task_event_details'],
-            'sessionMintWeb3'=>$sessionMintweb3,
             'nftSessionNotClaim'=>$nftSessionNotClaim,//địa chỉ ví còn lại chưa claim
             // 'luckyCode'=>$checkCode,
             'listLuckyCode'=> !empty($numberCodes) ? implode(',', $numberCodes) : []

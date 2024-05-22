@@ -35,6 +35,7 @@ export default defineConfig({
                 // JS
                 'resources/js/claim.js',
                 'resources/js/claim-session.js',
+                'resources/js/userCheckin.js',
                 'resources/js/mint.js',
                 // 'resources/js/mint_booth.js',
                 // 'resources/js/mint_session.js',
