@@ -122,6 +122,9 @@ Route::get('event/{id}', [Home::class, 'show'])->name('web.events.show');
 Route::post('update_nft_status', [\App\Http\Controllers\Admin\NFTController::class, 'updateNftClaim'])->name('api.updateStatusNftClaim');
 Route::post('update_session_booth_nft_status', [\App\Http\Controllers\Admin\NFTController::class, 'updateSessionBoothClaim'])->name('api.updateSessionBoothClaim');
 
+//user checkin
+Route::post('usercheckin', [Home::class, 'apiUserCheckin'])->name('api.apiUserCheckin');
+
 Route::get('/', [Home::class, 'index'])->name('web.home');
 Route::get('event-lists', [Home::class, 'events'])->name('web.events');
 //Route::get('event/{id}', [Home::class, 'show'])->name('web.events.show');

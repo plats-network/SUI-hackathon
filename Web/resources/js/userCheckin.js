@@ -25,6 +25,7 @@ import { SerializedSignature, decodeSuiPrivateKey } from '@mysten/sui.js/cryptog
 
 let type_network = $('meta[name="type_network"]').attr('content');
 let packageId = $('meta[name="package_id"]').attr('content');
+console.log('packageId 28',packageId);
 const contract_event_id = $('#contract_event_id').val();
 
 async function autoClaim() {
@@ -232,6 +233,7 @@ async function autoClaim() {
 
         console.log('address_nft_min',address_nft_min);
         console.log('contract_task_events_details_id',contract_task_events_details_id);
+
         let digest;
         let transactionBlockBytes;
         
@@ -240,17 +242,17 @@ async function autoClaim() {
         const txb = new TransactionBlock();
         // txb.setSender(zkLoginUserAddress);
         // txb.setGasBudget(5000000);
+        console.log('packageId',packageId);
         txb.moveCall({
-            target: `${packageId}::ticket_collection::claim_session`,
+
+            target: `${packageId}::ticket_collection::check_in`,
             arguments: [
                 
-                txb.object(event_object_id),
+                // txb.object(event_object_id),
+                txb.object('0x661c3872ab41062e9ed066c60fa2cd0aca679c583c93151b4eb02b152600b5e4'),
+                txb.object('0x44665f9cfe12ca76ca93db7643a37ed3a5a8e28a291e86a4796b1138a51969dc'),
 
-                txb.object(contract_task_events_details_id),
-                //claim 1 địa chỉ address nft
-                txb.pure(address_nft_min)
             ],
-            typeArguments: [`${packageId}::ticket_collection::NFTSession`]
         });
 
         const ephemeralKeyPairs = keypairFromSecretKey(ephemeralPrivateKey);
@@ -278,7 +280,7 @@ async function autoClaim() {
             network: type_network,
             // with keypair 
             sender: toSuiAddress,
-            allowedMoveCallTargets: [`${packageId}::ticket_collection::claim_ticket`]
+            allowedMoveCallTargets: [`${packageId}::ticket_collection::check_in`]
         };
         const headers = {
             'Content-Type': 'application/json',
@@ -303,10 +305,8 @@ async function autoClaim() {
         // sign by user with keypair
         const signature = await ephemeralKeyPairs.signTransactionBlock(fromB64(transactionBlockBytes));
 
-
         console.log('Signature:', signature);
 
-        //
         const executeEndpoint = `https://api.enoki.mystenlabs.com/v1/transaction-blocks/sponsor/${digest}`;
 
         console.log("Execute Endpoint:", executeEndpoint);
@@ -317,38 +317,35 @@ async function autoClaim() {
         console.log('Data executeSponsor:', dataExecuteSponsor);
 
         try {
+            
             const response = await axios.post(executeEndpoint, JSON.stringify(dataExecuteSponsor), { headers });
-
-            console.log('Response for executing sponsored:', response.data.data.digest);
-
+            
+            console.log('line 323:',response);
             let digests = response.data.data.digest;
             let task_id = $("#task_id").val();
-            let session_id = $("#session_id").val();
-            let booth_id = $("#booth_id").val();
-            let nft_mint_id = $("#nft_id").val();
-
-            let body = {
-                nft_mint_id: nft_mint_id,
-                session_id: session_id,
-                booth_id: booth_id,
+            let bodyRequest = {
                 task_id: task_id,
-                digest:digests
+                txt_hash: digests,
             }
 
-            const resUpdate_nft_status = await axios.post("/update_session_booth_nft_status", body);
-            
+            const resUpdate_nft_status = await axios.post("/usercheckin", bodyRequest);
+        
             console.log('resUpdate_nft_status',resUpdate_nft_status.data);
-            
-            alert(`Claim NFT is success. Please see on https://suiscan.xyz/${type_network}/tx/${digest}`);
-            $('#button-claim').hide()
-            $('#button-claim-link').attr('href', `https://suiscan.xyz/${type_network}/tx/${digest}`);
-            $('#button-claim-link').show();
-            $('.loading').hide();
-            
+
+            //Show toast
+            Toast.fire({
+                icon: 'success',
+                title: 'Checkin success 😀',
+            });
+
             // lưu data rồi thì tải lại trang
-            if(resUpdate_nft_status.data.status){
-                window.location.reload();
-            }
+            setTimeout(() => {
+                if(resUpdate_nft_status.data.status){
+                    window.location.reload();
+                }
+            }, 3000);
+
+            return;
             
         } catch (error) {
 
@@ -384,6 +381,7 @@ function keypairFromSecretKey(privateKeyBase64){
     const keyPair = decodeSuiPrivateKey(privateKeyBase64);
     return Ed25519Keypair.fromSecretKey(keyPair.secretKey);
 }
+
 $('#claim').on('click',async function (e) {
 
     const payload = {

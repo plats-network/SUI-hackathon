@@ -185,11 +185,16 @@ class UploadController extends Controller
 
                 $item = $this->doUploadFileStorage($result, $uploadType, $fileInfo);
 
+                if(isset($item['name'])){
+                
+                    unset($item['name']);
+                }
+                
                 //Wraper file
                 $data['files'][] = $item;
             }
         }
-
+     
         return response()->json($data, 200);
     }
 

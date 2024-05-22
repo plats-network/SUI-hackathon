@@ -1,7 +1,8 @@
 @extends('web.layouts.event_app')
-{{--<head>--}}
-{{--    <meta http-equiv="X-UA-Compatible" content="IE=edge" />--}}
-{{--</head>--}}
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="package_id" content="{{ env('PACKAGE_ID') }}"/>
+</head>
 @section('content')
     <style>
         .disabled {
@@ -164,8 +165,19 @@
         .btn-danger:hover{
             background: red;
         }
+        .register-event{
+            border: none;
+            background: none;
+            color: blue;
+            margin-top: 20px;
+            text-align: center;
+            display: block;
+            text-decoration: revert;
+        }
     </style>
-    @vite('resources/js/claim.js')
+    @if(!$link_check_in)
+        @vite('resources/js/claim.js')
+    @endif
 
     @php
         if (auth()->user() !== null){
@@ -332,24 +344,38 @@
                                 <br>
                                 <div class="line"></div>
                                 <br>
+
+                                {{--  user đang ở link checkin và claim vé đó rồi  --}}
+                                @if($eventUserClaimTicket && $link_check_in)
+                                    <a  class="w-100 btn-get-ticket btn btn-primary  btn-info" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$eventUserClaimTicket->txt_hash ?? ''}}" target="_blank">Explorer checkin</a>
+                                    {{--  <button id="check-in-nft" class="w-100 btn-get-ticket get-exploder-checkin btn btn-primary  btn-info">Explorer checkin</button>   --}}
+                                @endif
+
+                                {{--  usser đang ở link checkin và chưa claim vé đó  --}}
+                                @if(!$eventUserClaimTicket && $link_check_in)
+
+                                    {{--  nếu user chưa đăng kí vé thì hiển thị bắt đăng kí vé  --}}
+                                    @if(!$checkMint)
+
+                                        <a  class="w-100 btn-get-ticket btn btn-danger btn-info" href="https://{{ env('SUB_EVENT') }}.{{ env('APP_URL') }}/event/{{ $event->id }}">Please register event</a> 
+                                    @else
+
+                                        @vite('resources/js/userCheckin.js')
+                                        <input type="hidden" id="task_id" value="{{ $event->id }}">
+                                        <button id="check-in-nft" class="w-100 btn-get-ticket get-exploder-checkin btn btn-primary  btn-info">Checkin event</button>
+                                    @endif
+                                    
+                                @endif
+
                                 @if ($checkMint && !$link_check_in)
                                     <a  class="btn btn-info" style="display: block;margin-bottom: 20px;color: #0fff0f;border: 1px solid #0fff0f;" href="#">Claim already</a>
-                                    <a style="
-                                            border: none;
-                                            background: none;
-                                            color: blue;
-                                            margin-top: 20px;
-                                            text-align: center;
-                                            display: block;
-                                            text-decoration: revert;
-                                        " class="link-primary" target="_blank" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$checkMint->digest ?? ''}}">
+                                    <a  class="link-primary register-event" target="_blank" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$checkMint->digest ?? ''}}">
                                         Suiet Explorer Link
                                     </a>
                                 @endif
-                                <div class="text-center">
 
                                 @if ($nft && !$link_check_in)
-
+                                    <div class="text-center">
                                         <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
                                         <input id="digest_nft" value="{{ isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : ''}}" type="hidden">
                                         <input id="address_nft" value="{{ $nft->address_nft }}" type="hidden">
@@ -362,22 +388,13 @@
                                         <a style="border: none;display:none;background: none;color: blue;text-align: center;    text-decoration: revert;" class="link-primary sol-link" target="_blank" href="https://suiscan.xyz/devnet/{{ env('TYPE_NETWORK') }}/{{ !empty($nft) && isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : '' }}">
                                             Suiet Explorer Link
                                         </a>
-                                    @endif
-                                </div>
-                                
-                                {{-- đang ở link checkin mà chưa claim nft thì hiển thị--}}
-                                @if($link_check_in && !$checkMint)
-                                    <a  class="w-100 btn-get-ticket btn btn-danger btn-info" href="https://{{ env('SUB_EVENT') }}.{{ env('APP_URL') }}/event/{{ $event->id }}">Please register event</a> 
-                                @endif
-
-                                {{--  đang ở link checkin và đã claim nft thì checkin  --}}
-                                @if($link_check_in && $checkMint)
-                                    <button  class="w-100 btn-get-ticket get-exploder-checkin btn btn-primary  btn-info">Explorer checkin</button> 
+                                    </div>
                                 @endif
 
                                 @if(!$checkMint && !$link_check_in)
                                     <a class="w-100 btn-register-event btn btn-primary  btn-info {{auth()->user() != null ? 'btn-claim-id' : 'zklogin'}} {{ !$nft ? 'disabled' : '' }}" href="#" data-url="{{route('web.formLogin')}}">Register event</a>
                                 @endif
+                               
                                 <br>
                                 {{--  <button id="click-event">ok</button>  --}}
                             </div>

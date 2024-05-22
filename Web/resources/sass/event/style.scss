@@ -40,7 +40,9 @@ body.swal2-toast-shown .swal2-container.swal2-top-right {
 }
 
 //
-
+.about-content-text{
+    text-align: center;
+}
 
 .event-improgress {
     padding: 10px 15px;
@@ -50,7 +52,7 @@ body.swal2-toast-shown .swal2-container.swal2-top-right {
     display: none;
 
     @media only screen and (max-width: 767px) {
-        display: inline-block;
+        display: none;
     }
 
     .item {
