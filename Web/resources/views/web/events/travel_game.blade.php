@@ -242,6 +242,7 @@
                                 <input id="address_ticket_id" value="{{ $checkUserNft->address_nft ?? '' }}" type="hidden">
                                 <input id="address_nft_min" value="{{ $nftSessionNotClaim->address_nft ?? '' }}" type="hidden">
                                 <input id="contract_event_id" value="{{ $event->contract_event_id }}" type="hidden">
+                                <input id="task_event_id" value="{{ $nftSessionNotClaim->task_event_id }}" type="hidden">
                                 <input id="contract_task_events_details_id" value="{{ $nftSessionNotClaim->contract_task_events_details_id }}" type="hidden">
                                 
                                 {{--  <button id="button-claim" type="button" class="btn btn-primary btn--order">Claim</button>  --}}
@@ -403,7 +404,24 @@
         'nft' => $nft,
         'url' => $url
     ])
-
+  
+    <script src="{{asset('js/sweetalert2@11.min.js')}}"></script>
+  
+    <script>
+        //Check has param sucess_checkin
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-right',
+            showConfirmButton: false,
+            timer: 4500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        
+    </script>
     <div id="infoEditEmail" class="modal fade @if (Str::contains($email, 'guest')) show @endif" data-backdrop="static"
          data-keyboard="false">
         <style type="text/css">

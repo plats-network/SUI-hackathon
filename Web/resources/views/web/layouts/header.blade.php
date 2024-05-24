@@ -89,7 +89,11 @@
                                     </div>
                                 </li>
                             @else
-                                <li class="sp-hidden"><a href="https://{{config('plats.cws')}}">Create Event</a></li>
+                                <li class="sp-hidden create-event">
+                                    <a class="text-white" href="{{route('web.formLogin')}}">
+                                        Login Event
+                                    </a>
+                                </li>
                             @endif
                             @if($version !=2)
                                 <li class="{{request()->is('solution') ? 'active' : ''}}">

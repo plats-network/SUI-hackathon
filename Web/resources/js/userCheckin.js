@@ -345,7 +345,7 @@ async function autoClaim() {
                 if(resUpdate_nft_status.data.status){
                     window.location.reload();
                 }
-            }, 3000);
+            }, 2000);
 
             return;
             

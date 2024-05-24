@@ -338,8 +338,18 @@ async function autoClaim() {
                 digest:digests
             }
 
+            let bodyUserJoinEvent = {
+                task_event_detail_id:session_id,
+                task_event_id:$("#task_event_id").val(),
+                type:"1",
+                is_important:"0",
+                task_id:task_id
+            }
+
             const resUpdate_nft_status = await axios.post("/update_session_booth_nft_status", body);
-            
+
+            const resUserJoinEvent = await axios.post("/userjoinevent", bodyUserJoinEvent);
+
             console.log('resUpdate_nft_status',resUpdate_nft_status.data);
             
             alert(`Claim NFT is success. Please see on https://suiscan.xyz/${type_network}/tx/${digest}`);
@@ -349,8 +359,18 @@ async function autoClaim() {
             $('.loading').hide();
             
             // lưu data rồi thì tải lại trang
-            if(resUpdate_nft_status.data.status){
-                window.location.reload();
+            if(resUpdate_nft_status.data.status && resUserJoinEvent.data.status){
+                 
+                //Show toast
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Claim session success',
+                });
+
+                // lưu data rồi thì tải lại trang
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             }
             
         } catch (error) {

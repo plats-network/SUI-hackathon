@@ -125,6 +125,9 @@ Route::post('update_session_booth_nft_status', [\App\Http\Controllers\Admin\NFTC
 //user checkin
 Route::post('usercheckin', [Home::class, 'apiUserCheckin'])->name('api.apiUserCheckin');
 
+Route::post('userjoinevent', [Job::class, 'claimUserJoinEvent'])->name('api.apiUserJoinEvent');
+
+
 Route::get('/', [Home::class, 'index'])->name('web.home');
 Route::get('event-lists', [Home::class, 'events'])->name('web.events');
 //Route::get('event/{id}', [Home::class, 'show'])->name('web.events.show');
