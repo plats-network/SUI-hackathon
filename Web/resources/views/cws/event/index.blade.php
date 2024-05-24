@@ -37,9 +37,9 @@
                                     @php
                                         $statuses = [
                                             '' => 'Selected',
-                                            '0' => 'Default',
+                                            '' => 'Default',
                                             '1' => 'Public',
-                                            '2' => 'Draft',
+                                            '0' => 'Draft',
                                             //'99' => 'Deleted'
                                         ];
                                     @endphp

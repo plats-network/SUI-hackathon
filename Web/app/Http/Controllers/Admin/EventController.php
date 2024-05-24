@@ -99,13 +99,15 @@ class EventController extends Controller
         //         $event->update(['code' => genCodeTask()]);
         //     }
         // }
+      
         if (!empty($request)) {
             $events->when(!empty($request->name), function ($query) use ($request) {
                 $query->where('name', 'LIKE', "%{$request->name}%");
                 })
-                ->when(!empty($request->status), function ($query) use ($request) {
-                $query->where('status', 'LIKE', "%{$request->status}%");
-                })
+                // ->when($request->status, function ($query) use ($request) {
+                    
+                //     $query->where('status', '=', $request->status);
+                // })
                 ->when(!empty($request->start_at) && !empty($request->end_at), function ($query) use ($request) {
                 $query->whereBetween('start_at', [$request->start_at, $request->end_at]);
                 })
@@ -115,6 +117,11 @@ class EventController extends Controller
                 ->when(!empty($request->end_at), function ($query) use ($request) {
                 $query->where('end_at', '=', $request->end_at);
             });
+            
+            if(isset($request->status)){
+                
+                $events->where('status', '=', $request->status);
+            }
         }
         $tab = $request->get('tab') ?? 0;
         $data = [

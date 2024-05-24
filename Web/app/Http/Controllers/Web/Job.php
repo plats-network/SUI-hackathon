@@ -95,7 +95,7 @@ class Job extends Controller
             $user = Auth::user();
             $code = $request->input('id');
             $event = $this->eventDetail->whereCode($code)->first();
-            if(empty($event)){
+            if(empty($event) || !$event->status){
                 abort(404);
             }
             $taskEvent = $this->taskEvent->find($event->task_event_id);
@@ -404,7 +404,7 @@ class Job extends Controller
                 ->get();
 
             $totalCompleted = 0;
-
+          
             foreach ($sessions as $session) {
                 $travel = $this->travelGame->find($session->travel_game_id);
                 $job = $this->taskDone
@@ -421,11 +421,12 @@ class Job extends Controller
                     //->whereTaskEventDetailId($session->id)
                     ->count());*/
                 $isDoneTask = $this->checkDoneJob($session->id);
-                if ($isDoneTask) {
+                if ($isDoneTask && $session->status != 0) {
                     $totalCompleted++;
                 }
                 $sessionDatas[] = [
                     'id' => $session->id,
+                    'status' => $session->status,
                     'travel_game_id' => $session->travel_game_id ?? '',
                     'travel_game_name' => $travel->name ?? '',
                     'user_id' => $request->user()->id ?? '',
@@ -444,7 +445,7 @@ class Job extends Controller
             foreach ($sessionDatas as $item) {
                 $groupSessions[$item['travel_game_id']][] = $item;
             }
-           
+          
             //Create code if $totalCompleted >=6
             $maxSession = 1;
 
@@ -631,13 +632,22 @@ class Job extends Controller
                 'user_nft.user_id'=>auth()->user()->id,
                 'user_nft.type'=>2,
             ])->first();
+        
+        if(!empty($groupSessions[""])){
             
-        foreach ($groupSessions[""] as $item) {
-            if ($item['flag'] === true) {
-                $ids[] = $item['id'];
-            }
-        }
+            foreach ($groupSessions[""] as $key => $item) {
+                
+                if ($item['flag'] === true) {
+                    $ids[] = $item['id'];
+                }
+            
+                if($item['status'] == 0){
 
+                    unset($groupSessions[""][$key]);
+                }
+            }
+
+        }
         // lấy thông tin user đăng kí event và đang join event rồi
         $eventUserTicket = EventUserTicket::where('task_id', $taskId)->where('user_id', auth()->user()->id)->first();
 
