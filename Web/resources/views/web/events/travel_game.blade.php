@@ -360,6 +360,7 @@
                                         @if(false)
                                             <h3 class="step">{{$itemDatas && $itemDatas[0] ? $itemDatas[0]['travel_game_name'] : ''}}</h3>
                                         @endif
+                                        
                                         <ul class="tl">
                                             @foreach($itemDatas as $item)
                                                 <li class="tl-item {{ $item['flag'] ? '' : 'dashed'}}">

@@ -80,7 +80,7 @@ class TaskEvent extends Model
         //     ->orderBy('task_event_details.created_at', 'ASC')
         //     ->orderBy('task_event_details.id', 'ASC');
 
-        return $this->hasMany(TaskEventDetail::class)->orderBy('created_at', 'ASC')->orderBy('id', 'ASC');
+        return $this->hasMany(TaskEventDetail::class)->where('task_event_details.status',1)->orderBy('created_at', 'ASC')->orderBy('id', 'ASC');
     }
 
 
