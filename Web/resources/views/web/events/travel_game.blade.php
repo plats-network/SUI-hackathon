@@ -10,7 +10,7 @@
 
 </head>
 @section('content')
-    @vite('resources/js/claim-session.js')
+
     @php
         $userId = auth()->user()->id;
         $email = auth()->user()->email;
@@ -210,16 +210,26 @@
                         </div>
         
                         <div class="pd-25 text-center">
-               
+                            
+                           
+                            
+                            {{--  nếu user chưa đăng kí event thì không được claim session  --}}
+                            @if(!$eventUserTicket)
+                                <a class="w-100 bg-danger text-center btn mt-2 mb-2 btn  btn--order" href="https://{{ env('SUB_EVENT') }}.{{ env('APP_URL') }}/event/{{ $event->id }}">Please register event and checkin event first</a>
+                            @endif
+                           
                             {{--  nếu user này đã claim rồi thì hiển thị link claim của họ  --}}
-                            @if(!empty($nftUserClaimSession))
+                            @if(!empty($nftUserClaimSession) && $eventUserTicket)
                                 <input id="user_claim" value="true" type="hidden">
                                 <a class="link-primary w-100 text-center btn mt-2 mb-2 btn  btn--order" target="_blank" href="#">Claimed succesfully</a>
                                 <br>
                                 <a class="text-center btn mt-2 mb-2 txt-exploder-link" id="button-claim-link" target="_blank" href="https://suiscan.xyz/{{  env("TYPE_NETWORK");  }}/tx/{{ $nftUserClaimSession->digest }}">SUI Explorer Link</a>
 
-                            @else
-        
+                            @endif
+                            
+                            {{--  nếu user chưa claim event và checkin event rồi thì claim  --}}
+                            @if(empty($nftUserClaimSession) && $eventUserTicket)
+                                @vite('resources/js/claim-session.js')
                                 <input id="address_organizer" value="{{ $nftSessionNotClaim->address_organizer ?? '' }}" type="hidden">
                                 <input id="address_nft" value="{{ $nftSessionNotClaim->address_nft ?? '' }}" type="hidden">
                                 <input id="seed" value="{{ $nftSessionNotClaim->seed ?? '' }}" type="hidden">
@@ -229,6 +239,7 @@
                                 <input id="task_id" value="{{ $nftSessionNotClaim->task_id ?? '' }}" type="hidden">
                                 <input id="booth_id" value="{{ $nftSessionNotClaim->booth_id ?? '' }}" type="hidden">
                                 <input id="email_login" value="{{ auth()->user()->email ?? '' }}" type="hidden">
+                                <input id="address_ticket_id" value="{{ $checkUserNft->address_nft ?? '' }}" type="hidden">
                                 <input id="address_nft_min" value="{{ $nftSessionNotClaim->address_nft ?? '' }}" type="hidden">
                                 <input id="contract_event_id" value="{{ $event->contract_event_id }}" type="hidden">
                                 <input id="contract_task_events_details_id" value="{{ $nftSessionNotClaim->contract_task_events_details_id }}" type="hidden">

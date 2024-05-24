@@ -16,7 +16,30 @@ function chunkArray(array, numChunks){
     }
     return result;
 }
+function createMintTxnBlock(data,totalNftTicket,contract_event_id,event_id){
+    let packageId = $('meta[name="package_id"]').attr('content');
 
+    let tx = new TransactionBlock();
+
+    tx.moveCall({
+        target: `${packageId}::client::mint_batch_sessions`,
+        arguments: [
+
+            tx.pure(contract_event_id),
+
+            tx.pure(event_id),
+
+            tx.pure([data.nameSession]),
+            
+            tx.pure([data.descriptionSession]),
+            
+            tx.pure([data.fileSession]),
+
+            tx.pure(totalNftTicket),
+        ],
+    });
+    return tx;
+}
 export default function App() {
 
     const wallet = useWallet();
@@ -55,7 +78,7 @@ export default function App() {
         setSessionData(newSessionData);
     }
 
-    const appendNftSessionDetail = async (details) => {
+    const appendNftSessionDetail = async (details,listDigest) => {
 
         let typenetwork = $('meta[name="type_network"]').attr('content');
 
@@ -64,7 +87,7 @@ export default function App() {
         let html = '';
 
         // Lặp qua mỗi chi tiết trong mảng details
-        details.forEach(detail => {
+        details.forEach((detail,index) => {
             // Tạo HTML cho mỗi chi tiết và thêm vào chuỗi html
             html += '<div class="row mb-3">\n';
             html += '    <div class="col-4">\n';
@@ -81,7 +104,7 @@ export default function App() {
             html += '        </div>\n';
             html += '    </div>\n';
             html += '    <div class="col-2" style="margin-top: 50px">\n';
-            html += '        <p class="class-ticket"><a target="_blank" href="https://suiscan.xyz/'+typenetwork+'/tx/' + detail.txhash + '">txhash</a></p>\n';
+            html += '        <p class="class-ticket"><a target="_blank" href="https://suiscan.xyz/'+typenetwork+'/tx/' + listDigest[index] + '">txhash</a></p>\n';
             html += '    </div>\n';
             html += '</div>';
         });
@@ -178,13 +201,11 @@ export default function App() {
         console.log('newData',newData);
         console.log('wallet',wallet);
 
-        let tx = new TransactionBlock();
         
         let typenetwork = $('meta[name="type_network"]').attr('content');
 
         console.log(typenetwork);
 
-        let packageId = $('meta[name="package_id"]').attr('content');
 
         // let collection_id = $('meta[name="collection_id"]').attr('content');
         const contract_event_id = localStorage.getItem("contract_event_id");
@@ -195,54 +216,60 @@ export default function App() {
 
         console.log('totalNftTickets',totalNftTicket);
 
-        tx.moveCall({
-            target: `${packageId}::client::mint_batch_sessions`,
-            arguments: [
-
-                tx.pure(contract_event_id),
-
-                tx.pure(event_id),
-
-                tx.pure(newData.nameSession),
-                
-                tx.pure(newData.descriptionSession),
-                
-                tx.pure(newData.fileSession),
-
-                tx.pure(totalNftTicket),
-              
-            ],
-        });
-        $('.loading').show();
-        try {
-            const result = await wallet.signAndExecuteTransactionBlock({
-                transactionBlock: tx,
-                options: {
-                    showObjectChanges: true,
-                },
-            });
-            
-            if(result.confirmedLocalExecution != true){
-                alert('nft minted Session fails!');
-                return;
-            }
-            console.log('result',result);
-            console.log('data',data);
-            const sessionCollectionIds = result.objectChanges.filter(
-                    (o) =>
-                        o.type === "created" &&
-                        o.objectType.includes("::ticket_collection::SessionCollection")
-                ).map(item => item.objectId);
-    
-            console.log(`Sessions collection id :`,sessionCollectionIds);
        
-            let sessionIds =  result.objectChanges.filter((o) =>
-                    o.type === "created" &&
-                    o.objectType.includes("::ticket_collection::NFTSession")
-            ).map(item => item.objectId);
-            
-            console.log('sessionIds',sessionIds);
+        $('.loading').show();
+        // try {
+            let sessionsCollectionIds = [];
+            let listSessionIds = [];
+            let listDigest = [];
 
+            for (let i = 0; i < data.length; i++){ 
+                
+                try{
+                    const tx = createMintTxnBlock(data[i],totalNftTicket,contract_event_id,event_id);
+
+                    const result = await wallet.signAndExecuteTransactionBlock({
+                        transactionBlock: tx,
+                        options: {
+                            showObjectChanges: true,
+                        },
+                    });
+                    
+                    if(result.confirmedLocalExecution != true){
+                        alert('nft minted Session fails!');
+                        return;
+                    }
+                    console.log('result',result);
+                    console.log('data',data);
+                    listDigest.push(result.digest);
+
+                    const sessionCollectionIds = result.objectChanges.filter(
+                            (o) =>
+                                o.type === "created" &&
+                                o.objectType.includes("::ticket_collection::SessionCollection")
+                    ).map(item => item.objectId);
+
+                    let sessionIds =  result.objectChanges.filter((o) =>
+                            o.type === "created" &&
+                            o.objectType.includes("::ticket_collection::NFTSession")
+                    ).map(item => item.objectId);
+                    
+                    console.log('sessionIds',sessionIds);
+                    console.log(`Sessions collection id :`,sessionCollectionIds);
+
+                    listSessionIds.push(sessionIds);
+                    sessionsCollectionIds.push(sessionCollectionIds[0]);
+
+                }catch(error){
+                    $('.loading').hide();
+                    console.log('error',error);
+                    alert('nft minted Session fails!');
+                }
+            }; 
+         
+            console.log('sessionsCollectionIds',sessionsCollectionIds);
+            console.log('listSessionIds',listSessionIds);
+            console.log('listDigest',listDigest)
             // const client = new SuiClient({
             //     url: getFullnodeUrl(typenetwork),
             // });
@@ -256,7 +283,6 @@ export default function App() {
             //     });
             //     return sessionCollectionObject.data.content.fields.sessions
             // })
-            console.log('sessionIds line 259',sessionIds);
 
             // const res = await Promise.all(sessionIds);
 
@@ -276,48 +302,42 @@ export default function App() {
             const numChunks = data.length;
       
             // Gọi hàm để cắt mảng
-            let newArray = chunkArray(sessionIds, numChunks);
+            // let newArray = chunkArray(sessionIds, numChunks);
 
-            let newArraySessionCollectionIds = chunkArray(sessionCollectionIds, numChunks);
+            // let newArraySessionCollectionIds = chunkArray(sessionCollectionIds, numChunks);
 
-            console.log('newArray',newArray);
-            console.log('newArraySessionCollectionIds',newArraySessionCollectionIds);
-
-            sessionCollectionIds.sort((a, b) => {
-                return parseInt(b) - parseInt(a);
-            });
+            // console.log('newArray',newArray);
+            // console.log('newArraySessionCollectionIds',newArraySessionCollectionIds);
 
             // Lặp qua mỗi đối tượng trong mảng data
             data.forEach((obj, index) => {
                 console.log('line 164',obj);
                 console.log('index line: 165',index);
-                // Thêm trường 'hash' với giá trị '123' vào mỗi đối tượng
-                obj.txhash = result.digest;
 
                 //mint lại data
-                $('.itemSessionDetailMint').eq(index).find('.nft_address_session').val(sessionIds[index]);
+                $('.itemSessionDetailMint').eq(index).find('.nft_address_session').val(sessionsCollectionIds[index]);
                 $('.itemSessionDetailMint').eq(index).find('.nft_uri_session').val(obj.fileSession);
                 $('.itemSessionDetailMint').eq(index).find('.nft_amount_session').val(totalNftTicket);
-                $('.itemSessionDetailMint').eq(index).find('.nft_digest_session').val(result.digest);
-                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(newArray[index]));
+                $('.itemSessionDetailMint').eq(index).find('.nft_digest_session').val(listDigest[index]);
+                $('.itemSessionDetailMint').eq(index).find('.nft_res_session').val(JSON.stringify(listSessionIds[index]));
                 $('.itemSessionDetailMint').eq(index).find('.image-file').val();
-                $('.itemSessionDetailMint').eq(index).find('.nft_contract_task_events_details_id').val(sessionCollectionIds[index]);
+                $('.itemSessionDetailMint').eq(index).find('.nft_contract_task_events_details_id').val(sessionsCollectionIds[index]);
 
             });
 
-            appendNftSessionDetail(data);
+            appendNftSessionDetail(data,listDigest);
 
             $('.loading').hide();
 
             alert('nft minted Session successfully!');
             
-         } catch (error) {
+        //  } catch (error) {
 
-            $('.loading').hide();
-            console.log('error',error);
-            alert('nft minted Session fails!');
+        //     $('.loading').hide();
+        //     console.log('error',error);
+        //     alert('nft minted Session fails!');
 
-        }
+        // }
         
     }
     useEffect(() => {

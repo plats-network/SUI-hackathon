@@ -233,6 +233,8 @@ async function autoClaim() {
 
         console.log('address_nft_min',address_nft_min);
         console.log('contract_task_events_details_id',contract_task_events_details_id);
+        let contract_event_id = $("#contract_event_id").val();
+        let user_claim_address_nft = $("#user_claim_address_nft").val();
 
         let digest;
         let transactionBlockBytes;
@@ -249,8 +251,8 @@ async function autoClaim() {
             arguments: [
                 
                 // txb.object(event_object_id),
-                txb.object('0x661c3872ab41062e9ed066c60fa2cd0aca679c583c93151b4eb02b152600b5e4'),
-                txb.object('0x44665f9cfe12ca76ca93db7643a37ed3a5a8e28a291e86a4796b1138a51969dc'),
+                txb.object(contract_event_id),
+                txb.object(user_claim_address_nft),
 
             ],
         });
@@ -294,7 +296,7 @@ async function autoClaim() {
             digest = response.data.data.digest;
             transactionBlockBytes = response.data.data.bytes;
         } catch (error) {
-            alert('Can`t claim session');
+            alert('Can`t checkin');
             $('.loading').hide();
             console.log('Error:', error);
         }

@@ -229,7 +229,7 @@ async function autoClaim() {
         let ephemeralPrivateKey = localStorage.getItem('ephemeraPrivateKey');
         let address_nft_min = $("#address_nft_min").val();
         let contract_task_events_details_id = $("#contract_task_events_details_id").val();
-
+        let address_ticket_id = $("#address_ticket_id").val();
         console.log('address_nft_min',address_nft_min);
         console.log('contract_task_events_details_id',contract_task_events_details_id);
         let digest;
@@ -246,7 +246,10 @@ async function autoClaim() {
                 
                 txb.object(event_object_id),
 
+                txb.object(address_ticket_id),  
+
                 txb.object(contract_task_events_details_id),
+
                 //claim 1 địa chỉ address nft
                 txb.pure(address_nft_min)
             ],
