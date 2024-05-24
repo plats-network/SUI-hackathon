@@ -25,7 +25,7 @@
             @yield('name_page')
         </div>
         <div class="d-flex">
-            <div class="dropdown d-inline-block">
+            {{--  <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="bx bx-search icon-sm align-middle"></i>
@@ -40,7 +40,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </div>  --}}
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item user text-start d-flex align-items-center" id="page-header-user-dropdown-v"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

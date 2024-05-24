@@ -40,7 +40,7 @@
                                             '0' => 'Default',
                                             '1' => 'Public',
                                             '2' => 'Draft',
-                                            '99' => 'Deleted'
+                                            //'99' => 'Deleted'
                                         ];
                                     @endphp
                                     <select name="status" class="form-select">
@@ -159,7 +159,7 @@
                                                     'icon' => 'show'
                                                 ])
 
-                                                @include('cws.actions.link', [
+                                                {{--  @include('cws.actions.link', [
                                                     'url' => route('cws.event.users', ['id' => $event->id]),
                                                     'label' => 'Users',
                                                     'icon' => 'user-plus'
@@ -171,7 +171,7 @@
                                                         'label' => 'Sponsor',
                                                         'icon' => 'stats'
                                                     ])
-                                                @endif
+                                                @endif  --}}
 
                                                 {{-- <a
                                                     href="{{ route('cws.eventPreview', [

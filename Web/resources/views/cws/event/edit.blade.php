@@ -1113,7 +1113,7 @@
                 "multiple": false,
                 "sortable": false,
                 "maxNumberOfFiles": 1,
-                "maxFileSize": 5000000,
+                "maxFileSize": 50000000,
                 "minFileSize": null,
                 "acceptFileTypes": /(\.|\/)(gif|jpe?g|png|webp)$/i,
                 "files": fileAvatarInit,
@@ -1125,7 +1125,7 @@
                 "pathAttributeName": "path",
                 "baseUrlAttributeName": "base_url",
                 "messages": {
-                    "maxNumberOfFiles": "Số lượng tối đa của tệp vượt quá",
+                    "maxNumberOfFiles": "Số lượng tối đa của tệp vượt quá 500MB",
                     "acceptFileTypes": "Loại tệp không được phép",
                     "maxFileSize": "Tập tin quá lớn",
                     "minFileSize": "Tập tin quá nhỏ"
@@ -2031,7 +2031,24 @@
                         yii.validation.required(value, messages, {"message": "{{__('validation-inline.required') }}"});
                         //Validate date check less than end_date
                         if (value && $('#end_at').val()) {
-                            if (value > $('#end_at').val()) {
+                            
+                            //console.log('end_at',$('#end_at').val());
+                            //console.log('start_at',$('#start_at').val());
+                            let end_at = $('#end_at').val();
+                            let start_at = $('#start_at').val();
+                           
+                            const split_end_at = end_at.split(" ")[0];
+                            const split_start_at = start_at.split(" ")[0];
+                            
+                            console.log(split_end_at);
+                            console.log(split_start_at);
+
+                            if(split_end_at == split_start_at){
+                                yii.validation.addMessage(messages, "The end date cannot be the same as the current date");
+                            }
+
+                            if (value >= $('#end_at').val()) {
+                               
                                 yii.validation.addMessage(messages, "{{__('validation-inline.start_date_less_than_end_date') }}");
                             }
                         }
@@ -2048,12 +2065,21 @@
                         yii.validation.required(value, messages, {"message": "{{__('validation-inline.required') }}"});
                         //Validate date check grater than end_date
                         if (value && $('#start_at').val()) {
-                            console.log('end_at',$('#end_at').val());
-                            console.log('start_at',$('#start_at').val());
-                          
-                            if(end_at == start_at){
+                            //console.log('end_at',$('#end_at').val());
+                            //console.log('start_at',$('#start_at').val());
+
+                            let end_at = $('#end_at').val();
+                            let start_at = $('#start_at').val();
+                           
+                            const split_end_at = end_at.split(" ")[0];
+                            const split_start_at = start_at.split(" ")[0];
+                            console.log(split_end_at);
+                            console.log(split_start_at);
+
+                            if(split_end_at == split_start_at){
                                 yii.validation.addMessage(messages, "The end date cannot be the same as the current date");
                             }
+
                             if (value <= $('#start_at').val()) {
                                 yii.validation.addMessage(messages, "{{__('validation-inline.end_date_greater_than_start_date') }}");
                             }
