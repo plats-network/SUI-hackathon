@@ -225,17 +225,17 @@ class Job extends Controller
                 ->exists();
 
             //không có user thì tạo 1 user mới ngẫu nhiên
-            if (!$checkJoin) {
-                $this->eventUserTicket->create([
-                    'name' => $user->name,
-                    'phone' => $user->phone ?? '092384234',
-                    'email' => $user->email,
-                    'task_id' => $taskId,
-                    'user_id' => $user->id,
-                    'is_checkin' => true,
-                    'hash_code' => Str::random(35)
-                ]);
-            }
+            // if (!$checkJoin) {
+            //     $this->eventUserTicket->create([
+            //         'name' => $user->name,
+            //         'phone' => $user->phone ?? '092384234',
+            //         'email' => $user->email,
+            //         'task_id' => $taskId,
+            //         'user_id' => $user->id,
+            //         'is_checkin' => true,
+            //         'hash_code' => Str::random(35)
+            //     ]);
+            // }
        
             $checkEventJob = $this->joinEvent
                 ->where('task_event_detail_id', $detail->id)
@@ -632,7 +632,24 @@ class Job extends Controller
                 $ids[] = $item['id'];
             }
         }
-        
+
+        // lấy thông tin user đăng kí event và đang join event rồi
+        $eventUserTicket = EventUserTicket::where('task_id', $taskId)->where('user_id', auth()->user()->id)->first();
+
+        //lấy thông tin address ticket mà user đã đăng kí event rồi
+        $checkUserNft = UserNft::
+                    select("*",'user_nft.id as id_user_nft','tasks.id as task_id','ticket_nft_mint.id as nft_mint_id')
+                    ->where([
+                        'user_nft.user_id' => \auth()->user()->id,
+                        'user_nft.task_id' => $taskId,
+                        'user_nft.type'=>1
+                    ])
+                    ->join('tasks','tasks.id','=','user_nft.task_id')
+                    ->join('ticket_nft_mint','ticket_nft_mint.id','=','user_nft.nft_mint_id')
+                    ->whereNull('user_nft.session_id')
+                    ->whereNull('user_nft.booth_id')
+                    ->first();
+
         $listLuckyCode =  $this->userCode
             ->where('task_event_id', $taskEventDetail->task_event_id)
             ->whereNotNull('task_event_details_id')
@@ -661,6 +678,8 @@ class Job extends Controller
             'code_task_event_details'=>$request['code_task_event_details'],
             'nftSessionNotClaim'=>$nftSessionNotClaim,//địa chỉ ví còn lại chưa claim
             // 'luckyCode'=>$checkCode,
+            'eventUserTicket'=>$eventUserTicket,
+            'checkUserNft'=>$checkUserNft,
             'listLuckyCode'=> !empty($numberCodes) ? implode(',', $numberCodes) : []
         ];
         return view('web.events.travel_game', $data);

@@ -359,9 +359,10 @@
 
                                         <a  class="w-100 btn-get-ticket btn btn-danger btn-info" href="https://{{ env('SUB_EVENT') }}.{{ env('APP_URL') }}/event/{{ $event->id }}">Please register event</a> 
                                     @else
-
                                         @vite('resources/js/userCheckin.js')
                                         <input type="hidden" id="task_id" value="{{ $event->id }}">
+                                        <input type="hidden" id="contract_event_id" value="{{ $checkMint->contract_event_id }}">
+                                        <input type="hidden" id="user_claim_address_nft" value="{{ $checkMint->address_nft }}">
                                         <button id="check-in-nft" class="w-100 btn-get-ticket get-exploder-checkin btn btn-primary  btn-info">Checkin event</button>
                                     @endif
                                     

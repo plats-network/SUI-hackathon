@@ -279,6 +279,7 @@ class Home extends Controller
             /*$this->taskService->update($id, [
                 'view_count' => $event->view + 1
             ]);*/
+
             //check_in
             $check_in = $request->get('check_in') ?? 0;
 
@@ -442,17 +443,21 @@ class Home extends Controller
                 ])->first();
 
             if (\auth()->user()) {
+
                 $check = UserNft::
-                    where([
-                        'user_id' => \auth()->user()->id,
-                        'task_id' => $id,
-                        'type'=>1
+                    select("*",'user_nft.id as id_user_nft','tasks.id as task_id','ticket_nft_mint.id as nft_mint_id')
+                    ->where([
+                        'user_nft.user_id' => \auth()->user()->id,
+                        'user_nft.task_id' => $id,
+                        'user_nft.type'=>1
                     ])
-                    ->whereNull('session_id')
-                    ->whereNull('booth_id')
+                    ->join('tasks','tasks.id','=','user_nft.task_id')
+                    ->join('ticket_nft_mint','ticket_nft_mint.id','=','user_nft.nft_mint_id')
+                    ->whereNull('user_nft.session_id')
+                    ->whereNull('user_nft.booth_id')
                     ->first();
             }
-
+        
             //lấy thông tin người vé người dùng đã claim checkin rồi
             if ($request->get('check_in') && $user && $check) {
 
