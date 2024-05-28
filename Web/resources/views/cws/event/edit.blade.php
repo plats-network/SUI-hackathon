@@ -2030,24 +2030,47 @@
                     "validate": function (attribute, value, messages, deferred, $form) {
                         yii.validation.required(value, messages, {"message": "{{__('validation-inline.required') }}"});
                         //Validate date check less than end_date
+                        if($('#start_at').val()){
+                            
+                            const startTime = new Date($('#start_at').val());
+                            const currentTime = new Date();
+
+                            if (startTime < currentTime) {
+
+                                yii.validation.addMessage(messages,"Error: The specified time is in the past.");
+                            }
+                        }
                         if (value && $('#end_at').val()) {
                             
                             //console.log('end_at',$('#end_at').val());
                             //console.log('start_at',$('#start_at').val());
                             let end_at = $('#end_at').val();
                             let start_at = $('#start_at').val();
-                           
+                            
                             const startAtDate = new Date(start_at.replace(' ', 'T'));
                             const endAtDate = new Date(end_at.replace(' ', 'T'));
+
+                     
+                            const startTime = new Date(start_at);
+                            const endTime = new Date(end_at);
+
+                            const diffInMinutes = (startTime - endTime) / 60000;
+                            console.log(diffInMinutes);
 
                             // So sánh các đối tượng Date
                             if (startAtDate > endAtDate) {
 
                                 yii.validation.addMessage(messages, "Error: start_at is greater than end_at");
                             }
+    
+                            if (diffInMinutes >= -29) {
+
+                                yii.validation.addMessage(messages,"Error: The end time must be within 30 minutes of the start time.");
+                            }
 
                             console.log('start_at',start_at);
                             console.log('end_at',end_at);
+
                             
                             if (value >= $('#end_at').val()) {
                                
@@ -2066,6 +2089,17 @@
                     "validate": function (attribute, value, messages, deferred, $form) {
                         yii.validation.required(value, messages, {"message": "{{__('validation-inline.required') }}"});
                         //Validate date check grater than end_date
+
+                        if($('#end_at').val()){
+                            
+                            const startTime = new Date($('#end_at').val());
+                            const currentTime = new Date();
+                            if (startTime < currentTime) {
+
+                                yii.validation.addMessage(messages,"Error: The specified time is in the past.");
+                            }
+                        }
+
                         if (value && $('#start_at').val()) {
                             //console.log('end_at',$('#end_at').val());
                             //console.log('start_at',$('#start_at').val());
@@ -2073,13 +2107,24 @@
                             let end_at = $('#end_at').val();
                             let start_at = $('#start_at').val();
                            
-                            const split_end_at = end_at.split(" ")[0];
-                            const split_start_at = start_at.split(" ")[0];
-                            console.log(split_end_at);
-                            console.log(split_start_at);
+                            const startAtDate = new Date(start_at.replace(' ', 'T'));
+                            const endAtDate = new Date(end_at.replace(' ', 'T'));
 
-                            if(split_end_at == split_start_at){
-                                yii.validation.addMessage(messages, "The end date cannot be the same as the current date");
+                            // So sánh các đối tượng Date
+                            if (startAtDate > endAtDate) {
+                                yii.validation.addMessage(messages, "Error: start_at is greater than end_at");
+                            }
+
+                            const startTime = new Date(start_at);
+                            const endTime = new Date(end_at);
+
+                            const diffInMinutes = (startTime - endTime) / 60000;
+                            
+                           
+
+                            if (diffInMinutes >= -29) {
+
+                                yii.validation.addMessage(messages,"Error: The end time must be within 30 minutes of the start time.");
                             }
 
                             if (value <= $('#start_at').val()) {
