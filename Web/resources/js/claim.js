@@ -52,7 +52,7 @@ const claimDevNet = async () => {
     txb.setSender(zkLoginUserAddress);
     txb.setGasBudget(5000000);
     txb.moveCall({
-        target: `${packageId}::ticket_collection::claim_session`,
+        target: `${packageId}::ticket_collection::claim_ticket`,
         arguments: [
             txb.object(event_object_id),
             txb.pure(ticket_id)

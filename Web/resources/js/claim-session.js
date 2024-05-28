@@ -265,6 +265,7 @@ async function autoClaim() {
         // console.log(ephemeralPublicKeyB64);
         
         const toSuiAddress = ephemeralKeyPairs.toSuiAddress();
+        
         console.log('toSuiAddress',toSuiAddress);
 
         console.log('zkLoginUserAddress',zkLoginUserAddress);
@@ -370,7 +371,7 @@ async function autoClaim() {
                 // lưu data rồi thì tải lại trang
                 setTimeout(() => {
                     window.location.reload();
-                }, 2000);
+                }, 1000);
             }
             
         } catch (error) {

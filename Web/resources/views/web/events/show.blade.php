@@ -657,9 +657,7 @@
 {{--    <script src="dashboard.js"></script>--}}
     
     <script>
-        $(".get-exploder-checkin").click(function(){
-            alert('update in the feature');
-        });
+       
         //Check has param sucess_checkin
         const Toast = Swal.mixin({
             toast: true,

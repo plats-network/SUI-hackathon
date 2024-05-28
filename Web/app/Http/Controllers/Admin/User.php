@@ -196,15 +196,16 @@ class User extends Controller
         $type = session()->get('type');
         $user = Auth::user();
         $totalEvent = Task::where('creator_id',$user->id)->count();
-        return view('cws.profiles.index', [
+        $data = [
             'user' => $user,
-            'avatar' => BaseImage::imgGroup($user->avatar_path),
+            'avatar' => $user->avatar_path,
             'flagEmail' => $type && $type == 'edit-email' ? true : false,
             'flagPass' => $type && $type == 'edit-pass' ? true : false,
             'flagInfo' => $type && $type == 'edit-info' ? true : false,
             'flag' => empty($type) ? true : false,
             'totalEvent' => $totalEvent
-        ]);
+        ];
+        return view('cws.profiles.index', $data);
     }
 
     // Change password for user client
@@ -268,9 +269,17 @@ class User extends Controller
 
             if ($request->hasFile('avatar_path')) {
                 $uploadedFile = $request->file('avatar_path');
-                $path = 'user/avatars/' . Carbon::now()->format('Ymd');
-                $avatar = Storage::disk('s3')->putFileAs($path, $uploadedFile, $uploadedFile->hashName());
-                $user->update(['avatar_path' => $avatar]);
+
+			    $fileName = md5($uploadedFile->getClientOriginalExtension() . time()) . '.' . $uploadedFile->getClientOriginalExtension();
+
+			    $uploadedFile->move(public_path('imgs/avatar'), $fileName);
+
+		        // Nếu lưu thành công, lấy URL của file
+		        $data['avatar_path'] = isset($fileName) ? '/imgs/avatar/' . $fileName : null;
+
+                // $path = 'user/avatars/' . Carbon::now()->format('Ymd');
+                // $avatar = Storage::disk('s3')->putFileAs($path, $uploadedFile, $uploadedFile->hashName());
+                $user->update(['avatar_path' => $data['avatar_path']]);
             }
 
             $user->update([

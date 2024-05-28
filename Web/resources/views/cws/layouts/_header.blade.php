@@ -1,7 +1,7 @@
 @php
     $name = auth()->user()->name ?: 'client';
     $email = auth()->user()->email ?: 'client@gmail.com';
-    $avatar = imgAvatar(auth()->user()->avatar_path);
+    $avatar = auth()->user()->avatar_path;
 @endphp
 <style>
     body[data-layout-size=boxed] #page-topbar {
@@ -52,7 +52,7 @@
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item user text-start d-flex align-items-center" id="page-header-user-dropdown-v"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="{{$avatar}}"
+                    <img class="rounded-circle header-profile-user" src="{{ asset($avatar) }}"
                     alt="Header Avatar">
                     <span class="d-none d-xl-inline-block ms-2 fw-medium font-size-15">{{$name}}</span>
                 </button>
