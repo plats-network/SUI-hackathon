@@ -83,14 +83,15 @@
                                             background-size: contain;"
                                         ></button>
                                         <div id="e-menu" class="dropdown-content">
+                                            <a href="{{ route('cws.eventList') }}">Create Event</a>
                                             <a href="{{route('web.profile')}}">Profile</a>
                                             <a href="{{route('web.logout')}}">Logout</a>
                                         </div>
                                     </div>
                                 </li>
                             @else
-                                <li class="sp-hidden create-event">
-                                    <a class="text-white" href="{{route('web.formLogin')}}">
+                                <li class="create-event">
+                                    <a  class="btn text-center" href="{{route('web.formLogin')}}">
                                         Login Event
                                     </a>
                                 </li>

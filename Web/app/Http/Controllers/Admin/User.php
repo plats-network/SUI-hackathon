@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\{
 };
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use App\Models\Task;
 
 class User extends Controller
 {
@@ -194,7 +195,7 @@ class User extends Controller
     {
         $type = session()->get('type');
         $user = Auth::user();
-
+        $totalEvent = Task::where('creator_id',$user->id)->count();
         return view('cws.profiles.index', [
             'user' => $user,
             'avatar' => BaseImage::imgGroup($user->avatar_path),
@@ -202,6 +203,7 @@ class User extends Controller
             'flagPass' => $type && $type == 'edit-pass' ? true : false,
             'flagInfo' => $type && $type == 'edit-info' ? true : false,
             'flag' => empty($type) ? true : false,
+            'totalEvent' => $totalEvent
         ]);
     }
 

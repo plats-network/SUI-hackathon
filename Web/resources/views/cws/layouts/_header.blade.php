@@ -3,7 +3,15 @@
     $email = auth()->user()->email ?: 'client@gmail.com';
     $avatar = imgAvatar(auth()->user()->avatar_path);
 @endphp
-
+<style>
+    body[data-layout-size=boxed] #page-topbar {
+        max-width: 100% !important;
+    }
+    body[data-layout-size=boxed] .footer {
+        margin: 0 auto;
+        max-width: 100% !important;
+    }
+</style>
 <header id="page-topbar" class="isvertical-topbar">
     <div class="navbar-header">
         <div class="d-flex">

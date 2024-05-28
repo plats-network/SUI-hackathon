@@ -13,7 +13,14 @@
     ->orderBy('created_at', 'desc')
     ->get();
 @endphp
-
+<style>
+    .active-navbar{
+        background: #f3f5f9;
+        border-radius: 10px;
+        position: relative;
+        color: white;
+    }
+</style>
 <div class="vertical-menu">
     <div class="navbar-brand-box">
         <a href="{{url('/')}}" class="logo logo-dark">
@@ -28,7 +35,6 @@
     <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect vertical-menu-btn">
         <i class="bx bx-menu align-middle"></i>
     </button>
-
     <div data-simplebar class="sidebar-menu-scroll">
         <div id="sidebar-menu">
 
@@ -61,6 +67,7 @@
                         <span class="menu-item" data-key="t-calendar">Dashboard</span>
                     </a>
                 </li>
+                
                 @php
                     if (auth()->user()->role == ADMIN_ROLE) {
                 @endphp
@@ -82,11 +89,13 @@
                     <ul class="sub-menu" aria-expanded="false">
 
                         @foreach($events as $event)
-                            <li><a href="{{route('cws.eventPreview', [
+                            <li class="{{ request()->route('id') == $event->id ? 'active-navbar' : '' }}">
+                                <a href="{{route('cws.eventPreview', [
                                                         'id' => $event->id,
                                                         'tab' => 0,
                                                         'preview' => 1
-                                                    ])}}" data-key="t-read-email">{{$event->name}}</a></li>
+                                                    ])}}" data-key="t-read-email">{{$event->name}}</a>
+                            </li>
                         @endforeach
                     </ul>
                 </li>
