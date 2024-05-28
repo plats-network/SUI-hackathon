@@ -2037,16 +2037,18 @@
                             let end_at = $('#end_at').val();
                             let start_at = $('#start_at').val();
                            
-                            const split_end_at = end_at.split(" ")[0];
-                            const split_start_at = start_at.split(" ")[0];
-                            
-                            console.log(split_end_at);
-                            console.log(split_start_at);
+                            const startAtDate = new Date(start_at.replace(' ', 'T'));
+                            const endAtDate = new Date(end_at.replace(' ', 'T'));
 
-                            if(split_end_at == split_start_at){
-                                yii.validation.addMessage(messages, "The end date cannot be the same as the current date");
+                            // So sánh các đối tượng Date
+                            if (startAtDate > endAtDate) {
+
+                                yii.validation.addMessage(messages, "Error: start_at is greater than end_at");
                             }
 
+                            console.log('start_at',start_at);
+                            console.log('end_at',end_at);
+                            
                             if (value >= $('#end_at').val()) {
                                
                                 yii.validation.addMessage(messages, "{{__('validation-inline.start_date_less_than_end_date') }}");
@@ -2088,6 +2090,7 @@
                 },
 
             ], []);
+
         });
     </script>
     <style>

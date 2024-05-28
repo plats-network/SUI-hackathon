@@ -2428,7 +2428,7 @@ body[data-layout-size="boxed"] {
 }
 body[data-layout-size="boxed"] #layout-wrapper {
   background-color: #f8f9fb;
-  width: 1500px;
+  max-width: 100%;
   margin: 0 auto;
   -webkit-box-shadow: 0 0px 6px #ebeef4;
   box-shadow: 0 0px 6px #ebeef4;

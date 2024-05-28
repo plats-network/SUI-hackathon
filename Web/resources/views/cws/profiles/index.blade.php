@@ -39,7 +39,7 @@
                            <h5 class="mb-1">{{$user->name}}</h5>
                         </div>
                     </div>
-
+                    
                     <div class="table-responsive mt-3 border-bottom pb-3">
                         <table class="table align-middle table-sm table-nowrap table-borderless table-centered mb-0">
                             <tbody>
@@ -67,7 +67,7 @@
                         <div class="row text-center">
                             <div class="col-6 border-end">
                                 <div class="p-1">
-                                    <h5 class="mb-1">0</h5>
+                                    <h5 class="mb-1">{{ $totalEvent }}</h5>
                                     <p class="text-muted mb-0">Events</p>
                                 </div>
                             </div>

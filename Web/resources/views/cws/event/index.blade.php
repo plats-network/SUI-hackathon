@@ -36,8 +36,8 @@
                                 <div class="form-group">
                                     @php
                                         $statuses = [
-                                            '' => 'Selected',
                                             '' => 'Default',
+                                            //'default' => 'Default',
                                             '1' => 'Public',
                                             '0' => 'Draft',
                                             //'99' => 'Deleted'
@@ -45,7 +45,7 @@
                                     @endphp
                                     <select name="status" class="form-select">
                                         @foreach($statuses as $k => $v)
-                                            <option value="{{ $k }}" {{($k == request()->get('status')) ? 'selected' : ''}}>{{$v}}</option>
+                                            <option  value="{{ $k }}" {{ ($k == (string)request()->get('status')) ? 'selected' : '' }}>{{ $v }}</option>
                                         @endforeach
                                     </select>
                                 </div>
