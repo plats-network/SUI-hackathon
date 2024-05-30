@@ -509,6 +509,15 @@ class Home extends Controller
 //            dd($taskDetail);
 //        }
 
+        // sự kiện hết hạn
+        // Đặt thời gian bạn muốn kiểm tra
+        $inputTime = Carbon::createFromFormat('Y-m-d H:i:s',  $event->end_at);
+
+        // Lấy thời gian hiện tại
+        $currentTime = Carbon::now();
+
+        $eventExpired = $inputTime->lessThan($currentTime) ? true : false;
+
         $data = [
             'event' => $event ?? [],
             'user' => $user ?? [],
@@ -528,6 +537,7 @@ class Home extends Controller
             'totalCompletedBooth' => $totalCompletedBooth ?? [],
             'countEventDetailBooth' => $countEventDetailBooth ?? [],
             'checkMint' => $check ?? [],
+            'eventExpired' => $eventExpired,
             'nft' => $nft ?? [],
             'userSubmited'=>$userSubmited,
             'eventUserClaimTicket'=>$eventUserClaimTicket ?? [],

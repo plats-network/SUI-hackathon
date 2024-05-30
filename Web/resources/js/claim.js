@@ -188,12 +188,13 @@ const claimTestNet = async () => {
             transactionBlockKindBytes: toB64(transactionBlockKindBytes),
             network: typenetwork,
             // with keypair 
-            sender: toSuiAddress,
+            // sender: toSuiAddress,
             allowedMoveCallTargets: [`${packageId}::ticket_collection::claim_ticket`]
         };
         const headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer enoki_private_dadb3ac2919df99e92dbe6eac8b8d534`,
+            'Authorization': `Bearer enoki_public_15b02b6a5d797f8b29cf6eb4d882c738`,
+            'zklogin-jwt':jwtUser
         };
         console.log(headers);
         console.log(JSON.stringify(data));
@@ -209,7 +210,6 @@ const claimTestNet = async () => {
         // sign by user with keypair
         const signature = await ephemeralKeyPairs.signTransactionBlock(fromB64(transactionBlockBytes));
 
-
         console.log('Signature:', signature);
 
         //
@@ -220,9 +220,13 @@ const claimTestNet = async () => {
             signature: signature.signature
         };
 
+        headers.signature = signature.signature;
+        headers.network =  "testnet";
+        let requestBody = {
+            network:"testnet"
+        }
         console.log('Data executeSponsor:', dataExecuteSponsor);
-
-        const responseExecuteSponsor = await axios.post(executeEndpoint, JSON.stringify(dataExecuteSponsor), { headers });
+        const responseExecuteSponsor = await axios.post(executeEndpoint, requestBody, { headers });
 
         console.log('Response for executing sponsored:', responseExecuteSponsor.data.data.digest);
 
