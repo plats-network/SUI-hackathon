@@ -345,37 +345,47 @@
                                 <div class="line"></div>
                                 <br>
 
+                                {{-- sự kiện đã kết thúc mà user chưa đăng kí event thì không thế đăng kí nữa --}}
+                                @if($eventExpired)
+
+                                    <a  class="w-100 btn-get-ticket btn btn-danger btn-info" href="#">The event has ended</a> 
+                                @endif
+
                                 {{--  user đang ở link checkin và claim vé đó rồi  --}}
-                                @if($eventUserClaimTicket && $link_check_in)
+                                @if($eventUserClaimTicket && $link_check_in && !$eventExpired)
+
                                     <a  class="w-100 btn-get-ticket btn btn-primary  btn-info" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$eventUserClaimTicket->txt_hash ?? ''}}" target="_blank">Explorer checkin</a>
                                     {{--  <button id="check-in-nft" class="w-100 btn-get-ticket get-exploder-checkin btn btn-primary  btn-info">Explorer checkin</button>   --}}
                                 @endif
 
                                 {{--  usser đang ở link checkin và chưa claim vé đó  --}}
-                                @if(!$eventUserClaimTicket && $link_check_in)
+                                @if(!$eventUserClaimTicket && $link_check_in && !$eventExpired)
 
                                     {{--  nếu user chưa đăng kí vé thì hiển thị bắt đăng kí vé  --}}
                                     @if(!$checkMint)
 
                                         <a  class="w-100 btn-get-ticket btn btn-danger btn-info" href="https://{{ env('SUB_EVENT') }}.{{ env('APP_URL') }}/event/{{ $event->id }}">Please register event</a> 
+                                    
                                     @else
+
                                         @vite('resources/js/userCheckin.js')
                                         <input type="hidden" id="task_id" value="{{ $event->id }}">
                                         <input type="hidden" id="contract_event_id" value="{{ $checkMint->contract_event_id }}">
                                         <input type="hidden" id="user_claim_address_nft" value="{{ $checkMint->address_nft }}">
                                         <button id="check-in-nft" class="w-100 btn-get-ticket get-exploder-checkin btn btn-primary  btn-info">Checkin event</button>
+                                    
                                     @endif
                                     
                                 @endif
 
-                                @if ($checkMint && !$link_check_in)
+                                @if ($checkMint && !$link_check_in && !$eventExpired)
                                     <a  class="btn btn-info" style="display: block;margin-bottom: 20px;color: #0fff0f;border: 1px solid #0fff0f;" href="#">Claim already</a>
                                     <a  class="link-primary register-event" target="_blank" href="https://suiscan.xyz/{{ env('TYPE_NETWORK') }}/tx/{{$checkMint->digest ?? ''}}">
                                         Suiet Explorer Link
                                     </a>
                                 @endif
 
-                                @if ($nft && !$link_check_in)
+                                @if ($nft && !$link_check_in && !$eventExpired)
                                     <div class="text-center">
                                         <input id="address_organizer" value="{{ $nft->address_organizer }}" type="hidden">
                                         <input id="digest_nft" value="{{ isset($nft->nft_res) ? json_decode($nft->nft_res, true)['digest'] : ''}}" type="hidden">
@@ -392,7 +402,7 @@
                                     </div>
                                 @endif
 
-                                @if(!$checkMint && !$link_check_in)
+                                @if(!$checkMint && !$link_check_in && !$eventExpired)
                                     <a class="w-100 btn-register-event btn btn-primary  btn-info {{auth()->user() != null ? 'btn-claim-id' : 'zklogin'}} {{ !$nft ? 'disabled' : '' }}" href="#" data-url="{{route('web.formLogin')}}">Register event</a>
                                 @endif
                                
