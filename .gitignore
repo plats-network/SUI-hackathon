@@ -21,3 +21,6 @@
 **/.vscode
 **/.DS_Store
 /Web/package-lock.json
+/public/imgs/avatar/*
+!/public/imgs/avatar/
+!/public/imgs/avatar/test.txt
